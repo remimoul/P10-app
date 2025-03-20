@@ -35,7 +35,7 @@
 ## Development setup
 
 ```bash
-cp .env.example .env
+cp .env.template .env
 # Edit .env with your preferences
 docker compose up --build -d
 ```
