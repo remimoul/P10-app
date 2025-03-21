@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import "@/app/globals.css";
+
 
 export const metadata: Metadata = {
   title: "P10 App",
@@ -13,7 +15,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className=""
+        className="min-h-screen"
       >
         {children}
       </body>

@@ -118,3 +118,23 @@
     @apply bg-background text-foreground;
   }
 }
+
+@keyframes scroll-line {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.scroll-bar {
+  background-image: linear-gradient(
+    to right,
+    transparent,
+    #dc2626,
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: scroll-line 3s linear infinite;
+}
