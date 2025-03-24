@@ -1,22 +1,16 @@
 "use client";
 
-import {
-  FiMenu,
-  FiX,
-  FiHome,
-  FiAward,
-  FiUser,
-} from "react-icons/fi";
 import Image from "next/image";
 import { LuLayers } from "react-icons/lu";
 import { GiCheckeredFlag } from "react-icons/gi";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useMemo, useCallback } from "react";
+import { FiMenu, FiX, FiHome, FiAward, FiUser } from "react-icons/fi";
 
 const navItems = [
   { name: "Home", icon: FiHome, minWidth: 640 },
   { name: "Leagues", icon: LuLayers, minWidth: 0 },
-  { name: "Racing", icon: GiCheckeredFlag , minWidth: 768 },
+  { name: "Racing", icon: GiCheckeredFlag, minWidth: 768 },
   { name: "Ranking", icon: FiAward, minWidth: 768 },
 ];
 
@@ -81,8 +75,8 @@ const Navbar = () => {
                     onClick={() => setActiveTab(item.name)}
                     className={`min-w-[80px] flex items-center justify-center w-full px-2 py-1 sm:px-3 sm:py-2 text-xs sm:text-sm md:text-base transition-colors ${
                       activeTab === item.name
-                        ? "text-red-600 font-medium"
-                        : "text-gray-600 hover:text-red-500"
+                        ? "text-[#D90429] font-medium"
+                        : "text-gray-600 hover:text-[#EF233C]"
                     }`}
                   >
                     <item.icon className="h-4 w-4 sm:h-5 sm:w-5 mr-1 sm:mr-2" />
@@ -90,7 +84,7 @@ const Navbar = () => {
                   </button>
                   {activeTab === item.name && (
                     <motion.div
-                      className="absolute bottom-0 left-0 right-0 h-[2px] bg-red-600"
+                      className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#D90429]"
                       layoutId="activeIndicator"
                       transition={{ type: "spring", stiffness: 300 }}
                     />
@@ -101,16 +95,20 @@ const Navbar = () => {
           </div>
 
           <div className="flex items-center gap-2 sm:gap-4">
-            <button className="hidden sm:flex items-center text-red-600 hover:text-red-400">
+            <button className="hidden sm:flex items-center text-[#D90429] hover:text-[#EF233C]">
               <FiUser className="h-5 w-5 mr-1 sm:mr-2" />
               <span className="text-sm sm:text-base">Account</span>
             </button>
 
             <button
               onClick={() => setIsMenuOpen((prev) => !prev)}
-              className="md:hidden p-2 text-gray-600 hover:text-red-600"
+              className="md:hidden p-2 text-gray-600 hover:text-[#EF233C]"
             >
-              {isMenuOpen ? <FiX className="h-6 w-6" /> : <FiMenu className="h-6 w-6" />}
+              {isMenuOpen ? (
+                <FiX className="h-6 w-6" />
+              ) : (
+                <FiMenu className="h-6 w-6" />
+              )}
             </button>
           </div>
         </div>
@@ -132,7 +130,7 @@ const Navbar = () => {
                     whileTap={{ scale: 0.97 }}
                     className={`w-full flex items-center px-4 py-3 rounded-lg transition-colors ${
                       activeTab === item.name
-                        ? "bg-red-50 text-red-600"
+                        ? "bg-red-50 text-[#D90429]"
                         : "text-gray-700 hover:bg-gray-300"
                     }`}
                   >

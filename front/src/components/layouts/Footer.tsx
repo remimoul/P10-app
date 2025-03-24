@@ -15,12 +15,12 @@ const quickLinks = [
 
 const stats = [
   {
-    icon: <GiStopwatch className="mx-auto text-red-500 text-2xl" />,
+    icon: <GiStopwatch className="mx-auto text-[#EF233C] text-2xl" />,
     value: "2.4K",
     label: "Online players",
   },
   {
-    icon: <GiChart className="mx-auto text-red-500 text-2xl" />,
+    icon: <GiChart className="mx-auto text-[#EF233C] text-2xl" />,
     value: "18.7K",
     label: "Predictions / day",
   },
@@ -30,13 +30,13 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="relative bg-neutral-900 text-gray-300 border-t border-red-600 text-[15px]">
+    <footer className="relative bg-neutral-900 text-[#EDF2F4] border-t border-[#D90429] text-[15px]">
       <div className="w-full h-[3px] scroll-bar absolute top-0 left-0 z-10" />
 
       <div className="relative z-0">
         <div className="max-w-6xl mx-auto px-4 py-6 grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
           <div className="flex flex-col gap-1 items-center md:items-start">
-            <div className="flex items-center gap-2 text-white">
+            <div className="flex items-center gap-2 text-[#EDF2F4]">
               <Image
                 src="/logo.png"
                 alt="Logo P10"
@@ -46,7 +46,7 @@ const Footer = () => {
                 priority
               />
               <span className="font-bold text-xl">
-                P<span className="text-red-600">10</span>
+                P<span className="text-[#D90429]">10</span>
               </span>
             </div>
             <p className="text-lg text-gray-400">
@@ -67,13 +67,13 @@ const Footer = () => {
 
           <div className="flex flex-col items-center md:items-end text-right gap-1">
             <div className="flex items-center gap-2 text-gray-400 text-sm uppercase font-medium">
-              <GiCheckeredFlag className="text-red-500 text-lg" />
+              <GiCheckeredFlag className="text-[#EF233C] text-lg" />
               The next race
             </div>
             <div className="text-lg font-bold text-white">28/07 - 15:00</div>
             <Link
               href="/rules"
-              className="mt-2 inline-block bg-red-600 hover:bg-red-700 text-white text-sm font-semibold px-4 py-1.5 rounded-md transition"
+              className="mt-2 inline-block bg-[#D90429] hover:bg-[#EF233C] text-white text-sm font-semibold px-4 py-1.5 rounded-md transition"
             >
               View rules
             </Link>
@@ -83,9 +83,15 @@ const Footer = () => {
         <div className="border-t border-gray-800 pt-5 mt-6 px-4">
           <nav className="flex flex-wrap justify-center gap-x-5 gap-y-3 text-sm font-semibold tracking-wide uppercase text-gray-400">
             {quickLinks.map(({ label, href }) => (
-              <Link key={href} href={href} className="relative group transition">
-                <span className="group-hover:text-red-500 transition">{label}</span>
-                <span className="block h-[1px] w-0 bg-red-500 transition-all group-hover:w-full mt-1"></span>
+              <Link
+                key={href}
+                href={href}
+                className="relative group transition"
+              >
+                <span className="group-hover:text-[#D90429] transition">
+                  {label}
+                </span>
+                <span className="block h-[1px] w-0 bg-[#D90429] transition-all group-hover:w-full mt-1"></span>
               </Link>
             ))}
           </nav>
@@ -93,10 +99,14 @@ const Footer = () => {
 
         <div className="border-t border-gray-800 pt-4 mt-4 px-4 text-center text-sm text-gray-400 space-y-1">
           <p>
-            Average accuracy: <span className="text-red-500 font-semibold">68%</span>
+            Average accuracy:{" "}
+            <span className="text-red-500 font-semibold">68%</span>
           </p>
           <p>© {currentYear} P10 app - Not affiliated with Formula 1</p>
-          <Link href="/privacyPolicy" className="hover:text-red-500 transition">
+          <Link
+            href="/privacyPolicy"
+            className="hover:text-[#EF233C] transition"
+          >
             Privacy policy
           </Link>
         </div>
