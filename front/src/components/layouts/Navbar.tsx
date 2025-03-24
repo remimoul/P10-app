@@ -4,6 +4,7 @@ import Image from "next/image";
 import { LuLayers } from "react-icons/lu";
 import { GiCheckeredFlag } from "react-icons/gi";
 import { motion, AnimatePresence } from "framer-motion";
+import { UserButton, SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { FiMenu, FiX, FiHome, FiAward, FiUser } from "react-icons/fi";
 
@@ -95,10 +96,17 @@ const Navbar = () => {
           </div>
 
           <div className="flex items-center gap-2 sm:gap-4">
-            <button className="hidden sm:flex items-center text-[#D90429] hover:text-[#EF233C]">
-              <FiUser className="h-5 w-5 mr-1 sm:mr-2" />
-              <span className="text-sm sm:text-base">Account</span>
-            </button>
+            <SignedIn>
+              <UserButton />
+            </SignedIn>
+            <SignedOut>
+              <SignInButton mode="modal">
+                <button className="hidden sm:flex items-center text-[#D90429] hover:text-[#EF233C] cursor-pointer">
+                  <FiUser className="h-5 w-5 mr-1 sm:mr-2" />
+                  <span className="text-sm sm:text-base">Account</span>
+                </button>
+              </SignInButton>
+            </SignedOut>
 
             <button
               onClick={() => setIsMenuOpen((prev) => !prev)}
@@ -139,10 +147,17 @@ const Navbar = () => {
                   </motion.button>
                 ))}
                 <div className="pt-4 border-t">
-                  <button className="w-full flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-300">
-                    <FiUser className="h-5 w-5 mr-3" />
-                    <span className="text-sm sm:text-base">Connexion</span>
-                  </button>
+                  <SignedIn>
+                    <UserButton />
+                  </SignedIn>
+                  <SignedOut>
+                    <SignInButton mode="modal">
+                      <button className="w-full flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-300">
+                        <FiUser className="h-5 w-5 mr-3" />
+                        <span className="text-sm sm:text-base">Connexion</span>
+                      </button>
+                    </SignInButton>
+                  </SignedOut>
                 </div>
               </div>
             </motion.div>
