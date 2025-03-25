@@ -1,0 +1,93 @@
+type User {
+  id: ID!
+  email: String!
+  firstname: String!
+  lastname: String!
+  password: String!
+  avatar: Avatar
+  leagues: [League]
+}
+
+type League {
+  id: ID!
+  name: String!
+  admin: User!
+  private: Boolean!
+  sharedLink: String
+  avatar: Avatar
+  users: [User]
+}
+
+type Avatar {
+  id: ID!
+  picture: String!
+}
+
+type Pilot {
+  id: ID!
+  name: String!
+  picture: String
+  acronym: String
+  currentTeam: Team
+  teamHistory: [PilotTeam]
+}
+
+type Team {
+  id: ID!
+  name: String!
+  logo: String
+  color: String
+  pilots: [PilotTeam]
+}
+
+type PilotTeam {
+  id: ID!
+  pilot: Pilot!
+  team: Team!
+  year: String!
+}
+
+type GrandPrix {
+  id: ID!
+  season: String!
+  date: String!
+  time: String!
+  track: Track!
+  pilots: [Pilot]
+  ranking: [GrandPrixRanking]
+}
+
+type Track {
+  id: ID!
+  countryName: String!
+  trackName: String!
+  pictureCountry: String
+  pictureTrack: String
+}
+
+type GrandPrixRanking {
+  id: ID!
+  grandPrix: GrandPrix!
+  pilot: Pilot!
+  isDNF: Boolean!
+  position: Int!
+}
+
+type Bet {
+  id: ID!
+  user: User!
+  grandPrix: GrandPrix!
+  pilotP10: Pilot!
+  pointsP10: String
+}
+
+# type Query {
+#   getPets: [Pet]
+#   getPet(id: ID!): Pet
+# }
+#
+# type Mutation {
+#   createPet(name: String!, age: Int!, pictureUri: String, ownerName: String!): Pet!
+#   updatePet(id: ID!, name: String, age: Int, pictureUri: String, ownerName: String): Pet!
+#   deletePet(id: ID!): ID!
+# }
