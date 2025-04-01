@@ -22,3 +22,15 @@ export interface SectionHeaderProps {
   title: string;
   isPublic: boolean;
 }
+
+export interface CreateLeagueProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onCreate: (league: { name: string; isPrivate: boolean }) => void;
+}
+
+export interface JoinLeagueProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onJoin: (joinCode: string) => void;
+}

@@ -3,11 +3,9 @@
 import { motion } from "framer-motion";
 import type { LeagueCardProps } from "@/types";
 import { Button } from "@/components/ui/button";
-
 import { RiTeamFill, RiArrowRightSLine } from "react-icons/ri";
 
 export const LeagueCard = ({ league, index, isPublic }: LeagueCardProps) => {
-  const borderColor = isPublic ? "#FF1801" : "#00D2BE";
   const buttonGradient = isPublic
     ? "from-red-500 to-red-600"
     : "from-blue-500 to-blue-600";
