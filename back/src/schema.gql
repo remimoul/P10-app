@@ -1,9 +1,6 @@
 type User {
   id: ID!
-  email: String!
-  firstname: String!
-  lastname: String!
-  password: String!
+  clerkId: String!
   avatar: Avatar
   leagues: [League]
 }
@@ -13,9 +10,9 @@ type League {
   name: String!
   admin: User!
   private: Boolean!
-  sharedLink: String
+  joinCode: String!
   avatar: Avatar
-  users: [User]
+  members: [User]
 }
 
 type Avatar {
@@ -78,16 +75,42 @@ type Bet {
   user: User!
   grandPrix: GrandPrix!
   pilotP10: Pilot!
-  pointsP10: String
+  pointsP10: Int
 }
 
-# type Query {
-#   getPets: [Pet]
-#   getPet(id: ID!): Pet
-# }
-#
-# type Mutation {
-#   createPet(name: String!, age: Int!, pictureUri: String, ownerName: String!): Pet!
-#   updatePet(id: ID!, name: String, age: Int, pictureUri: String, ownerName: String): Pet!
-#   deletePet(id: ID!): ID!
-# }
+type Query {
+  getUsers: [User!]!
+  getUser(id: ID!): User
+
+  getPublicLeagues(): [League!]!
+  getLeague(id: ID!): League
+
+  getGrandPrix(season: String): [GrandPrix!]!
+  getGrandPrixById(id: ID!): GrandPrix
+
+  getPilots: [Pilot!]!
+  getPilot(id: ID!): Pilot
+
+  getTeams: [Team!]!
+  getTeam(id: ID!): Team
+
+  getTracks: [Track!]!
+  getTrack(id: ID!): Track
+
+  getBetsByUser(userId: ID!): [Bet!]!
+  getBetsByLeague(leagueId: ID!): [Bet!]!
+}
+
+type Mutation {
+  createUser(clerkId: String!, avatarId: ID): User!
+  updateUser(id: ID!, avatarId: ID): User!
+  deleteUser(id: ID!): User!
+
+  createLeague(name: String!, private: Boolean!, creatorId: ID!, avatarId: ID): League!
+  updateLeague(id: ID!, name: String, private: Boolean, leagueAdmin: ID, avatarId: ID): League!
+  joinLeague(userId: ID!, leagueId: ID!, joinCode: String): League!
+  leaveLeague(userId: ID!, leagueId: ID!): League!
+
+  placeBet(userId: ID!, gpId: ID!, piloteP10Id: ID!): Bet!
+  updateBet(betId: ID!, piloteP10Id: ID): Bet!
+}
