@@ -1,16 +1,16 @@
-import { UUID } from "crypto";
+import { UUID } from 'crypto';
 
 type User = {
   id: UUID;
   clerkId: string;
   avatar?: Avatar;
   leagues: League[];
-}
+};
 
 type Avatar = {
   id: UUID;
   url: string;
-}
+};
 
 type League = {
   id: UUID;
@@ -20,7 +20,7 @@ type League = {
   joinCode: string;
   avatar: Avatar;
   members: User[];
-}
+};
 
 type Pilot = {
   id: UUID;
@@ -29,7 +29,7 @@ type Pilot = {
   acronym: string;
   currentTeam: Team;
   teamHistory: PilotTeam[];
-}
+};
 
 type Team = {
   id: UUID;
@@ -37,24 +37,24 @@ type Team = {
   logo: string;
   color: string;
   pilots: PilotTeam[];
-}
+};
 
 type PilotTeam = {
   id: UUID;
   pilot: Pilot;
   team: Team;
   year: string;
-}
+};
 
 type GrandPrix = {
   id: UUID;
-  season: String;
+  season: string;
   date: Date;
   time: Date;
   track: Track;
   pilots: Pilot[];
   ranking?: GrandPrixRanking[];
-}
+};
 
 type Track = {
   id: UUID;
@@ -62,7 +62,7 @@ type Track = {
   country: string;
   pictureTrack: string;
   pictureCountry: string;
-}
+};
 
 type GrandPrixRanking = {
   id: UUID;
@@ -70,7 +70,7 @@ type GrandPrixRanking = {
   pilot: Pilot;
   position: number;
   isDNF: boolean;
-}
+};
 
 type Bet = {
   id: UUID;
@@ -78,6 +78,17 @@ type Bet = {
   grandPrix: GrandPrix;
   pilot: Pilot;
   points?: number;
-}
+};
 
-export type { User, Avatar, League, Pilot, Team, PilotTeam, GrandPrix, Track, GrandPrixRanking, Bet };
+export type {
+  User,
+  Avatar,
+  League,
+  Pilot,
+  Team,
+  PilotTeam,
+  GrandPrix,
+  Track,
+  GrandPrixRanking,
+  Bet,
+};

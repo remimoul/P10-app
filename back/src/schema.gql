@@ -82,7 +82,7 @@ type Query {
   getUsers: [User!]!
   getUser(id: ID!): User
 
-  getPublicLeagues(): [League!]!
+  getPublicLeagues: [League!]!
   getLeague(id: ID!): League
 
   getGrandPrix(season: String): [GrandPrix!]!
@@ -106,8 +106,19 @@ type Mutation {
   updateUser(id: ID!, avatarId: ID): User!
   deleteUser(id: ID!): User!
 
-  createLeague(name: String!, private: Boolean!, creatorId: ID!, avatarId: ID): League!
-  updateLeague(id: ID!, name: String, private: Boolean, leagueAdmin: ID, avatarId: ID): League!
+  createLeague(
+    name: String!
+    private: Boolean!
+    creatorId: ID!
+    avatarId: ID
+  ): League!
+  updateLeague(
+    id: ID!
+    name: String
+    private: Boolean
+    leagueAdmin: ID
+    avatarId: ID
+  ): League!
   joinLeague(userId: ID!, leagueId: ID!, joinCode: String): League!
   leaveLeague(userId: ID!, leagueId: ID!): League!
 
