@@ -1,11 +1,11 @@
 "use client";
 
 import { useMemo } from "react";
-import { motion } from "framer-motion";
-import type { League, LeagueSectionProps } from "@/types";
-import { LeagueCard } from "@/components/Leagues/LeagueCard";
+import type { League } from "@/types";
+
+import Header from "@/components/Leagues/Header";
 import { ReadyToRace } from "@/components/Leagues/ReadyToRace";
-import { SectionHeader } from "@/components/Leagues/SectionHeader";
+import LeagueSection from "@/components/Leagues/LeagueSection";
 
 // const leagues: League[] = []; // simulate when no leagues
 
@@ -61,47 +61,5 @@ export const Leagues = () => {
     </div>
   );
 };
-
-const Header = () => (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    className="text-center mb-16"
-  >
-    <h1 className="text-5xl font-bold bg-gradient-to-r from-red-600 to-blue-600 bg-clip-text text-transparent mb-4">
-      F1 LEAGUES
-    </h1>
-    <div className="flex items-center justify-center gap-4">
-      <div className="h-px flex-1 bg-gradient-to-r from-transparent via-red-600 to-transparent" />
-      <p className="text-gray-600 uppercase tracking-widest text-lg">
-        Join the ultimate racing competition
-      </p>
-      <div className="h-px flex-1 bg-gradient-to-r from-transparent via-blue-600 to-transparent" />
-    </div>
-  </motion.div>
-);
-
-const LeagueSection = ({ title, leagues, isPublic }: LeagueSectionProps) => (
-  <section className="relative">
-    <SectionHeader title={title} isPublic={isPublic} />
-
-    {leagues.length === 0 ? (
-      <p className="text-center text-gray-500 text-lg">
-        No league for the moment.
-      </p>
-    ) : (
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {leagues.map((league, idx) => (
-          <LeagueCard
-            key={idx}
-            league={league}
-            index={idx}
-            isPublic={isPublic}
-          />
-        ))}
-      </div>
-    )}
-  </section>
-);
 
 export default Leagues;

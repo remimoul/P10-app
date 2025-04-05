@@ -1,17 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
-import { useUser, useOrganization } from "@clerk/nextjs";
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { RiLoader2Fill } from "react-icons/ri";
-import { GiRaceCar } from "react-icons/gi";
 import toast from "react-hot-toast";
 import { Participant } from "@/types";
+import { GiRaceCar } from "react-icons/gi";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { RiLoader2Fill } from "react-icons/ri";
+import { useUser, useOrganization } from "@clerk/nextjs";
+
+import { Button } from "@/components/ui/button";
 import Header from "@/components/Leagues/ViewLeagues/Header";
 import Ranking from "@/components/Leagues/ViewLeagues/Ranking";
 import UserCard from "@/components/Leagues/ViewLeagues/UserCard";
+import AddMember from "@/components/Leagues/ViewLeagues/pop-up/AddMember";
+import ExitLeague from "@/components/Leagues/ViewLeagues/pop-up/ExitLeague";
 import ParticipantsList from "@/components/Leagues/ViewLeagues/ParticipantsList";
 
 const ViewLeague = () => {
@@ -21,6 +24,8 @@ const ViewLeague = () => {
   // Simulation timeout : const [timeLeft, setTimeLeft] = useState(O);
   const [timeLeft, setTimeLeft] = useState(3600);
   const [participants, setParticipants] = useState<Participant[]>([]);
+  const [isAddMemberModalOpen, setIsAddMemberModalOpen] = useState(false);
+  const [isExitLeagueModalOpen, setIsExitLeagueModalOpen] = useState(false);
 
   useEffect(() => {
     if (userLoaded && user) {
@@ -33,10 +38,10 @@ const ViewLeague = () => {
           hasVoted: false,
           avatar: user.imageUrl,
         },
-        { id: "2", name: "Max Verstappen", score: 245, hasVoted: false },
-        { id: "4", name: "Charles Leclerc", score: 150, hasVoted: false },
-        { id: "5", name: "Carlos Sainz", score: 120, hasVoted: false },
-        { id: "3", name: "Lewis Hamilton", score: 198, hasVoted: false },
+        // { id: "2", name: "Max Verstappen", score: 245, hasVoted: false },
+        // { id: "4", name: "Charles Leclerc", score: 150, hasVoted: false },
+        // { id: "5", name: "Carlos Sainz", score: 120, hasVoted: false },
+        // { id: "3", name: "Lewis Hamilton", score: 198, hasVoted: false },
       ]);
     }
   }, [userLoaded, user]);
@@ -52,9 +57,13 @@ const ViewLeague = () => {
     router.push("/vote");
   };
 
-  const handleAddMembers = () => toast.success("Invitation sent!");
-  const handleLeaveLeague = () =>
-    toast.success(`Left ${organization?.name || "league"} successfully`);
+  const handleAddMembers = () => {
+    setIsAddMemberModalOpen(true);
+  };
+
+  const handleLeaveLeague = () => {
+    setIsExitLeagueModalOpen(true);
+  };
 
   const formatTime = (seconds: number) => {
     const days = Math.floor(seconds / 86400);
@@ -86,6 +95,12 @@ const ViewLeague = () => {
         handleLeaveLeague={handleLeaveLeague}
       />
 
+      {participants.length === 1 && (
+        <div className="bg-red-100 border border-red-300 text-red-700 p-4 rounded-xl text-center text-lg mb-6">
+          If no new members join within 48 hours, this league will be deleted.
+        </div>
+      )}
+
       {user ? (
         <>
           <UserCard
@@ -110,6 +125,28 @@ const ViewLeague = () => {
             <Link href="/sign-in">Login to Join League(s)</Link>
           </Button>
         </div>
+      )}
+
+      {isAddMemberModalOpen && (
+        <AddMember
+          isOpen={isAddMemberModalOpen}
+          onClose={() => setIsAddMemberModalOpen(false)}
+          onSendInvitation={() => {
+            setIsAddMemberModalOpen(false);
+          }}
+        />
+      )}
+      {isExitLeagueModalOpen && (
+        <ExitLeague
+          isOpen={isExitLeagueModalOpen}
+          onClose={() => setIsExitLeagueModalOpen(false)}
+          onConfirmExit={() => {
+            toast.success(
+              `Left ${organization?.name || "league"} successfully`
+            );
+            setIsExitLeagueModalOpen(false);
+          }}
+        />
       )}
     </div>
   );

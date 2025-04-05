@@ -3,11 +3,12 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
 import { GiCheckeredFlag } from "react-icons/gi";
 import { RiArrowRightSLine } from "react-icons/ri";
-import { JoinLeague } from "@/components/Leagues/JoinLeague";
-import { CreateLeague } from "@/components/Leagues/CreateLeague";
+
+import { Button } from "@/components/ui/button";
+import { JoinLeague } from "@/components/Leagues/pop-up/JoinLeague";
+import { CreateLeague } from "@/components/Leagues/pop-up/CreateLeague";
 
 export const ReadyToRace = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -17,31 +18,29 @@ export const ReadyToRace = () => {
     name: string;
     isPrivate: boolean;
   }) => {
-    const toastId = toast.loading("Creation of the league...");
+    const toastId = toast.loading("Creation of the league ...");
     try {
       // Simulation appel API
       await new Promise((resolve) => setTimeout(resolve, 2000));
       toast.success("League successfully created!", { id: toastId });
-    } catch (error) {
+    } catch {
       toast.error("Error during creation", {
         id: toastId,
         duration: 5000,
-        icon: "🔥",
       });
     }
   };
 
   const handleJoinLeague = async (joinCode: string) => {
-    const toastId = toast.loading("Joining the league...");
+    const toastId = toast.loading("Joining the league ...");
     try {
       // Simulation appel API
       await new Promise((resolve) => setTimeout(resolve, 2000));
       toast.success("Successfully joined the league!", { id: toastId });
-    } catch (error) {
+    } catch {
       toast.error("Error during joining", {
         id: toastId,
         duration: 5000,
-        icon: "🔥",
       });
     }
   };
@@ -55,7 +54,9 @@ export const ReadyToRace = () => {
       >
         <div className="max-w-3xl mx-auto flex flex-col md:flex-row gap-8 items-center justify-between">
           <div className="space-y-4 flex-1">
-            <h2 className="text-3xl font-bold text-gray-900">Ready to Race ?</h2>
+            <h2 className="text-3xl font-bold text-gray-900">
+              Ready to Race ?
+            </h2>
             <p className="text-gray-600">
               Start your engines and join the ultimate racing challenge !
             </p>

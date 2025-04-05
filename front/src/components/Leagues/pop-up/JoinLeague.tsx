@@ -25,7 +25,7 @@ export const JoinLeague = ({ isOpen, onClose, onJoin }: JoinLeagueProps) => {
 
     try {
       onJoin(joinCode);
-    } catch (error) {
+    } catch {
       toast.error("Error during joining");
     }
   };
@@ -67,7 +67,7 @@ export const JoinLeague = ({ isOpen, onClose, onJoin }: JoinLeagueProps) => {
                   type="button"
                   onClick={onClose}
                   variant="outline"
-                  className="px-8 py-3 border-2 border-gray-300 text-gray-700 hover:border-gray-400 rounded-xl text-lg shadow-sm"
+                  className="px-6 py-6 border-2 border-gray-300 text-gray-700 hover:border-gray-400 rounded-xl text-lg shadow-sm"
                 >
                   Cancel
                 </Button>
@@ -78,7 +78,7 @@ export const JoinLeague = ({ isOpen, onClose, onJoin }: JoinLeagueProps) => {
               >
                 <Button
                   type="submit"
-                  className="px-8 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl text-lg shadow-sm"
+                  className="px-6 py-6 bg-red-500 hover:bg-red-600 text-white rounded-xl text-lg shadow-sm"
                 >
                   Join
                 </Button>

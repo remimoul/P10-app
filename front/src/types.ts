@@ -1,3 +1,4 @@
+//Page leagues
 export interface League {
   name: string;
   members: number;
@@ -36,6 +37,7 @@ export interface JoinLeagueProps {
   onJoin: (joinCode: string) => void;
 }
 
+//page viewLeague
 export interface Participant {
   id: string;
   name: string;
@@ -49,4 +51,16 @@ export interface UserCardProps {
   timeLeft: number;
   rank: number | null;
   handleVote: () => void;
+}
+
+export interface AddMemberProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSendInvitation: (email: string) => void;
+}
+
+export interface ExitLeagueProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirmExit: () => void;
 }
