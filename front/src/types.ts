@@ -16,7 +16,7 @@ export interface LeagueCardProps {
   league: League;
   index: number;
   isPublic: boolean;
-  isUserMember?: boolean; 
+  isUserMember?: boolean;
 }
 
 export interface SectionHeaderProps {
@@ -34,4 +34,19 @@ export interface JoinLeagueProps {
   isOpen: boolean;
   onClose: () => void;
   onJoin: (joinCode: string) => void;
+}
+
+export interface Participant {
+  id: string;
+  name: string;
+  score: number;
+  hasVoted: boolean;
+  avatar?: string;
+}
+
+export interface UserCardProps {
+  participant?: Participant;
+  timeLeft: number;
+  rank: number | null;
+  handleVote: () => void;
 }
