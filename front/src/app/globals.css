@@ -146,7 +146,7 @@
 
 @keyframes bounce-horizontal {
   0%, 100% { transform: translateX(0); }
-  50% { transform: translateX(8px); }
+  50% { transform: translateX(4px); }
 }
 
 .bg-circuit-pattern {
@@ -160,5 +160,5 @@
 }
 
 .animate-bounce-horizontal {
-  animation: bounce-horizontal 1.5s infinite;
+  animation: bounce-horizontal 1s infinite;
 }

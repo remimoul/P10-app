@@ -2,7 +2,6 @@
 
 import { useMemo } from "react";
 import { motion } from "framer-motion";
-import { GiSpeedometer } from "react-icons/gi";
 import type { League, LeagueSectionProps } from "@/types";
 import { LeagueCard } from "@/components/Leagues/LeagueCard";
 import { ReadyToRace } from "@/components/Leagues/ReadyToRace";
@@ -40,7 +39,7 @@ export const Leagues = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 relative overflow-hidden">
+    <div className="min-h-screen bg-gray-50 relative overflow-hidden py-14 lg:py-16 sm:py-18">
       <main className="relative z-10 max-w-7xl mx-auto px-4 py-12">
         <Header />
 
@@ -69,9 +68,6 @@ const Header = () => (
     animate={{ opacity: 1, y: 0 }}
     className="text-center mb-16"
   >
-    <div className="inline-block mb-8">
-      <GiSpeedometer className="text-6xl text-red-600 animate-spin-slow" />
-    </div>
     <h1 className="text-5xl font-bold bg-gradient-to-r from-red-600 to-blue-600 bg-clip-text text-transparent mb-4">
       F1 LEAGUES
     </h1>

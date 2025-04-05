@@ -10,6 +10,8 @@ export const LeagueCard = ({ league, index, isPublic }: LeagueCardProps) => {
     ? "from-red-500 to-red-600"
     : "from-blue-500 to-blue-600";
 
+  const handleButtonAction = () => {};
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -62,9 +64,11 @@ export const LeagueCard = ({ league, index, isPublic }: LeagueCardProps) => {
             transition={{ duration: 0.1 }}
           >
             <Button
+              onClick={handleButtonAction}
               className={`px-4 py-2 text-lg font-bold text-white rounded-full transition-transform transform hover:scale-105 shadow-xl bg-gradient-to-r ${buttonGradient}`}
             >
-              Join <RiArrowRightSLine className="ml-2 inline-block" />
+              {isPublic ? "Join" : "View"}
+              <RiArrowRightSLine className="ml-2 inline-block" />
             </Button>
           </motion.div>
         </div>
@@ -72,6 +76,10 @@ export const LeagueCard = ({ league, index, isPublic }: LeagueCardProps) => {
 
       {isPublic && (
         <div className="absolute -right-20 -top-20 w-48 h-48 bg-red-100 rounded-full blur-2xl opacity-0 group-hover:opacity-30 transition-opacity" />
+      )}
+
+      {!isPublic && (
+        <div className="absolute -left-20 -bottom-20 w-48 h-48 bg-blue-100 rounded-full blur-2xl opacity-0 group-hover:opacity-30 transition-opacity" />
       )}
     </motion.div>
   );

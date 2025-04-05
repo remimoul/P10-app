@@ -16,6 +16,7 @@ export interface LeagueCardProps {
   league: League;
   index: number;
   isPublic: boolean;
+  isUserMember?: boolean; 
 }
 
 export interface SectionHeaderProps {

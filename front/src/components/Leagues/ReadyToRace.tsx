@@ -13,9 +13,6 @@ export const ReadyToRace = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
 
-  console.log("Create modal state:", isCreateModalOpen);
-  console.log("Join modal state:", isJoinModalOpen);
-
   const handleCreateLeague = async (league: {
     name: string;
     isPrivate: boolean;
@@ -71,7 +68,7 @@ export const ReadyToRace = () => {
                 className="h-16 px-8 text-lg bg-gradient-to-br from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-xl flex items-center gap-3 group shadow-lg relative overflow-hidden"
               >
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <GiCheckeredFlag className="text-2xl animate-bounce group-hover:animate-none group-hover:rotate-12 transition-transform" />
+                <GiCheckeredFlag className="text-2xl group-hover:rotate-12 transition-transform" />
                 <span className="relative z-10">Create League</span>
 
                 <div className="absolute right-0 h-full w-2 bg-gradient-to-t from-white/30 to-transparent opacity-80 group-hover:w-4 group-hover:opacity-100 transition-all duration-300" />
