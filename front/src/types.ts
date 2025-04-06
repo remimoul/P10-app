@@ -64,3 +64,32 @@ export interface ExitLeagueProps {
   onClose: () => void;
   onConfirmExit: () => void;
 }
+
+// page racing
+export interface Track {
+  id: string;
+  countryName: string;
+  trackName: string;
+  pictureCountry?: string;
+  pictureTrack?: string;
+}
+
+export interface GrandPrixRanking {
+  id: string;
+  position: number;
+  isDNF: boolean;
+  pilot: {
+    id: string;
+    name: string;
+    acronym: string;
+  };
+}
+
+export interface GrandPrix {
+  id: string;
+  season: string;
+  date: string;
+  time: string;
+  track: Track;
+  ranking?: GrandPrixRanking[];
+}
