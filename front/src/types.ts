@@ -5,6 +5,7 @@ export interface League {
   points: number;
   position: number;
   type: "public" | "private";
+  onClick?: () => void;
 }
 
 export interface LeagueSectionProps {
@@ -123,4 +124,24 @@ export interface SeasonFilterProps {
   seasons: string[];
   selected: string;
   onChange: (value: string) => void;
+}
+
+// page ranking
+export interface RankedUser {
+  id: string;
+  name: string;
+  avatar?: string;
+  points: number;
+}
+
+export interface LeagueRankingData {
+  grandPrixName: string;
+  leagueName: string;
+  participants: RankedUser[];
+}
+
+export interface LeagueShort {
+  id: string;
+  name: string;
+  avatar?: string;
 }

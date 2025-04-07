@@ -64,7 +64,7 @@ export const LeagueCard = ({ league, index, isPublic }: LeagueCardProps) => {
             transition={{ duration: 0.1 }}
           >
             <Button
-              onClick={handleButtonAction}
+              onClick={league.onClick || handleButtonAction}
               className={`px-4 py-2 text-lg font-bold text-white rounded-full transition-transform transform hover:scale-105 shadow-xl bg-gradient-to-r ${buttonGradient}`}
             >
               {isPublic ? "Join" : "View"}

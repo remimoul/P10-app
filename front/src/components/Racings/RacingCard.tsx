@@ -1,16 +1,25 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { RacingCardProps } from "@/types";
 import { format } from "date-fns";
+import { useRouter } from "next/navigation";
+
+import { RacingCardProps } from "@/types";
 
 export const RacingCard = ({ grandPrix, isPast }: RacingCardProps) => {
   const date = new Date(grandPrix.date);
   const day = format(date, "dd");
+
   const month = format(date, "MMM").toUpperCase();
+  const router = useRouter();
+  const handleClick = () => {
+    if (!isPast) return;
+    router.push(`/racing/${grandPrix.id}`);
+  };
 
   return (
     <motion.div
+      onClick={handleClick}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       whileHover={{
