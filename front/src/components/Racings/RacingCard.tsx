@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { GrandPrix } from "@/types";
 import { format } from "date-fns";
+import { useRouter } from "next/navigation";
 
 interface RacingCardProps {
   grandPrix: GrandPrix;
@@ -11,9 +12,15 @@ export const RacingCard = ({ grandPrix, isPast }: RacingCardProps) => {
   const date = new Date(grandPrix.date);
   const day = format(date, "dd");
   const month = format(date, "MMM");
+  const router = useRouter();
+  const handleClick = () => {
+    if (!isPast) return;
+    router.push(`/racing/${grandPrix.id}`);
+  };
 
   return (
     <motion.div
+      onClick={handleClick}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       whileHover={{
