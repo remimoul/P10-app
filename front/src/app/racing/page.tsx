@@ -26,21 +26,13 @@ const mockGrandPrix: GrandPrix[] = [
         id: "r1",
         position: 10,
         isDNF: false,
-        pilot: {
-          id: "p1",
-          name: "Charles Leclerc",
-          acronym: "LEC",
-        },
+        pilot: { id: "p1", name: "Charles Leclerc", acronym: "LEC" },
       },
       {
         id: "r2",
         position: 5,
         isDNF: false,
-        pilot: {
-          id: "p2",
-          name: "Esteban Ocon",
-          acronym: "OCO",
-        },
+        pilot: { id: "p2", name: "Esteban Ocon", acronym: "OCO" },
       },
     ],
   },
@@ -59,21 +51,13 @@ const mockGrandPrix: GrandPrix[] = [
         id: "r1",
         position: 10,
         isDNF: false,
-        pilot: {
-          id: "p1",
-          name: "Charles Leclerc",
-          acronym: "LEC",
-        },
+        pilot: { id: "p1", name: "Charles Leclerc", acronym: "LEC" },
       },
       {
         id: "r2",
         position: 5,
         isDNF: false,
-        pilot: {
-          id: "p2",
-          name: "Esteban Ocon",
-          acronym: "OCO",
-        },
+        pilot: { id: "p2", name: "Esteban Ocon", acronym: "OCO" },
       },
     ],
   },
@@ -82,42 +66,26 @@ const mockGrandPrix: GrandPrix[] = [
     season: "2025",
     date: "2025-12-01",
     time: "15:00",
-    track: {
-      id: "2",
-      countryName: "USA",
-      trackName: "Las Vegas",
-    },
+    track: { id: "2", countryName: "USA", trackName: "Las Vegas" },
   },
   {
     id: "3",
     season: "2024",
     date: "2024-12-01",
     time: "15:00",
-    track: {
-      id: "3",
-      countryName: "France",
-      trackName: "Paul Ricard",
-    },
+    track: { id: "3", countryName: "France", trackName: "Paul Ricard" },
     ranking: [
       {
         id: "r3",
         position: 10,
         isDNF: false,
-        pilot: {
-          id: "p3",
-          name: "Fernando Alonso",
-          acronym: "ALO",
-        },
+        pilot: { id: "p3", name: "Fernando Alonso", acronym: "ALO" },
       },
       {
         id: "r4",
         position: 2,
         isDNF: false,
-        pilot: {
-          id: "p4",
-          name: "Carlos Sainz",
-          acronym: "SAI",
-        },
+        pilot: { id: "p4", name: "Carlos Sainz", acronym: "SAI" },
       },
     ],
   },
@@ -126,31 +94,19 @@ const mockGrandPrix: GrandPrix[] = [
     season: "2024",
     date: "2024-11-01",
     time: "15:00",
-    track: {
-      id: "4",
-      countryName: "Japon",
-      trackName: "Suzuka",
-    },
+    track: { id: "4", countryName: "Japon", trackName: "Suzuka" },
     ranking: [
       {
         id: "r5",
         position: 0,
         isDNF: true,
-        pilot: {
-          id: "p5",
-          name: "Max Verstappen",
-          acronym: "VER",
-        },
+        pilot: { id: "p5", name: "Max Verstappen", acronym: "VER" },
       },
       {
         id: "r6",
         position: 10,
         isDNF: false,
-        pilot: {
-          id: "p6",
-          name: "Lando Norris",
-          acronym: "NOR",
-        },
+        pilot: { id: "p6", name: "Lando Norris", acronym: "NOR" },
       },
     ],
   },
@@ -205,16 +161,36 @@ export default function Racing() {
   return (
     <div className="min-h-screen bg-gray-50 relative overflow-hidden py-14 lg:py-16 sm:py-18">
       <main className="relative z-10 max-w-7xl mx-auto px-4 py-12 space-y-8">
+        <h1
+          className="text-5xl sm:text-6xl font-extrabold text-center tracking-tighter mb-6 
+    bg-gradient-to-r from-red-600 to-red-300 bg-clip-text text-transparent 
+    drop-shadow-md"
+        >
+          Racing
+        </h1>
+
         <RacingTabs activeTab={tab} onTabChange={handleTabChange} />
-        <SearchInput value={search} onChange={setSearch} />
-        {tab === "past" && (
-          <SeasonFilter
-            seasons={availableSeasons}
-            selected={season}
-            onChange={setSeason}
-          />
-        )}
+
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 flex-wrap">
+          <div className="w-full flex justify-center">
+            <div className="w-[90%] max-w-sm">
+              <SearchInput value={search} onChange={setSearch} />
+            </div>
+          </div>
+
+          {tab === "past" && (
+            <div className="w-auto sm:w-auto">
+              <SeasonFilter
+                seasons={availableSeasons}
+                selected={season}
+                onChange={setSeason}
+              />
+            </div>
+          )}
+        </div>
+
         <RacingList grandPrixList={paginatedRaces} isPast={tab === "past"} />
+
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
