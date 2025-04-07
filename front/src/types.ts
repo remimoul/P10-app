@@ -93,3 +93,34 @@ export interface GrandPrix {
   track: Track;
   ranking?: GrandPrixRanking[];
 }
+
+export interface RacingCardProps {
+  grandPrix: GrandPrix;
+  isPast: boolean;
+}
+
+export interface RacingListProps {
+  grandPrixList: GrandPrix[];
+  isPast: boolean;
+}
+
+export interface RacingTabsProps {
+  activeTab: "upcoming" | "past";
+  onTabChange: (tab: "upcoming" | "past") => void;
+}
+
+export interface PaginationProps {
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+}
+
+export interface SearchInputProps {
+  value: string;
+  onChange: (value: string) => void;
+}
+export interface SeasonFilterProps {
+  seasons: string[];
+  selected: string;
+  onChange: (value: string) => void;
+}

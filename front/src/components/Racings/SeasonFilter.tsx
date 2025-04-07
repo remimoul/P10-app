@@ -1,0 +1,27 @@
+"use client";
+
+import { SeasonFilterProps } from "@/types";
+
+export const SeasonFilter = ({
+  seasons,
+  selected,
+  onChange,
+}: SeasonFilterProps) => {
+  return (
+    <div className="w-full max-w-xs mx-auto">
+      <select
+        value={selected}
+        onChange={(e) => onChange(e.target.value)}
+        className="w-full px-4 py-2 rounded-md border border-gray-300 text-sm shadow-sm text-gray-800 
+        focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500"
+      >
+        <option value="">All seasons</option>
+        {seasons.map((season) => (
+          <option key={season} value={season}>
+            Season {season}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+};

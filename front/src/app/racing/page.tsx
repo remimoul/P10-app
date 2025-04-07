@@ -4,12 +4,50 @@ import { useState } from "react";
 import { GrandPrix } from "@/types";
 import { RacingTabs } from "@/components/Racings/RacingTabs";
 import { RacingList } from "@/components/Racings/RacingList";
+import { Pagination } from "@/components/Racings/Pagination";
+import { SearchInput } from "@/components/Racings/SearchInput";
+import { SeasonFilter } from "@/components/Racings/SeasonFilter";
+
+const ITEMS_PER_PAGE = 2;
 
 const mockGrandPrix: GrandPrix[] = [
   {
     id: "1",
     season: "2025",
     date: "2025-11-03",
+    time: "14:00",
+    track: {
+      id: "1",
+      countryName: "Brazil",
+      trackName: "Interlagos",
+    },
+    ranking: [
+      {
+        id: "r1",
+        position: 10,
+        isDNF: false,
+        pilot: {
+          id: "p1",
+          name: "Charles Leclerc",
+          acronym: "LEC",
+        },
+      },
+      {
+        id: "r2",
+        position: 5,
+        isDNF: false,
+        pilot: {
+          id: "p2",
+          name: "Esteban Ocon",
+          acronym: "OCO",
+        },
+      },
+    ],
+  },
+  {
+    id: "45",
+    season: "2023",
+    date: "2023-11-03",
     time: "14:00",
     track: {
       id: "1",
@@ -118,21 +156,70 @@ const mockGrandPrix: GrandPrix[] = [
   },
 ];
 
-
-export default function RacingPage() {
+export default function Racing() {
   const [tab, setTab] = useState<"upcoming" | "past">("upcoming");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [search, setSearch] = useState("");
+  const [season, setSeason] = useState("");
 
   const today = new Date();
 
-  const filteredRaces = mockGrandPrix.filter((gp) =>
+  const tabFiltered = mockGrandPrix.filter((gp) =>
     tab === "past" ? new Date(gp.date) < today : new Date(gp.date) >= today
   );
 
+  const searchFiltered = tabFiltered.filter((gp) => {
+    const target =
+      `${gp.track.countryName} ${gp.track.trackName}`.toLowerCase();
+    return target.includes(search.toLowerCase());
+  });
+
+  const filteredRaces =
+    tab === "past" && season
+      ? searchFiltered.filter((gp) => gp.season === season)
+      : searchFiltered;
+
+  const totalPages = Math.ceil(filteredRaces.length / ITEMS_PER_PAGE);
+  const paginatedRaces = filteredRaces.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
+
+  const handleTabChange = (newTab: "upcoming" | "past") => {
+    setTab(newTab);
+    setCurrentPage(1);
+    setSearch("");
+    setSeason("");
+  };
+
+  const availableSeasons = [
+    ...new Set(
+      mockGrandPrix
+        .filter((gp) => new Date(gp.date) < today)
+        .map((gp) => gp.season)
+    ),
+  ]
+    .sort()
+    .reverse();
+
   return (
     <div className="min-h-screen bg-gray-50 relative overflow-hidden py-14 lg:py-16 sm:py-18">
-      <main className="relative z-10 max-w-7xl mx-auto px-4 py-12">
-        <RacingTabs activeTab={tab} onTabChange={setTab} />
-        <RacingList grandPrixList={filteredRaces} isPast={tab === "past"} />
+      <main className="relative z-10 max-w-7xl mx-auto px-4 py-12 space-y-8">
+        <RacingTabs activeTab={tab} onTabChange={handleTabChange} />
+        <SearchInput value={search} onChange={setSearch} />
+        {tab === "past" && (
+          <SeasonFilter
+            seasons={availableSeasons}
+            selected={season}
+            onChange={setSeason}
+          />
+        )}
+        <RacingList grandPrixList={paginatedRaces} isPast={tab === "past"} />
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
       </main>
     </div>
   );

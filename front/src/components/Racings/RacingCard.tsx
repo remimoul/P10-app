@@ -1,75 +1,82 @@
-import { motion } from "framer-motion";
-import { GrandPrix } from "@/types";
-import { format } from "date-fns";
+"use client";
 
-interface RacingCardProps {
-  grandPrix: GrandPrix;
-  isPast: boolean;
-}
+import { motion } from "framer-motion";
+import { RacingCardProps } from "@/types";
+import { format } from "date-fns";
 
 export const RacingCard = ({ grandPrix, isPast }: RacingCardProps) => {
   const date = new Date(grandPrix.date);
   const day = format(date, "dd");
-  const month = format(date, "MMM");
+  const month = format(date, "MMM").toUpperCase();
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       whileHover={{
-        scale: 1.02,
-        y: -4,
-        boxShadow: "0 8px 20px rgba(0, 0, 0, 0.15)",
+        scale: 1.01,
+        boxShadow: "0px 8px 24px rgba(255, 46, 46, 0.25)",
+        borderColor: "#ff2e2e",
       }}
-      transition={{ type: "tween", stiffness: 200, damping: 10 }}
-      className="bg-white rounded-xl shadow p-4 mb-4 space-y-2 cursor-pointer"
+      transition={{
+        type: "spring",
+        stiffness: 300,
+        damping: 25,
+        mass: 0.6,
+      }}
+      className="bg-[#121212] border border-[#2a2a2a] rounded-xl px-4 py-4 text-white font-mono w-full h-full"
     >
-      {/* Ligne : date + track info + chevron */}
-      <div className="flex items-center gap-4 w-full">
-        {/* Date */}
-        <div className="flex flex-col items-center justify-center text-center min-w-[60px]">
-          <span className="text-xl font-bold text-gray-800">{day}</span>
-          <span className="text-xs text-gray-500 uppercase">{month}</span>
+      <div className="grid grid-cols-[50px_1fr_auto] items-start gap-4 h-full">
+        <div className="flex flex-col items-center sm:items-start leading-tight">
+          <span className="text-2xl font-extrabold text-[#FF3C38]">{day}</span>
+          <span className="text-[11px] text-gray-400 tracking-wider">
+            {month}
+          </span>
         </div>
 
-        {/* Track Info */}
-        <div className="flex-1">
-          <p className="text-red-600 text-sm font-semibold">
-            Saison {grandPrix.season}
+        <div className="flex flex-col justify-start overflow-hidden">
+          <p className="text-[#00FFD1] text-[10px] uppercase font-bold tracking-wider mb-1">
+            Season {grandPrix.season}
           </p>
-          <p className="text-lg sm:text-xl font-bold text-gray-900">
+          <p className="text-base font-semibold text-white truncate leading-tight">
             {grandPrix.track.countryName}
           </p>
-          <p className="text-sm text-gray-500">{grandPrix.track.trackName}</p>
+          <p className="text-xs text-gray-400 truncate">
+            {grandPrix.track.trackName}
+          </p>
         </div>
 
-        {/* Résultats */}
-        {isPast && grandPrix.ranking && (
-          <div className="flex flex-wrap items-center gap-2">
-            {grandPrix.ranking
-              .filter((rank) => rank.isDNF || rank.position === 10)
-              .map((rank) => (
-                <span
-                  key={rank.id}
-                  className={`px-2 py-1 rounded-full text-xs flex font-semibold items-center gap-1 ${
-                    rank.isDNF
-                      ? "bg-green-100 text-green-700"
-                      : "bg-red-100 text-red-600"
-                  }`}
-                >
-                  <span className="font-bold">
-                    {rank.isDNF ? "DNF" : "P10"}
-                  </span>
-                  <span className="text-gray-700 font-semibold">
-                    {rank.pilot.acronym}
-                  </span>
-                </span>
-              ))}
+        <div className="flex flex-col items-end justify-start gap-2 min-w-[110px]">
+          <div className="text-[#FF3C38] text-lg font-extrabold leading-none">
+            &gt;
           </div>
-        )}
-        {/* Chevron */}
-        <div className="text-red-500 text-lg sm:text-xl flex items-center self-stretch">
-          <span className="m-auto bold">&gt;</span>
+
+          <div className="flex flex-wrap justify-end gap-2 min-h-[30px]">
+            {isPast && grandPrix.ranking ? (
+              grandPrix.ranking
+                .filter((rank) => rank.isDNF || rank.position === 10)
+                .map((rank) => (
+                  <span
+                    key={rank.id}
+                    className={`inline-flex items-center gap-1 px-2.5 py-[4px] text-[11px] rounded-full font-bold uppercase tracking-wide
+              ${
+                rank.isDNF
+                  ? "bg-green-700 text-green-100"
+                  : "bg-red-700 text-red-100"
+              }`}
+                  >
+                    <span className="text-[11px] font-extrabold">
+                      {rank.isDNF ? "DNF" : "P10"}
+                    </span>
+                    <span className="text-[11px] font-medium">
+                      {rank.pilot.acronym}
+                    </span>
+                  </span>
+                ))
+            ) : (
+              <span className="text-[11px] text-gray-600 italic">—</span>
+            )}
+          </div>
         </div>
       </div>
     </motion.div>
