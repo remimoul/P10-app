@@ -33,7 +33,8 @@ const RootLayout = ({
             <Toaster
               position="bottom-right"
               toastOptions={{
-                className: "bg-white text-gray-800 font-bold shadow-lg rounded-lg p-4 border-l-8 border-red-600",
+                className:
+                  "bg-white text-gray-800 font-bold shadow-lg rounded-lg p-4 border-l-8 border-red-600",
                 duration: 4000,
               }}
             />

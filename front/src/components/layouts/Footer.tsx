@@ -3,26 +3,47 @@
 import Link from "next/link";
 import Image from "next/image";
 import { memo } from "react";
+import { FaXTwitter } from "react-icons/fa6";
+import { FiInstagram, FiFacebook, FiYoutube } from "react-icons/fi";
 import { GiStopwatch, GiChart, GiCheckeredFlag } from "react-icons/gi";
 
 const quickLinks = [
   { label: "Home", href: "/" },
+  { label: "Leagues", href: "/leagues" },
+  { label: "Racing", href: "/racing" },
   { label: "Ranking", href: "/ranking" },
-  { label: "Rules", href: "/rules" },
-  { label: "Schedule", href: "/schedule" },
   { label: "FAQ", href: "/faq" },
 ];
 
 const stats = [
   {
-    icon: <GiStopwatch className="mx-auto text-[#EF233C] text-2xl" />,
+    icon: <GiStopwatch className="mx-auto text-[#EF233C] text-4xl" />,
     value: "2.4K",
     label: "Online players",
   },
   {
-    icon: <GiChart className="mx-auto text-[#EF233C] text-2xl" />,
+    icon: <GiChart className="mx-auto text-[#EF233C] text-4xl" />,
     value: "18.7K",
     label: "Predictions / day",
+  },
+];
+
+const socialLinks = [
+  {
+    name: "Facebook",
+    href: "#",
+    icon: FiFacebook,
+  },
+  { name: "Twitter", href: "#", icon: FaXTwitter },
+  {
+    name: "Instagram",
+    href: "#",
+    icon: FiInstagram,
+  },
+  {
+    name: "Youtube",
+    href: "#",
+    icon: FiYoutube,
   },
 ];
 
@@ -40,16 +61,16 @@ const Footer = () => {
               <Image
                 src="/logo.png"
                 alt="Logo P10"
-                width={160}
-                height={64}
+                width={360}
+                height={84}
                 className="object-contain h-12 w-auto"
                 priority
               />
-              <span className="font-bold text-xl">
+              <span className="font-bold text-4xl">
                 P<span className="text-[#D90429]">10</span>
               </span>
             </div>
-            <p className="text-lg text-gray-400">
+            <p className="text-xl text-[#555555]">
               In each race, only one number counts... the 10ᵉ. Will you be
               worthy of finding it?
             </p>
@@ -59,29 +80,27 @@ const Footer = () => {
             {stats.map(({ icon, value, label }, idx) => (
               <div key={idx}>
                 {icon}
-                <div className="text-xl font-semibold text-white">{value}</div>
-                <div className="text-lg text-gray-400">{label}</div>
+                <div className="text-xl font-semibold text-[#EDF2F4]">
+                  {value}
+                </div>
+                <div className="text-lg text-[#EDF2F4]">{label}</div>
               </div>
             ))}
           </div>
 
           <div className="flex flex-col items-center md:items-end text-right gap-1">
-            <div className="flex items-center gap-2 text-gray-400 text-sm uppercase font-medium">
-              <GiCheckeredFlag className="text-[#EF233C] text-lg" />
+            <div className="flex items-center gap-2 text-[#555555] text-xl uppercase font-medium">
+              <GiCheckeredFlag className="text-[#EF233C] text-xl" />
               The next race
             </div>
-            <div className="text-lg font-bold text-white">28/07 - 15:00</div>
-            <Link
-              href="/rules"
-              className="mt-2 inline-block bg-[#D90429] hover:bg-[#EF233C] text-white text-sm font-semibold px-4 py-1.5 rounded-md transition"
-            >
-              View rules
-            </Link>
+            <div className="text-xl font-bold text-[#EDF2F4]">
+              28/07 - 15:00
+            </div>
           </div>
         </div>
 
-        <div className="border-t border-gray-800 pt-5 mt-6 px-4">
-          <nav className="flex flex-wrap justify-center gap-x-5 gap-y-3 text-sm font-semibold tracking-wide uppercase text-gray-400">
+        <div className="pt-5 mt-6 px-4">
+          <nav className="flex flex-wrap justify-center gap-x-5 gap-y-3 text-lg font-semibold tracking-wide uppercase text-[#555555]">
             {quickLinks.map(({ label, href }) => (
               <Link
                 key={href}
@@ -97,10 +116,28 @@ const Footer = () => {
           </nav>
         </div>
 
-        <div className="border-t border-gray-800 pt-4 mt-4 px-4 text-center text-sm text-gray-400 space-y-1">
+        <nav
+          aria-label="Social networking"
+          className="flex justify-center gap-6 mt-6 px-4"
+        >
+          {socialLinks.map(({ name, href, icon: Icon }) => (
+            <a
+              key={name}
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={name}
+              className="text-[#555555] hover:text-[#D90429] transition-colors"
+            >
+              <Icon className="text-2xl" />
+            </a>
+          ))}
+        </nav>
+
+        <div className="pt-4 mt-4 px-4 text-center text-sm text-[#555555] space-y-1">
           <p>
-            Average accuracy:{" "}
-            <span className="text-red-500 font-semibold">68%</span>
+            Average accuracy :{" "}
+            <span className="text-[#EF233C] font-semibold">68%</span>
           </p>
           <p>© {currentYear} P10 app - Not affiliated with Formula 1</p>
           <Link
