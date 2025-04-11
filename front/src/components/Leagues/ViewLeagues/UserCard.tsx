@@ -9,6 +9,7 @@ const UserCard = ({
   timeLeft,
   rank,
   handleVote,
+  isButton = true,
 }: UserCardProps) => {
   const safeParticipant = participant ?? {
     id: "default",
@@ -16,6 +17,7 @@ const UserCard = ({
     score: 0,
     hasVoted: false,
     avatar: "",
+    isButton: true,
   };
 
   return (
@@ -60,10 +62,11 @@ const UserCard = ({
             </div>
           </div>
         </div>
-        <Button
-          onClick={handleVote}
-          disabled={timeLeft === 0}
-          className={`
+        {isButton && (
+          <Button
+            onClick={handleVote}
+            disabled={timeLeft === 0}
+            className={`
               relative inline-flex items-center justify-center overflow-hidden rounded-xl px-12 py-4 text-xl font-extrabold uppercase tracking-wider transition-transform duration-700 ease-out transform
               focus:outline-none focus:ring-4 focus:ring-red-400 focus:ring-offset-2
               ${
@@ -74,12 +77,13 @@ const UserCard = ({
                   : "bg-gradient-to-br from-red-500 via-red-700 to-red-900 text-white shadow-2xl hover:scale-110 hover:shadow-3xl"
               }
             `}
-        >
-          <span className="relative z-20">
-            {safeParticipant.hasVoted ? "Cancel Vote" : "Vote"}
-          </span>
-          <span className="absolute inset-0 rounded-full border border-transparent bg-gradient-to-r from-red-500 via-white to-red-500 opacity-0 transition-all duration-700 group-hover:opacity-100 group-hover:scale-110"></span>
-        </Button>
+          >
+            <span className="relative z-20">
+              {safeParticipant.hasVoted ? "Cancel Vote" : "Vote"}
+            </span>
+            <span className="absolute inset-0 rounded-full border border-transparent bg-gradient-to-r from-red-500 via-white to-red-500 opacity-0 transition-all duration-700 group-hover:opacity-100 group-hover:scale-110"></span>
+          </Button>
+        )}
       </div>
     </motion.div>
   );
