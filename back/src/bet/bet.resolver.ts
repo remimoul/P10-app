@@ -5,6 +5,6 @@ import { BetService } from "./bet.service";
 @Resolver(() => Bet)
 export class BetResolver {
     constructor(
-        private avatarService: BetService,
+        private betService: BetService,
     ) { }
 }

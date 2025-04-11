@@ -15,7 +15,7 @@ export class User {
     @Field(type => Avatar)
     avatar?: Avatar;
 
-    @Field({ nullable: true })
+    //@Field({ nullable: true })
     @Field(type => [League])
     leagues: League[];
 };

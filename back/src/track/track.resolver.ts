@@ -5,6 +5,6 @@ import { TrackService } from "./track.service";
 @Resolver(() => Track)
 export class TrackResolver {
     constructor(
-        private avatarService: TrackService,
+        private trackService: TrackService,
     ) { }
 }

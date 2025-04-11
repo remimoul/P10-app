@@ -3,8 +3,8 @@ import { GrandPrixRanking } from "./grandprix-ranking.graphmodel";
 import { GrandprixRankingService } from "./grandprix-ranking.service";
 
 @Resolver(() => GrandPrixRanking)
-export class GrandprixResolver {
+export class GrandprixRankingResolver {
     constructor(
-        private avatarService: GrandprixRankingService,
+        private grandPrixRankingService: GrandprixRankingService,
     ) { }
 }

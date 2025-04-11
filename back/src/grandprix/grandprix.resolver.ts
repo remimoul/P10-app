@@ -5,6 +5,6 @@ import { GrandprixService } from "./grandprix.service";
 @Resolver(() => GrandPrix)
 export class GrandprixResolver {
     constructor(
-        private avatarService: GrandprixService,
+        private grandPrixService: GrandprixService,
     ) { }
 }

@@ -5,16 +5,16 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 import { join } from 'path';
-import { UserService } from './user/user.service';
-import { TrackService } from './track/track.service';
-import { TeamService } from './team/team.service';
-import { PilotteamService } from './pilotteam/pilotteam.service';
-import { PilotService } from './pilot/pilot.service';
-import { LeagueService } from './league/league.service';
-import { GrandprixRankingService } from './grandprix-ranking/grandprix-ranking.service';
-import { GrandprixService } from './grandprix/grandprix.service';
-import { BetService } from './bet/bet.service';
-import { AvatarService } from './avatar/avatar.service';
+import { AvatarModule } from './avatar/avatar.module';
+import { BetModule } from './bet/bet.module';
+import { GrandprixModule } from './grandprix/grandprix.module';
+import { GrandprixRankingModule } from './grandprix-ranking/grandprix-ranking.module';
+import { LeagueModule } from './league/league.module';
+import { PilotModule } from './pilot/pilot.module';
+import { PilotteamModule } from './pilotteam/pilotteam.module';
+import { TeamModule } from './team/team.module';
+import { TrackModule } from './track/track.module';
+import { UserModule } from './user/user.module';
 import { PrismaService } from './prisma.service';
 
 @Module({
@@ -26,9 +26,19 @@ import { PrismaService } from './prisma.service';
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       sortSchema: true,
       introspection: true,
-    })
+    }),
+    AvatarModule,
+    BetModule,
+    GrandprixModule,
+    GrandprixRankingModule,
+    LeagueModule,
+    PilotModule,
+    PilotteamModule,
+    TeamModule,
+    TrackModule,
+    UserModule
   ],
   controllers: [AppController],
-  providers: [AppService, AvatarService, BetService, GrandprixService, GrandprixRankingService, LeagueService, PilotService, PilotteamService, TeamService, TrackService, UserService, PrismaService],
+  providers: [AppService, PrismaService],
 })
 export class AppModule { }

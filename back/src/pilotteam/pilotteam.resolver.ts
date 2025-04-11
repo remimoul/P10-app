@@ -5,6 +5,6 @@ import { PilotteamService } from "./pilotteam.service";
 @Resolver(() => PilotTeam)
 export class PilotteamResolver {
     constructor(
-        private avatarService: PilotteamService,
+        private pilotTeamService: PilotteamService,
     ) { }
 }
