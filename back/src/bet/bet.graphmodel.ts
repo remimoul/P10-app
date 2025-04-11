@@ -1,11 +1,11 @@
 import { Field, Int, ObjectType } from "@nestjs/graphql";
 import { UUID } from "crypto";
-import { GrandPrix } from "src/grandprix/grandprix.model";
-import { Pilot } from "src/pilot/pilot.model";
-import { User } from "src/user/user.model";
+import { GrandPrix } from "src/grandprix/grandprix.graphmodel";
+import { Pilot } from "src/pilot/pilot.graphmodel";
+import { User } from "src/user/user.graphmodel";
 
 @ObjectType()
-class Bet {
+export class Bet {
     @Field(type => String)
     id: UUID;
 

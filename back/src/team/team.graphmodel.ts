@@ -1,6 +1,6 @@
 import { Field, ObjectType } from "@nestjs/graphql";
 import { UUID } from "crypto";
-import { PilotTeam } from "./pilotteam";
+import { PilotTeam } from "src/pilotteam/pilotteam.graphmodel";
 
 @ObjectType()
 export class Team {

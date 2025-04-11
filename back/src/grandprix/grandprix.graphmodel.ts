@@ -1,8 +1,8 @@
-import { Field, Int, ObjectType } from "@nestjs/graphql";
+import { Field, ObjectType } from "@nestjs/graphql";
 import { UUID } from "crypto";
-import { Pilot } from "./pilot";
-import { Track } from "./track";
-import { GrandPrixRanking } from "./grandprixRanking";
+import { GrandPrixRanking } from "src/grandprix-ranking/grandprix-ranking.graphmodel";
+import { Pilot } from "src/pilot/pilot.graphmodel";
+import { Track } from "src/track/track.graphmodel";
 
 @ObjectType()
 export class GrandPrix {

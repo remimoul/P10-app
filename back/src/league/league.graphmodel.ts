@@ -1,7 +1,7 @@
 import { Field, ObjectType } from "@nestjs/graphql";
 import { UUID } from "crypto";
-import { User } from "../user/user.model";
-import { Avatar } from "../avatar/avatar.model";
+import { User } from "src/user/user.graphmodel";
+import { Avatar } from "src/avatar/avatar.graphmodel";
 
 @ObjectType()
 export class League {
