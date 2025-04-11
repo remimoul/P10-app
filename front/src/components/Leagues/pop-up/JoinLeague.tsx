@@ -32,7 +32,7 @@ export const JoinLeague = ({ isOpen, onClose, onJoin }: JoinLeagueProps) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[425px] bg-gradient-to-br from-[#fafafa] to-[#f0f0f0] rounded-3xl border border-gray-100 shadow-xl">
+      <DialogContent className="sm:max-w-[425px] bg-gray-50 rounded-3xl border border-gray-50 shadow-xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
