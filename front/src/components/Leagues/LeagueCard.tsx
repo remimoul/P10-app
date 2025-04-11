@@ -131,16 +131,7 @@ export const LeagueCard = ({ league, index, isPublic }: LeagueCardProps) => {
                 transition={{ type: "spring", stiffness: 300 }}
               >
                 {isPublic ? "Join the race" : "View the ranking"}
-                <motion.div
-                  whileHover={{
-                    x: 5,
-                    rotate: isPublic ? 360 : -360,
-                    scale: 1.2,
-                  }}
-                  transition={{ type: "spring", stiffness: 300 }}
-                >
-                  <RiArrowRightSLine className="ml-2 inline-block text-lg sm:text-xl" />
-                </motion.div>
+                <RiArrowRightSLine className="ml-2 inline-block text-lg sm:text-xl" />
               </motion.span>
 
               {isPublic && (
