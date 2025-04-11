@@ -56,7 +56,7 @@ const Header = () => {
                 className="text-2xl md:text-5xl text-white font-extrabold"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.5 }}
+                transition={{ delay: 1 }}
               >
                 {slide.caption}
               </motion.h1>
