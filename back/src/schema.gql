@@ -88,5 +88,5 @@ type User {
   avatar: Avatar
   clerkId: String!
   id: String!
-  leagues: [League!]!
+  leagues: [League!]
 }
