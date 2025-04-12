@@ -11,7 +11,7 @@ const quickLinks = [
   { label: "Home", href: "/" },
   { label: "Leagues", href: "/leagues" },
   { label: "Racing", href: "/racing" },
-  { label: "Ranking", href: "/ranking" },
+  { label: "Results", href: "/results" },
   { label: "FAQ", href: "/faq" },
 ];
 
@@ -144,10 +144,6 @@ const Footer = () => {
         </div>
 
         <div className="pt-4 mt-4 px-4 text-center text-sm text-[#555555] space-y-2">
-          <p>
-            Average accuracy :{" "}
-            <span className="text-[#EF233C] font-semibold">68%</span>
-          </p>
           <p>© {currentYear} P10 app - Not affiliated with Formula 1</p>
           <Link
             href="/privacyPolicy"

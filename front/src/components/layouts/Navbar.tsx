@@ -4,8 +4,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { LuLayers } from "react-icons/lu";
 import { GiCheckeredFlag } from "react-icons/gi";
+import { SiF1 } from "react-icons/si";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiMenu, FiX, FiHome, FiAward, FiUser } from "react-icons/fi";
+import { FiMenu, FiX, FiHome, FiUser } from "react-icons/fi";
 import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { UserButton, SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
 
@@ -13,7 +14,7 @@ const navItems = [
   { name: "Home", icon: FiHome, minWidth: 640, path: "/" },
   { name: "Leagues", icon: LuLayers, minWidth: 0, path: "/leagues" },
   { name: "Racing", icon: GiCheckeredFlag, minWidth: 768, path: "/racing" },
-  { name: "Ranking", icon: FiAward, minWidth: 768, path: "/ranking" },
+  { name: "Results", icon: SiF1, minWidth: 768, path: "/results" },
 ];
 
 function useWindowWidth() {
@@ -138,7 +139,7 @@ const Navbar = () => {
 
             <button
               onClick={() => setIsMenuOpen((prev) => !prev)}
-              aria-label={isMenuOpen ? "Fermer le menu" : "Ouvrir le menu"}
+              aria-label={isMenuOpen ? "Close menu" : "Open menu"}
               aria-expanded={isMenuOpen}
               className="md:hidden p-2 text-gray-600 hover:text-[#EF233C] focus:outline-none"
             >

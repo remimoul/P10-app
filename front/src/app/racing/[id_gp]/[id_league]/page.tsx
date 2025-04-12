@@ -11,7 +11,6 @@ export default function LeagueRankingPage({
 }) {
   const { id_gp, id_league } = params;
 
-  // MOCK cohérent avec ton design & tables
   const mockRanking: LeagueRankingData = {
     grandPrixName: "Brazil",
     leagueName: "Red Racing",
