@@ -73,7 +73,7 @@ export const ReadyToRace = () => {
 
         <div className="max-w-3xl mx-auto flex flex-col md:flex-row gap-6 md:gap-8 items-center justify-between relative z-10">
           <div className="space-y-3 sm:space-y-4 flex-1 text-center md:text-left">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white uppercase tracking-wider font-racing">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white uppercase tracking-wider font-racing whitespace-nowrap">
               Ready to Race ?
             </h2>
             <p className="text-gray-300 text-lg sm:text-xl max-w-md mx-auto md:mx-0">
@@ -109,16 +109,7 @@ export const ReadyToRace = () => {
                 >
                   <GiTrophyCup className="text-xl sm:text-2xl group-hover:rotate-12 transition-transform" />
                   Create League
-                  <motion.div
-                    whileHover={{
-                      x: 5,
-                      rotate: 360,
-                      scale: 1.2,
-                    }}
-                    transition={{ type: "spring", stiffness: 300 }}
-                  >
-                    <RiArrowRightSLine className="ml-2 inline-block text-lg sm:text-xl" />
-                  </motion.div>
+                  <RiArrowRightSLine className="ml-2 inline-block text-lg sm:text-xl" />
                 </motion.span>
 
                 <motion.div
@@ -183,16 +174,7 @@ export const ReadyToRace = () => {
                 >
                   <RiTeamFill className="text-xl sm:text-2xl group-hover:translate-x-1 transition-transform" />
                   Join League
-                  <motion.div
-                    whileHover={{
-                      x: 5,
-                      rotate: -360,
-                      scale: 1.2,
-                    }}
-                    transition={{ type: "spring", stiffness: 300 }}
-                  >
-                    <RiArrowRightSLine className="ml-2 inline-block text-lg sm:text-xl" />
-                  </motion.div>
+                  <RiArrowRightSLine className="ml-2 inline-block text-lg sm:text-xl" />
                 </motion.span>
 
                 <motion.div

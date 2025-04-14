@@ -11,7 +11,7 @@ const quickLinks = [
   { label: "Home", href: "/" },
   { label: "Leagues", href: "/leagues" },
   { label: "Racing", href: "/racing" },
-  { label: "Ranking", href: "/ranking" },
+  { label: "Results", href: "/results" },
   { label: "FAQ", href: "/faq" },
 ];
 
@@ -66,9 +66,14 @@ const Footer = () => {
                 className="object-contain h-12 w-auto"
                 priority
               />
-              <span className="font-bold text-4xl">
-                P<span className="text-[#D90429]">10</span>
-              </span>
+              <Image
+                src="/logo1.png"
+                alt="Flags"
+                width={360}
+                height={84}
+                className="object-contain h-12 w-auto"
+                priority
+              />
             </div>
             <p className="text-xl text-[#555555]">
               In each race, only one number counts... the 10ᵉ. Will you be
@@ -99,50 +104,50 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="pt-5 mt-6 px-4">
-          <nav className="flex flex-wrap justify-center gap-x-5 gap-y-3 text-lg font-semibold tracking-wide uppercase text-[#555555]">
-            {quickLinks.map(({ label, href }) => (
-              <Link
-                key={href}
-                href={href}
-                className="relative group transition"
-              >
-                <span className="group-hover:text-[#D90429] transition">
-                  {label}
-                </span>
-                <span className="block h-[1px] w-0 bg-[#D90429] transition-all group-hover:w-full mt-1"></span>
-              </Link>
-            ))}
-          </nav>
+        <div className="pt-1 mt-1 px-4">
+          <div className="flex flex-wrap justify-center items-center gap-x-8 gap-y-4">
+            <nav className="flex flex-wrap justify-center gap-x-5 gap-y-3 text-lg font-semibold tracking-wide uppercase text-[#555555]">
+              {quickLinks.map(({ label, href }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  className="relative group transition"
+                >
+                  <span className="group-hover:text-[#D90429] transition">
+                    {label}
+                  </span>
+                  <span className="block h-[1px] w-0 bg-[#D90429] transition-all group-hover:w-full mt-1"></span>
+                </Link>
+              ))}
+            </nav>
+
+            <div className="h-6 w-px bg-[#555555]/30" />
+
+            <nav
+              aria-label="Social networking"
+              className="flex items-center gap-4 text-lg font-semibold tracking-wide uppercase text-[#555555]"
+            >
+              {socialLinks.map(({ name, href, icon: Icon }) => (
+                <a
+                  key={name}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={name}
+                  className="hover:text-[#D90429] transition-colors p-1"
+                >
+                  <Icon className="text-2xl" />
+                </a>
+              ))}
+            </nav>
+          </div>
         </div>
 
-        <nav
-          aria-label="Social networking"
-          className="flex justify-center gap-6 mt-6 px-4"
-        >
-          {socialLinks.map(({ name, href, icon: Icon }) => (
-            <a
-              key={name}
-              href={href}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={name}
-              className="text-[#555555] hover:text-[#D90429] transition-colors"
-            >
-              <Icon className="text-2xl" />
-            </a>
-          ))}
-        </nav>
-
-        <div className="pt-4 mt-4 px-4 text-center text-sm text-[#555555] space-y-1">
-          <p>
-            Average accuracy :{" "}
-            <span className="text-[#EF233C] font-semibold">68%</span>
-          </p>
+        <div className="pt-4 mt-4 px-4 text-center text-sm text-[#555555] space-y-2">
           <p>© {currentYear} P10 app - Not affiliated with Formula 1</p>
           <Link
             href="/privacyPolicy"
-            className="hover:text-[#EF233C] transition"
+            className="hover:text-[#EF233C] transition block mb-2"
           >
             Privacy policy
           </Link>

@@ -37,87 +37,78 @@ export const CreateLeague = ({ isOpen, onClose, onCreate }: CreateLeagueProps) =
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[425px] bg-white rounded-2xl shadow-2xl">
+      <DialogContent className="sm:max-w-[425px] bg-gray-50 rounded-3xl border border-gray-50 shadow-xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="p-6"
+          className="p-8"
         >
           <DialogHeader className="text-center">
-            <DialogTitle className="text-4xl font-extrabold bg-gradient-to-r from-red-500 to-blue-500 bg-clip-text text-transparent">
+            <DialogTitle className="text-4xl font-extrabold bg-gradient-to-r from-[#D90429] to-gray-800 bg-clip-text text-transparent font-racing tracking-wider">
               Create a League
             </DialogTitle>
           </DialogHeader>
 
-          <form onSubmit={handleSubmit} className="mt-6 space-y-6">
-            <div className="space-y-3">
-              <label className="block text-xl font-medium text-gray-700">
+          <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+            <div className="space-y-4">
+              <label className="block text-2xl font-medium text-gray-600">
                 League Name
               </label>
               <input
                 type="text"
                 required
-                className="w-full p-3 bg-white text-gray-900 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full p-4 bg-white/90 text-gray-800 border border-gray-200 rounded-full focus:ring-2 focus:ring-gray-300 focus:border-transparent transition-all duration-300 placeholder-gray-400 shadow-sm text-xl"
                 value={leagueName}
                 onChange={(e) => setLeagueName(e.target.value)}
+                placeholder="Enter league name"
               />
             </div>
 
-            <div className="space-y-3">
-              <span className="block text-xl font-medium text-gray-700">
+            <div className="space-y-4">
+              <span className="block text-2xl font-medium text-gray-600">
                 League Type
               </span>
-              <div className="flex gap-6 justify-center">
-                <label className="flex items-center gap-2">
+              <div className="flex gap-8 justify-center">
+                <label className="flex items-center gap-3">
                   <input
                     type="radio"
                     checked={!isPrivate}
                     onChange={() => setIsPrivate(false)}
-                    className="h-5 w-5 text-red-600 border-2 border-gray-300 checked:border-red-600 focus:ring-red-500"
+                    className="h-5 w-5 text-[#D90429] border-2 border-gray-300 checked:border-[#D90429] focus:ring-[#D90429]"
                   />
-                  <span className="font-medium text-gray-700 text-lg">
+                  <span className="font-medium text-gray-700 text-xl">
                     Public
                   </span>
                 </label>
-                <label className="flex items-center gap-2">
+                <label className="flex items-center gap-3">
                   <input
                     type="radio"
                     checked={isPrivate}
                     onChange={() => setIsPrivate(true)}
-                    className="h-5 w-5 text-blue-600 border-2 border-gray-300 checked:border-blue-600 focus:ring-blue-500"
+                    className="h-5 w-5 text-[#D90429] border-2 border-gray-300 checked:border-[#D90429] focus:ring-[#D90429]"
                   />
-                  <span className="font-medium text-gray-700 text-lg">
+                  <span className="font-medium text-gray-700 text-xl">
                     Private
                   </span>
                 </label>
               </div>
             </div>
 
-            <div className="flex justify-center gap-4 pt-6">
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+            <div className="flex justify-center gap-6 pt-4">
+              <Button
+                type="button"
+                onClick={onClose}
+                variant="outline"
+                className="px-8 py-6 border border-gray-200/80 text-gray-600 hover:border-gray-300 hover:bg-gray-50/80 rounded-full text-xl transition-colors duration-200 shadow-sm hover:shadow-md"
               >
-                <Button
-                  type="button"
-                  onClick={onClose}
-                  variant="outline"
-                  className="px-6 py-6 border-2 border-gray-300 text-gray-700 hover:border-gray-400 rounded-xl text-lg shadow-sm"
-                >
-                  Cancel
-                </Button>
-              </motion.div>
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                className="px-8 py-6 bg-gradient-to-r from-[#D90429] to-[#A60321] hover:from-gray-600 hover:to-gray-900 text-white rounded-full text-xl transition-colors duration-200 shadow-lg hover:shadow-xl relative overflow-hidden"
               >
-                <Button
-                  type="submit"
-                  className="px-6 py-6 bg-red-500 hover:bg-red-600 text-white rounded-xl text-lg shadow-sm"
-                >
-                  Confirm
-                </Button>
-              </motion.div>
+                Create
+              </Button>
             </div>
           </form>
         </motion.div>
