@@ -1,4 +1,4 @@
-import { Participant } from "@/types";
+import { Participant } from "@/lib/types";
 import { motion } from "framer-motion";
 import { GiPodiumWinner as GiPodium } from "react-icons/gi";
 

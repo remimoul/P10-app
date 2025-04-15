@@ -9,7 +9,7 @@ import {
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
-import { CreateLeagueProps } from "@/types";
+import { CreateLeagueProps } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 

@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import LeagueSection from "@/components/Leagues/LeagueSection";
-import { League } from "@/types";
+import { League } from "@/lib/types";
 
 interface PageProps {
   params: { id_gp: string };

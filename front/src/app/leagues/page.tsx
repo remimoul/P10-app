@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import type { League } from "@/types";
+import type { League } from "@/lib/types";
 
 import Header from "@/components/Leagues/Header";
 import { ReadyToRace } from "@/components/Leagues/ReadyToRace";

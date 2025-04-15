@@ -2,7 +2,7 @@
 
 import { Podium } from "@/components/Ranking/Podium";
 import { ParticipantsList } from "@/components/Ranking/ParticipantsList";
-import { LeagueRankingData } from "@/types";
+import { LeagueRankingData } from "@/lib/types";
 
 export default function LeagueRankingPage({
   params,

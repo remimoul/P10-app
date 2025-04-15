@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
-import { ExitLeagueProps } from "@/types";
+import { ExitLeagueProps } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 
 const ExitLeague = ({ isOpen, onClose, onConfirmExit }: ExitLeagueProps) => {

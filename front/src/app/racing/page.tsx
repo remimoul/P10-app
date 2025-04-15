@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { GrandPrix } from "@/types";
+import { GrandPrix } from "@/lib/types";
 import { RacingTabs } from "@/components/Racings/RacingTabs";
 import { RacingList } from "@/components/Racings/RacingList";
 import { Pagination } from "@/components/Racings/Pagination";

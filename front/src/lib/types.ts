@@ -66,6 +66,11 @@ export interface ExitLeagueProps {
   onConfirmExit: () => void;
 }
 
+export interface UserAvatarProps {
+  avatarUrl?: string;
+  fullName?: string;
+}
+
 // page racing
 export interface Track {
   id: string;

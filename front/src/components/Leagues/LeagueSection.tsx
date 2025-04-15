@@ -1,5 +1,5 @@
 import { LeagueCard } from "./LeagueCard";
-import { LeagueSectionProps } from "@/types";
+import { LeagueSectionProps } from "@/lib/types";
 import { SectionHeader } from "./SectionHeader";
 
 const LeagueSection = ({ title, leagues, isPublic }: LeagueSectionProps) => (

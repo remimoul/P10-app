@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import type { SectionHeaderProps } from "@/types";
+import type { SectionHeaderProps } from "@/lib/types";
 import { GiTyre, GiCheckeredFlag } from "react-icons/gi";
 
 export const SectionHeader = ({ title, isPublic }: SectionHeaderProps) => (

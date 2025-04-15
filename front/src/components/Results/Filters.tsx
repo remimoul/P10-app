@@ -1,4 +1,4 @@
-import { FiltersProps } from "@/types";
+import { FiltersProps } from "@/lib/types";
 import { FaChevronDown } from "react-icons/fa";
 
 const Filters = ({

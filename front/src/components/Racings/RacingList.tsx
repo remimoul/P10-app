@@ -1,5 +1,5 @@
 import { RacingCard } from "./RacingCard";
-import { RacingCardProps } from "@/types";
+import { RacingCardProps } from "@/lib/types";
 
 interface RacingListProps {
   grandPrixList: RacingCardProps["grandPrix"][];

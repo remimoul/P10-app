@@ -1,6 +1,6 @@
 "use client";
 
-import { PaginationProps } from "@/types";
+import { PaginationProps } from "@/lib/types";
 
 export const Pagination = ({
   currentPage,

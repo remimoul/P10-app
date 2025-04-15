@@ -1,4 +1,4 @@
-import { Race, Driver } from "@/types";
+import { Race, Driver } from "@/lib/types";
 
 // Temporary data
 export const seasons = ["2025", "2024", "2023"];

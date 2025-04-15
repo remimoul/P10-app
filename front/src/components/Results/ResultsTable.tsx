@@ -1,4 +1,4 @@
-import { ResultsTableProps } from "@/types";
+import { ResultsTableProps } from "@/lib/types";
 import { motion } from "framer-motion";
 import { FaTrophy, FaMedal } from "react-icons/fa";
 
@@ -165,7 +165,7 @@ const ResultsTable = ({ drivers, viewMode }: ResultsTableProps) => {
                         </td>
                         <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
                           <span
-                            className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                            className={`px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full ${
                               driver.status === "Finished"
                                 ? "bg-green-100 text-green-800 group-hover:bg-green-200 group-hover:text-green-900"
                                 : "bg-red-100 text-red-800 group-hover:bg-red-200 group-hover:text-red-900"

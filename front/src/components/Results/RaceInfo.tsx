@@ -1,4 +1,4 @@
-import { RaceInfoProps } from "@/types";
+import { RaceInfoProps } from "@/lib/types";
 import { motion } from "framer-motion";
 import {
   FaRuler,

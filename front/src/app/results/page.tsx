@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { FaArrowRight } from "react-icons/fa";
-import { ViewMode } from "@/types";
+import { ViewMode } from "@/lib/types";
 import { races, drivers, seasons } from "@/lib/data/resultData";
 import Filters from "@/components/Results/Filters";
 import RaceInfo from "@/components/Results/RaceInfo";

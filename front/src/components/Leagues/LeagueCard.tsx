@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import type { LeagueCardProps } from "@/types";
+import type { LeagueCardProps } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { RiTeamFill, RiArrowRightSLine } from "react-icons/ri";
 

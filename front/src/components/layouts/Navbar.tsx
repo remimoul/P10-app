@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { LuLayers } from "react-icons/lu";
 import { GiCheckeredFlag } from "react-icons/gi";
-import { SiF1 } from "react-icons/si";
+import { FaRankingStar } from "react-icons/fa6";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiMenu, FiX, FiHome, FiUser } from "react-icons/fi";
 import { useState, useEffect, useMemo, useCallback, useRef } from "react";
@@ -14,7 +14,7 @@ const navItems = [
   { name: "Home", icon: FiHome, minWidth: 640, path: "/" },
   { name: "Leagues", icon: LuLayers, minWidth: 0, path: "/leagues" },
   { name: "Racing", icon: GiCheckeredFlag, minWidth: 768, path: "/racing" },
-  { name: "Results", icon: SiF1, minWidth: 768, path: "/results" },
+  { name: "Results", icon: FaRankingStar, minWidth: 768, path: "/results" },
 ];
 
 function useWindowWidth() {
@@ -101,7 +101,7 @@ const Navbar = () => {
                         : "text-gray-900 hover:text-[#EF233C]"
                     }`}
                   >
-                    <item.icon className="h-4 w-4 sm:h-5 sm:w-5 mr-1 sm:mr-2" />
+                    <item.icon className="h-7 w-7 sm:h-5 sm:w-5 mr-1 sm:mr-2" />
                     <span className="whitespace-nowrap">{item.name}</span>
                   </Link>
                   {activeTab === item.name && (
@@ -127,7 +127,7 @@ const Navbar = () => {
 
                   <div className="absolute inset-0 z-10 bg-cover opacity-20 mix-blend-overlay transition-all duration-500 ease-out group-hover:opacity-30" />
 
-                  <div className="relative z-20 flex items-center gap-2 bg-black bg-opacity-60 backdrop-blur-sm rounded-2xl px-3 py-1 border border-transparent transition-all duration-300 ease-out group-hover:border-red-500 group-hover:shadow-xl group-hover:bg-opacity-70">
+                  <div className="relative z-20 flex items-center gap-2 bg-black bg-opacity-60 backdrop-blur-sm rounded-full px-3 py-1 border border-transparent transition-all duration-300 ease-out group-hover:border-red-500 group-hover:shadow-xl group-hover:bg-opacity-70">
                     <FiUser className="h-5 w-5 text-white transition-colors duration-300 ease-out group-hover:text-red-500" />
                     <span className="text-lg font-semibold text-white transition-colors duration-300 ease-out group-hover:text-red-500">
                       Account
@@ -168,7 +168,7 @@ const Navbar = () => {
                     href={item.path}
                     key={item.name}
                     onClick={() => handleTabClick(item.name)}
-                    className={`w-full flex items-center px-4 py-3 rounded-2xl transition-colors ${
+                    className={`w-full flex items-center px-4 py-3 rounded-full transition-colors ${
                       activeTab === item.name
                         ? "bg-red-600/10 text-[#D90429]"
                         : "text-gray-800 hover:bg-gray-300"
@@ -186,7 +186,7 @@ const Navbar = () => {
                     <SignInButton mode="modal">
                       <button
                         onClick={() => setIsMenuOpen(false)}
-                        className="w-full flex items-center px-4 py-3 rounded-2xl text-gray-800 hover:bg-gray-300"
+                        className="w-full flex items-center px-4 py-3 rounded-full text-gray-800 hover:bg-gray-300"
                       >
                         <FiUser className="h-5 w-5 mr-3" />
                         <span className="text-xl">Login</span>

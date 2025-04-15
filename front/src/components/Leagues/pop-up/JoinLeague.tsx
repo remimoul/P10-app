@@ -9,7 +9,7 @@ import {
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
-import { JoinLeagueProps } from "@/types";
+import { JoinLeagueProps } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 
 export const JoinLeague = ({ isOpen, onClose, onJoin }: JoinLeagueProps) => {
