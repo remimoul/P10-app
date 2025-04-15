@@ -1,17 +1,20 @@
 "use client";
 
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { useState } from "react";
-import toast from "react-hot-toast";
-import { motion } from "framer-motion";
 import { AddMemberProps } from "@/lib/types";
+import toast from "react-hot-toast";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import AddMemberContent from "@/components/Leagues/ViewLeagues/pop-up/DialogContentAddMember";
 
-import { Button } from "@/components/ui/button";
+const DIALOG_STYLES = {
+  content:
+    "sm:max-w-[425px] bg-gray-50 rounded-3xl border border-gray-50 shadow-xl",
+  title:
+    "text-4xl font-extrabold bg-gradient-to-r from-[#D90429] to-gray-800 bg-clip-text text-transparent font-racing tracking-wider",
+  label: "block text-2xl font-medium text-gray-600",
+  input:
+    "w-full p-4 bg-white/90 text-gray-800 border border-gray-200 rounded-full focus:ring-2 focus:ring-gray-300 focus:border-transparent transition-all duration-300 placeholder-gray-400 shadow-sm text-xl",
+};
 
 const AddMember = ({ isOpen, onClose, onSendInvitation }: AddMemberProps) => {
   const [email, setEmail] = useState("");
@@ -34,59 +37,13 @@ const AddMember = ({ isOpen, onClose, onSendInvitation }: AddMemberProps) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[425px] bg-white rounded-2xl shadow-2xl">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="p-6"
-        >
-          <DialogHeader className="text-center">
-            <DialogTitle className="text-4xl font-extrabold bg-gradient-to-r from-red-500 to-blue-500 bg-clip-text text-transparent">
-              Add a Member
-            </DialogTitle>
-          </DialogHeader>
-          <form onSubmit={handleSubmit} className="mt-6 space-y-6">
-            <div className="space-y-3">
-              <label className="block text-xl font-medium text-gray-700">
-                Member Email
-              </label>
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter email"
-                className="w-full p-3 bg-white text-gray-900 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent"
-              />
-            </div>
-            <div className="flex justify-center gap-4 pt-6">
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Button
-                  type="button"
-                  onClick={onClose}
-                  variant="outline"
-                  className="px-6 py-6 border-2 border-gray-300 text-gray-700 hover:border-gray-400 rounded-xl text-lg shadow-sm"
-                >
-                  Cancel
-                </Button>
-              </motion.div>
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Button
-                  type="submit"
-                  className="px-6 py-6 bg-red-500 hover:bg-red-600 text-white rounded-xl text-lg shadow-sm"
-                >
-                  Send Invitation
-                </Button>
-              </motion.div>
-            </div>
-          </form>
-        </motion.div>
+      <DialogContent className={DIALOG_STYLES.content}>
+        <AddMemberContent
+          email={email}
+          onEmailChange={setEmail}
+          onSubmit={handleSubmit}
+          onClose={onClose}
+        />
       </DialogContent>
     </Dialog>
   );

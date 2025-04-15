@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { JoinLeague } from "@/components/Leagues/pop-up/JoinLeague";
 import { CreateLeague } from "@/components/Leagues/pop-up/CreateLeague";
 
-export const ReadyToRace = () => {
+const ReadyToRace = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
 
@@ -82,7 +82,10 @@ export const ReadyToRace = () => {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 w-full sm:w-auto">
-            <motion.div whileHover={{ scale: 1.05 }} className="relative w-full sm:w-auto">
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              className="relative w-full sm:w-auto"
+            >
               <Button
                 onClick={() => setIsCreateModalOpen(true)}
                 className="w-full sm:w-auto h-14 sm:h-16 px-6 sm:px-8 text-base sm:text-lg font-bold text-white rounded-full shadow-2xl 
@@ -146,7 +149,10 @@ export const ReadyToRace = () => {
               </Button>
             </motion.div>
 
-            <motion.div whileHover={{ scale: 1.05 }} className="relative w-full sm:w-auto">
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              className="relative w-full sm:w-auto"
+            >
               <Button
                 variant="outline"
                 onClick={() => setIsJoinModalOpen(true)}
@@ -231,3 +237,5 @@ export const ReadyToRace = () => {
     </div>
   );
 };
+
+export default ReadyToRace;

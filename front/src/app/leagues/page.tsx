@@ -2,9 +2,8 @@
 
 import { useMemo } from "react";
 import type { League } from "@/lib/types";
-
 import Header from "@/components/Leagues/Header";
-import { ReadyToRace } from "@/components/Leagues/ReadyToRace";
+import ReadyToRace from "@/components/Leagues/ReadyToRace";
 import LeagueSection from "@/components/Leagues/LeagueSection";
 
 // const leagues: League[] = []; // simulate when no leagues

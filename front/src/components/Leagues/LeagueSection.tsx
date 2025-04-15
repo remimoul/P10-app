@@ -1,6 +1,6 @@
-import { LeagueCard } from "./LeagueCard";
 import { LeagueSectionProps } from "@/lib/types";
-import { SectionHeader } from "./SectionHeader";
+import LeagueCard from "@/components/Leagues/LeagueCard";
+import SectionHeader from "@/components/Leagues/SectionHeader";
 
 const LeagueSection = ({ title, leagues, isPublic }: LeagueSectionProps) => (
   <section className="relative">

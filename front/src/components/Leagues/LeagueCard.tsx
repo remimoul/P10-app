@@ -5,7 +5,7 @@ import type { LeagueCardProps } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { RiTeamFill, RiArrowRightSLine } from "react-icons/ri";
 
-export const LeagueCard = ({ league, index, isPublic }: LeagueCardProps) => {
+const LeagueCard = ({ league, index, isPublic }: LeagueCardProps) => {
   const buttonGradient = isPublic
     ? "from-[#FF1801] to-[#CC0000]"
     : "from-[#00D2FF] to-[#0078FF]";
@@ -182,3 +182,5 @@ export const LeagueCard = ({ league, index, isPublic }: LeagueCardProps) => {
     </motion.div>
   );
 };
+
+export default LeagueCard;
