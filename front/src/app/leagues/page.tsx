@@ -11,7 +11,7 @@ import LeagueSection from "@/components/Leagues/LeagueSection";
 const leagues: League[] = [
   { name: "RED RACING", members: 6, points: 328, position: 1, type: "public" },
   {
-    name: "ELECTRON RACING",
+    name: "ELECTRON",
     members: 6,
     points: 295,
     position: 2,
@@ -19,7 +19,7 @@ const leagues: League[] = [
   },
   { name: "SILVERBOLT", members: 6, points: 267, position: 3, type: "public" },
   {
-    name: "BLUE LIGHTNING",
+    name: "LIGHTNING",
     members: 6,
     points: 245,
     position: 4,

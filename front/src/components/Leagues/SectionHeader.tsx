@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import type { SectionHeaderProps } from "@/lib/types";
-import { GiTyre, GiCheckeredFlag } from "react-icons/gi";
+import { GiTyre, GiSteeringWheel } from "react-icons/gi";
 
 const SectionHeader = ({ title, isPublic }: SectionHeaderProps) => (
   <motion.div
@@ -15,13 +15,13 @@ const SectionHeader = ({ title, isPublic }: SectionHeaderProps) => (
       {isPublic ? (
         <GiTyre className="text-red-600 text-3xl animate-spin-slow" />
       ) : (
-        <GiCheckeredFlag className="text-blue-600 text-3xl" />
+        <GiSteeringWheel className="text-blue-600 text-3xl animate-steering-spin-accel" />
       )}
       {title}
       {isPublic ? (
         <GiTyre className="text-red-600 text-3xl animate-spin-slow" />
       ) : (
-        <GiCheckeredFlag className="text-blue-600 text-3xl" />
+        <GiSteeringWheel className="text-blue-600 text-3xl animate-steering-spin-accel" />
       )}
     </h2>
     <div className="h-px flex-1 bg-gradient-to-r from-transparent via-blue-600 to-transparent" />

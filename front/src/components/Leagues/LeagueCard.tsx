@@ -15,48 +15,27 @@ const LeagueCard = ({ league, index, isPublic }: LeagueCardProps) => {
       initial={{ opacity: 0, y: 20, rotate: 0 }}
       whileInView={{ opacity: 1, y: 0, rotate: 0 }}
       transition={{ delay: index * 0.05, duration: 0.3 }}
-      className="relative overflow-hidden bg-gradient-to-br from-[#1c1e22] to-[#2a2f36] rounded-3xl p-4 sm:p-6 md:p-8 border border-gray-700 shadow-lg transition-all duration-300 group"
+      className="relative overflow-hidden bg-gradient-to-br from-[#1c1e22] to-[#2a2f36] rounded-3xl p-4 sm:p-6 md:p-8 border border-gray-700 shadow-lg"
     >
-      <motion.div
-        className="absolute inset-0 rounded-3xl pointer-events-none"
-        animate={{ rotate: [0, 5, 0] }}
-        transition={{ repeat: Infinity, duration: 5, ease: "linear" }}
-        style={{
-          background:
-            "linear-gradient(45deg, rgba(217,4,41,0.5), rgba(42,52,57,0.5))",
-          maskImage: "linear-gradient(#fff 0 0)",
-        }}
-      />
-
-      <motion.div
-        className="absolute top-0 left-[-100%] w-full h-full pointer-events-none"
-        animate={{ x: ["-100%", "100%"] }}
-        transition={{ duration: 2.5, ease: "linear", repeat: Infinity }}
-        style={{ background: "rgba(255,255,255,0.05)" }}
-      />
-
       <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-6">
         <div className="flex items-center gap-4 sm:gap-6 flex-1">
           <div className="relative">
             <div
-              className={`w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center rounded-full 
+              className={`w-14 h-14 sm:w-20 sm:h-20 flex items-center justify-center rounded-full 
                 bg-gradient-to-br ${
                   isPublic
                     ? "from-red-900/80 to-red-700"
                     : "from-blue-900/80 to-blue-700"
                 }
-                shadow-[inset_0_2px_4px_rgba(255,255,255,0.3)]`}
+                shadow-[0_0_16px_4px_rgba(255,24,1,0.25)]`}
             >
               <span
-                className={`text-xl sm:text-2xl font-bold ${
-                  isPublic ? "text-red-300" : "text-blue-300"
-                }
-                bg-clip-text bg-gradient-to-b from-white to-gray-300`}
+                className="text-3xl sm:text-4xl font-extrabold text-white drop-shadow-lg bg-clip-text bg-gradient-to-b from-white to-gray-300"
               >
                 {league.position}
               </span>
             </div>
-            <div className="absolute inset-0 rounded-full border-2 border-white/10 pointer-events-none" />
+            <div className="absolute inset-0 rounded-full border-4 border-white/20 shadow-[0_0_12px_2px_rgba(255,255,255,0.25)] pointer-events-none" />
           </div>
 
           <div>
@@ -70,7 +49,9 @@ const LeagueCard = ({ league, index, isPublic }: LeagueCardProps) => {
                     isPublic ? "text-red-400" : "text-blue-400"
                   } drop-shadow-[0_0_4px_rgba(255,24,1,0.3)]`}
                 />
-                <span>{league.members} member(s)</span>
+                <span className="whitespace-nowrap">
+                  {league.members} member(s)
+                </span>
               </div>
             </div>
           </div>
@@ -125,14 +106,10 @@ const LeagueCard = ({ league, index, isPublic }: LeagueCardProps) => {
                 }}
               />
 
-              <motion.span
-                className="relative flex items-center"
-                whileHover={{ gap: "8px" }}
-                transition={{ type: "spring", stiffness: 300 }}
-              >
-                {isPublic ? "Join the race" : "View the ranking"}
+              <span className="relative flex items-center">
+                {isPublic ? "Join the race" : "View ranking"}
                 <RiArrowRightSLine className="ml-2 inline-block text-lg sm:text-xl" />
-              </motion.span>
+              </span>
 
               {isPublic && (
                 <motion.div

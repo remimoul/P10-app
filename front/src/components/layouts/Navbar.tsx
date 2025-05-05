@@ -97,8 +97,8 @@ const Navbar = () => {
                     onClick={() => setActiveTab(item.name)}
                     className={`min-w-[80px] flex items-center justify-center w-full px-2 py-1 sm:px-3 sm:py-2 text-lg transition-colors ${
                       activeTab === item.name
-                        ? "text-[#D90429] font-medium"
-                        : "text-gray-900 hover:text-[#EF233C]"
+                        ? "text-[var(--primary-red)] font-medium"
+                        : "text-gray-900 hover:text-[var(--secondary-red)]"
                     }`}
                   >
                     <item.icon className="h-7 w-7 sm:h-5 sm:w-5 mr-1 sm:mr-2" />
@@ -106,7 +106,7 @@ const Navbar = () => {
                   </Link>
                   {activeTab === item.name && (
                     <motion.div
-                      className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#D90429]"
+                      className="absolute bottom-0 left-0 right-0 h-[2px] bg-[var(--primary-red)]"
                       layoutId="activeIndicator"
                       transition={{ type: "spring", stiffness: 300 }}
                     />
@@ -141,7 +141,7 @@ const Navbar = () => {
               onClick={() => setIsMenuOpen((prev) => !prev)}
               aria-label={isMenuOpen ? "Close menu" : "Open menu"}
               aria-expanded={isMenuOpen}
-              className="md:hidden p-2 text-gray-600 hover:text-[#EF233C] focus:outline-none"
+              className="md:hidden p-2 text-gray-600 hover:text-[var(--secondary-red)] focus:outline-none"
             >
               {isMenuOpen ? (
                 <FiX className="h-6 w-6" />
@@ -170,7 +170,7 @@ const Navbar = () => {
                     onClick={() => handleTabClick(item.name)}
                     className={`w-full flex items-center px-4 py-3 rounded-full transition-colors ${
                       activeTab === item.name
-                        ? "bg-red-600/10 text-[#D90429]"
+                        ? "bg-red-600/10 text-[var(--primary-red)]"
                         : "text-gray-800 hover:bg-gray-300"
                     }`}
                   >
