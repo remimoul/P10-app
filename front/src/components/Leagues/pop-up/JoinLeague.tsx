@@ -39,7 +39,7 @@ export const JoinLeague = ({ isOpen, onClose, onJoin }: JoinLeagueProps) => {
           className="p-8"
         >
           <DialogHeader className="text-center">
-            <DialogTitle className="text-4xl font-extrabold bg-gradient-to-r from-[#D90429] to-gray-800 bg-clip-text text-transparent font-racing tracking-wider">
+            <DialogTitle className="text-4xl font-extrabold bg-gradient-to-r from-[var(--primary-red)] to-gray-800 bg-clip-text text-transparent font-racing tracking-wider">
               Join a League
             </DialogTitle>
           </DialogHeader>
@@ -70,7 +70,7 @@ export const JoinLeague = ({ isOpen, onClose, onJoin }: JoinLeagueProps) => {
               </Button>
               <Button
                 type="submit"
-                className="px-8 py-6 bg-gradient-to-r from-[#D90429] to-[#A60321] hover:from-gray-600 hover:to-gray-900 text-white rounded-full text-xl transition-colors duration-200 shadow-lg hover:shadow-xl relative overflow-hidden"
+                className="px-8 py-6 bg-gradient-to-r from-[var(--primary-red)] to-[#A60321] hover:from-gray-600 hover:to-gray-900 text-white rounded-full text-xl transition-colors duration-200 shadow-lg hover:shadow-xl relative overflow-hidden"
               >
                 Join
               </Button>

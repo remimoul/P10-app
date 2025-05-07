@@ -9,14 +9,14 @@ const BUTTON_STYLES = {
   cancel:
     "px-8 py-6 border border-gray-200/80 text-gray-600 hover:border-gray-300 hover:bg-gray-50/80 rounded-full text-xl transition-colors duration-200 shadow-sm hover:shadow-md",
   confirm:
-    "px-8 py-6 bg-gradient-to-r from-[#D90429] to-[#A60321] hover:from-gray-600 hover:to-gray-900 text-white rounded-full text-xl transition-colors duration-200 shadow-lg hover:shadow-xl relative overflow-hidden",
+    "px-8 py-6 bg-gradient-to-r from-[var(--primary-red)] to-[#A60321] hover:from-gray-600 hover:to-gray-900 text-white rounded-full text-xl transition-colors duration-200 shadow-lg hover:shadow-xl relative overflow-hidden",
 };
 
 const DIALOG_STYLES = {
   content:
     "sm:max-w-[425px] bg-gray-50 rounded-3xl border border-gray-50 shadow-xl",
   title:
-    "text-4xl font-extrabold bg-gradient-to-r from-[#D90429] to-gray-800 bg-clip-text text-transparent font-racing tracking-wider",
+    "text-4xl font-extrabold bg-gradient-to-r from-[var(--primary-red)] to-gray-800 bg-clip-text text-transparent font-racing tracking-wider",
   message: "text-2xl font-medium text-gray-600 text-center",
 };
 
@@ -44,8 +44,9 @@ const DialogContentExitLeague = ({
 
       <div className="mt-8 space-y-6">
         <p className={DIALOG_STYLES.message}>
-          Are you sure you want to exit the league ? This action cannot be
-          undone.
+          Are you sure you want to exit the league ?
+          <br />
+          This action cannot be undone.
         </p>
 
         <div className="flex justify-center gap-6 pt-4">
