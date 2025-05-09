@@ -3,7 +3,7 @@
 import { ChangeEvent, useState } from "react";
 import { Search, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { SearchInputProps } from "@/types";
+import { SearchInputProps } from "@/lib/types";
 
 export const SearchInput = ({ value, onChange }: SearchInputProps) => {
   const [isFocused, setIsFocused] = useState(false);
@@ -60,12 +60,12 @@ export const SearchInput = ({ value, onChange }: SearchInputProps) => {
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
         placeholder="Search for a circuit or country ..."
-        className={`w-full pl-12 pr-10 py-2.5 text-lg font-medium rounded-xl border
+        className={`w-full pl-12 pr-10 py-2.5 text-lg font-medium rounded-3xl border
           transition-all duration-200 bg-white shadow-md
           placeholder-gray-400 text-gray-800 focus:outline-none
           ${
             isActive || isFocused
-              ? "border-red-500 ring-2 ring-red-500"
+              ? "border-[var(--primary-red)] ring-2 ring-[var(--primary-red)]/50"
               : "border-gray-300 hover:border-gray-400"
           }`}
       />

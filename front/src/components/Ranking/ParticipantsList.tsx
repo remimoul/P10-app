@@ -1,4 +1,4 @@
-import { RankedUser } from "@/types";
+import { RankedUser } from "@/lib/types";
 import UserAvatar from "@/components/Ranking/UserAvatar";
 
 interface ParticipantsListProps {

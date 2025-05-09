@@ -1,20 +1,17 @@
 import { RiUser3Fill } from "react-icons/ri";
+import { UserAvatarProps } from "@/lib/types";
 
-const UserAvatar = ({
-  avatarUrl,
-  fullName,
-}: {
-  avatarUrl?: string;
-  fullName?: string;
-}) => {
+const UserAvatar: React.FC<UserAvatarProps> = ({ avatarUrl, fullName }) => {
   return avatarUrl ? (
     <img
       src={avatarUrl}
       alt={fullName || "User Avatar"}
-      className="w-24 h-24 rounded-full object-cover border-2 border-red-500/30"
+      className="w-full h-full rounded-full object-cover"
     />
   ) : (
-    <RiUser3Fill className="text-4xl text-red-500" />
+    <div className="w-full h-full flex items-center justify-center rounded-full bg-gray-50">
+      <RiUser3Fill className="text-4xl text-red-500" />
+    </div>
   );
 };
 

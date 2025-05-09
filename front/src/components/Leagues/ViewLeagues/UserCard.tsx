@@ -1,7 +1,8 @@
 import { motion } from "framer-motion";
-import { UserCardProps } from "@/types";
+import { UserCardProps } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { GiCheckeredFlag } from "react-icons/gi";
+import { IoArrowForward } from "react-icons/io5";
 import UserAvatar from "@/components/Leagues/ViewLeagues/UserAvatar";
 
 const UserCard = ({
@@ -19,67 +20,105 @@ const UserCard = ({
   };
 
   return (
-    <motion.div className="relative bg-gradient-to-br from-white to-red-50 rounded-3xl p-8 shadow-lg overflow-hidden mb-10">
+    <motion.div className="relative bg-gradient-to-br from-white to-red-50 rounded-3xl p-4 sm:p-6 md:p-8 shadow-lg overflow-hidden mb-6 sm:mb-8 md:mb-10">
       <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/diagonal-stripes.png')] opacity-10" />
-      <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-        <div className="flex items-center gap-6">
+      <div className="relative z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-6">
+        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6 w-full sm:w-auto">
           <div className="relative">
             <motion.div
               animate={{ rotate: 360 }}
-              transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-              className="absolute -inset-1 bg-gradient-to-r from-red-500 to-black rounded-full opacity-30"
+              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+              className="absolute -inset-1 bg-gradient-to-r from-red-500/40 via-transparent to-red-500/40 rounded-full"
             />
-            <div className="relative w-24 h-24 rounded-full bg-white flex items-center justify-center border-2 border-red-500/30">
+            <motion.div
+              animate={{ rotate: -360 }}
+              transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+              className="absolute -inset-1 bg-gradient-to-r from-transparent via-red-500/30 to-transparent rounded-full"
+            />
+            <div className="relative w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full bg-white flex items-center justify-center border-2 border-red-500/30">
               <UserAvatar
                 avatarUrl={safeParticipant.avatar}
                 fullName={safeParticipant.name}
               />
-              <GiCheckeredFlag className="absolute -bottom-2 -right-2 text-3xl text-red-500" />
+              <motion.div
+                animate={{ scale: [1, 1.1, 1] }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+                className="absolute -bottom-1 -right-1 sm:-bottom-2 sm:-right-2"
+              >
+                <GiCheckeredFlag className="text-xl sm:text-2xl md:text-3xl text-red-500" />
+              </motion.div>
             </div>
           </div>
-          <div>
-            <h2 className="text-3xl font-black text-red-500">Your Stats</h2>
-            <div className="flex gap-6 mt-4">
+          <div className="text-center sm:text-left">
+            <div className="flex gap-4 sm:gap-6 mt-2 sm:mt-4">
               <div className="text-center">
-                <p className="text-4xl font-bold text-black">
+                <p className="text-3xl sm:text-xl md:text-4xl font-semibold text-black">
                   {safeParticipant.score}
                 </p>
-                <p className="text-sm text-red-500 uppercase tracking-wider">
+                <p className="text-lg sm:text-xl text-red-500 uppercase tracking-wider">
                   Points
                 </p>
               </div>
-              <div className="h-12 w-px bg-red-500/30" />
+              <div className="h-8 sm:h-12 w-px bg-red-500/30" />
               <div className="text-center">
-                <p className="text-4xl font-bold text-black">
+                <p className="text-3xl sm:text-xl md:text-4xl font-semibold text-black">
                   #{rank ? rank : "N/A"}
                 </p>
-                <p className="text-sm text-red-500 uppercase tracking-wider">
+                <p className="text-lg sm:text-xl text-red-500 uppercase tracking-wider">
                   Position
                 </p>
               </div>
             </div>
           </div>
         </div>
-        <Button
-          onClick={handleVote}
-          disabled={timeLeft === 0}
-          className={`
-              relative inline-flex items-center justify-center overflow-hidden rounded-xl px-12 py-4 text-xl font-extrabold uppercase tracking-wider transition-transform duration-700 ease-out transform
-              focus:outline-none focus:ring-4 focus:ring-red-400 focus:ring-offset-2
+        <motion.div
+          whileHover={{ scale: 1.01 }}
+          whileTap={{ scale: 0.99 }}
+          className="relative w-full sm:w-auto mt-4 sm:mt-0"
+        >
+          <Button
+            onClick={handleVote}
+            disabled={timeLeft === 0}
+            className={`
+              w-full sm:w-auto px-5 sm:px-5 py-6 sm:py-4 text-lg sm:text-xl md:text-2xl
               ${
                 timeLeft === 0
-                  ? "bg-gray-300 text-red-600 cursor-not-allowed opacity-50"
+                  ? "bg-gray-300 text-gray-600 cursor-not-allowed opacity-50"
                   : safeParticipant.hasVoted
-                  ? "bg-white text-red-500 border border-red-500 shadow-inner hover:scale-105"
-                  : "bg-gradient-to-br from-red-500 via-red-700 to-red-900 text-white shadow-2xl hover:scale-110 hover:shadow-3xl"
+                  ? "bg-white text-gray-900 border-2 border-gray-900 hover:border-red-500 hover:text-red-500"
+                  : "relative group overflow-hidden text-2xl rounded-full bg-gradient-to-br from-gray-700 via-gray-800 to-red-700 text-white border-2 border-gray-600/50 hover:border-red-500 hover:shadow-lg hover:shadow-red-500/20 transition-all duration-300"
               }
             `}
-        >
-          <span className="relative z-20">
-            {safeParticipant.hasVoted ? "Cancel Vote" : "Vote"}
-          </span>
-          <span className="absolute inset-0 rounded-full border border-transparent bg-gradient-to-r from-red-500 via-white to-red-500 opacity-0 transition-all duration-700 group-hover:opacity-100 group-hover:scale-110"></span>
-        </Button>
+          >
+            <span className="relative z-10 flex items-center justify-center gap-1 font-medium tracking-wider">
+              {safeParticipant.hasVoted ? (
+                <>
+                  <span>CANCEL VOTE</span>
+                  <GiCheckeredFlag className="text-2xl sm:text-2xl" />
+                </>
+              ) : (
+                <>
+                  <span>VOTE</span>
+                  <motion.div
+                    animate={{ x: [0, 5, 0] }}
+                    transition={{
+                      duration: 1.5,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                    className="flex items-center"
+                  >
+                    <IoArrowForward className="text-2xl sm:text-2xl" />
+                  </motion.div>
+                </>
+              )}
+            </span>
+          </Button>
+        </motion.div>
       </div>
     </motion.div>
   );

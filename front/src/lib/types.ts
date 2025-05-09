@@ -66,6 +66,24 @@ export interface ExitLeagueProps {
   onConfirmExit: () => void;
 }
 
+export interface UserAvatarProps {
+  avatarUrl?: string;
+  fullName?: string;
+}
+
+// viewLeague pop-up
+export type DialogContentProps = {
+  onClose: () => void;
+  onConfirmExit: () => void;
+};
+
+export type AddMemberContentProps = {
+  email: string;
+  onEmailChange: (email: string) => void;
+  onSubmit: (e: React.FormEvent) => void;
+  onClose: () => void;
+};
+
 // page racing
 export interface Track {
   id: string;
@@ -126,6 +144,11 @@ export interface SeasonFilterProps {
   onChange: (value: string) => void;
 }
 
+export interface RacingListProps {
+  grandPrixList: RacingCardProps["grandPrix"][];
+  isPast: boolean;
+}
+
 // page ranking
 export interface RankedUser {
   id: string;
@@ -144,4 +167,73 @@ export interface LeagueShort {
   id: string;
   name: string;
   avatar?: string;
+}
+
+// page results
+export interface Race {
+  id: number;
+  name: string;
+  country: string;
+  date: string;
+  circuit: string;
+  laps: number;
+  length: string;
+  lapRecord: string;
+  recordHolder: string;
+  recordYear: string;
+  season: string;
+}
+
+export interface RaceResult {
+  position: number;
+  status: "Finished" | "DNF";
+  time: string;
+  laps: number;
+}
+
+export interface Driver {
+  id: number;
+  name: string;
+  team: string;
+  points: number;
+  position: number;
+  country: string;
+  number: number;
+  fastestLap: string;
+  grid: number;
+  status: "Finished" | "DNF";
+  laps: number;
+  time: string;
+  gap: string;
+  bestLap: number;
+  teamColor: string;
+  previousPosition: number;
+  positionChange: number;
+  car: string;
+  raceResults?: Record<number, RaceResult>;
+}
+
+export type ViewMode = "race" | "championship";
+
+export interface FiltersProps {
+  selectedSeason: string;
+  selectedRace: number;
+  selectedCountry: string;
+  filteredRaces: Race[];
+  onSeasonChange: (season: string) => void;
+  onRaceChange: (raceId: number) => void;
+  onCountryChange: (country: string) => void;
+}
+
+export interface NoRacesMessageProps {
+  season: string;
+}
+
+export interface RaceInfoProps {
+  race: Race;
+}
+
+export interface ResultsTableProps {
+  drivers: Driver[];
+  viewMode: ViewMode;
 }

@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { format } from "date-fns";
 import { useRouter } from "next/navigation";
-import { RacingCardProps } from "@/types";
+import { RacingCardProps } from "@/lib/types";
 import { HiOutlineArrowNarrowRight } from "react-icons/hi"; // Chevron moderne
 
 export const RacingCard = ({ grandPrix, isPast }: RacingCardProps) => {

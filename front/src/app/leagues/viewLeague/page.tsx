@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import toast from "react-hot-toast";
-import { Participant } from "@/types";
+import { Participant } from "@/lib/types";
 import { GiRaceCar } from "react-icons/gi";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -38,10 +38,10 @@ const ViewLeague = () => {
           hasVoted: false,
           avatar: user.imageUrl,
         },
-        // { id: "2", name: "Max Verstappen", score: 245, hasVoted: false },
-        // { id: "4", name: "Charles Leclerc", score: 150, hasVoted: false },
-        // { id: "5", name: "Carlos Sainz", score: 120, hasVoted: false },
-        // { id: "3", name: "Lewis Hamilton", score: 198, hasVoted: false },
+        { id: "2", name: "Max Verstappen", score: 245, hasVoted: false },
+        { id: "4", name: "Charles Leclerc", score: 150, hasVoted: false },
+        { id: "5", name: "Carlos Sainz", score: 120, hasVoted: false },
+        { id: "3", name: "Lewis Hamilton", score: 198, hasVoted: false },
       ]);
     }
   }, [userLoaded, user]);
