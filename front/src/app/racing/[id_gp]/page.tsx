@@ -1,16 +1,17 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { use } from "react";
 import LeagueSection from "@/components/Leagues/LeagueSection";
 import { League } from "@/lib/types";
 
 interface PageProps {
-  params: { id_gp: string };
+  params: Promise<{ id_gp: string }>;
 }
 
 export default function SelectLeaguePage({ params }: PageProps) {
   const router = useRouter();
-  const { id_gp } = params;
+  const { id_gp } = use(params);
 
   // 👤 MOCK - Ligues auxquelles l'utilisateur est membre
   const userLeagues: League[] = [
@@ -53,7 +54,7 @@ export default function SelectLeaguePage({ params }: PageProps) {
           />
         ) : (
           <p className="text-center text-gray-500">
-            Vous n’êtes membre d’aucune ligue pour cette course.
+            Vous n&apos;êtes membre d&apos;aucune ligue pour cette course.
           </p>
         )}
       </main>

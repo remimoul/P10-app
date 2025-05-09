@@ -18,7 +18,7 @@ export const Pagination = ({
       <button
         onClick={() => GoBack && onPageChange(currentPage - 1)}
         disabled={!GoBack}
-        className={`px-3 py-1.5 text-sm rounded-full border transition-all
+        className={`px-3 py-1.5 text-lg rounded-full border transition-all
           ${
             GoBack
               ? "text-gray-600 hover:text-red-600 border-gray-300 hover:border-red-400"
@@ -32,11 +32,11 @@ export const Pagination = ({
         <button
           key={page}
           onClick={() => onPageChange(page)}
-          className={`px-3 py-1.5 text-sm font-semibold rounded-full border transition-all
+          className={`px-3 py-1.5 text-lg font-semibold rounded-full border transition-all
             ${
               page === currentPage
-                ? "bg-red-600 text-white border-red-600"
-                : "bg-white text-gray-600 border-gray-300 hover:border-red-500 hover:text-red-600"
+                ? "bg-[var(--secondary-red)] text-white border-[var(--secondary-red)]"
+                : "bg-white text-gray-600 border-gray-300 hover:border-red-500 hover:text-[var(--secondary-red)]"
             }`}
         >
           {page}
@@ -46,10 +46,10 @@ export const Pagination = ({
       <button
         onClick={() => GoNext && onPageChange(currentPage + 1)}
         disabled={!GoNext}
-        className={`px-3 py-1.5 text-sm rounded-full border transition-all
+        className={`px-3 py-1.5 text-lg rounded-full border transition-all
           ${
             GoNext
-              ? "text-gray-600 hover:text-red-600 border-gray-300 hover:border-red-400"
+              ? "text-gray-600 hover:text-[var(--secondary-red)] border-gray-300 hover:border-[var(--secondary-red)]"
               : "text-gray-300 border-gray-200 cursor-not-allowed"
           }`}
       >

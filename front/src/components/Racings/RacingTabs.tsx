@@ -13,7 +13,7 @@ export const RacingTabs = ({ activeTab, onTabChange }: RacingTabsProps) => {
   const idPrefix = useId();
 
   return (
-    <div className="relative flex w-full max-w-md mx-auto rounded-lg overflow-hidden border border-gray-200 bg-white shadow-md">
+    <div className="relative flex w-full max-w-md mx-auto rounded-3xl overflow-hidden border border-gray-200 bg-white shadow-md">
       {tabs.map(({ key, label }) => {
         const isActive = activeTab === key;
         return (
@@ -24,7 +24,7 @@ export const RacingTabs = ({ activeTab, onTabChange }: RacingTabsProps) => {
             role="tab"
             aria-selected={isActive}
             aria-controls={`${idPrefix}-panel`}
-            className={`relative z-10 w-1/2 py-3 text-sm font-bold uppercase tracking-wide transition-colors duration-300
+            className={`relative z-10 w-1/2 py-3 text-lg font-bold uppercase tracking-wide transition-colors duration-300
               ${
                 isActive ? "text-red-600" : "text-gray-400 hover:text-gray-700"
               }`}

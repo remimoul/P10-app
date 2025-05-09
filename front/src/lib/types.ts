@@ -144,6 +144,11 @@ export interface SeasonFilterProps {
   onChange: (value: string) => void;
 }
 
+export interface RacingListProps {
+  grandPrixList: RacingCardProps["grandPrix"][];
+  isPast: boolean;
+}
+
 // page ranking
 export interface RankedUser {
   id: string;

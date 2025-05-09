@@ -1,10 +1,5 @@
 import { RacingCard } from "./RacingCard";
-import { RacingCardProps } from "@/lib/types";
-
-interface RacingListProps {
-  grandPrixList: RacingCardProps["grandPrix"][];
-  isPast: boolean;
-}
+import { RacingListProps } from "@/lib/types";
 
 export const RacingList = ({ grandPrixList, isPast }: RacingListProps) => {
   if (grandPrixList.length === 0) {
