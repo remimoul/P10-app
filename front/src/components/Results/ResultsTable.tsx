@@ -133,40 +133,40 @@ const ResultsTable = ({ drivers, viewMode }: ResultsTableProps) => {
                       </div>
                     </td>
                     <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-gray-500 font-medium group-hover:text-gray-900 transition-colors duration-300">
-                      {driver.number}
+                      {driver.number ? driver.number : "-"}
                     </td>
                     <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="ml-4">
                           <div className="font-bold text-gray-900 group-hover:text-red-600 transition-colors duration-300">
-                            {driver.name}
+                            {driver.name || "-"}
                           </div>
                         </div>
                       </div>
                     </td>
                     <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
                       <span className="font-medium text-gray-900 group-hover:text-red-600 transition-colors duration-300">
-                        {driver.car}
+                        {driver.car || "-"}
                       </span>
                     </td>
                     <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
                       <span className="font-medium text-gray-900 group-hover:text-red-600 transition-colors duration-300">
-                        {driver.team}
+                        {driver.team || "-"}
                       </span>
                     </td>
                     {viewMode === "race" && (
                       <>
                         <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-gray-500 group-hover:text-gray-900 transition-colors duration-300">
-                          {driver.grid}
+                          {driver.grid ? driver.grid : "-"}
                         </td>
                         <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-gray-500 group-hover:text-gray-900 transition-colors duration-300">
-                          {driver.laps}
+                          {driver.laps ? driver.laps : "-"}
                         </td>
                         <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-gray-500 group-hover:text-gray-900 transition-colors duration-300">
-                          {driver.time}
+                          {driver.time ? driver.time : "-"}
                         </td>
                         <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-gray-500 group-hover:text-gray-900 transition-colors duration-300">
-                          {driver.fastestLap}
+                          {driver.fastestLap ? driver.fastestLap : "-"}
                         </td>
                         <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
                           <span
@@ -183,7 +183,7 @@ const ResultsTable = ({ drivers, viewMode }: ResultsTableProps) => {
                     )}
                     <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
                       <span className="font-bold text-gray-900 group-hover:text-red-600 transition-colors duration-300">
-                        {driver.points}
+                        {driver.points ? driver.points : "-"}
                       </span>
                     </td>
                   </motion.tr>
