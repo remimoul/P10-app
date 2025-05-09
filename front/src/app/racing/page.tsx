@@ -1,28 +1,76 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { RacingTabs } from "@/components/Racings/RacingTabs";
 import { RacingList } from "@/components/Racings/RacingList";
 import { Pagination } from "@/components/Racings/Pagination";
 import { SearchInput } from "@/components/Racings/SearchInput";
 import { SeasonFilter } from "@/components/Racings/SeasonFilter";
-import { mockGrandPrix } from "@/lib/data/mockGrandPrix";
+import { f1Service } from "@/lib/services/f1Service";
+import { GrandPrix } from "@/types/racing";
 
-const ITEMS_PER_PAGE = 2;
+const ITEMS_PER_PAGE = 10;
 
 export default function Racing() {
   const [tab, setTab] = useState<"upcoming" | "past">("upcoming");
   const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState("");
   const [season, setSeason] = useState("");
+  const [grandPrixList, setGrandPrixList] = useState<GrandPrix[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const today = new Date();
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
 
-  const tabFiltered = mockGrandPrix.filter((gp) =>
-    tab === "past" ? new Date(gp.date) < today : new Date(gp.date) >= today
-  );
+        const [sessions, meetings] = await Promise.all([
+          f1Service.getSessions(season || undefined),
+          f1Service.getMeetings(season || undefined),
+        ]);
 
-  const searchFiltered = tabFiltered.filter((gp) => {
+        const meetingsMap = new Map(meetings.map((m) => [m.meeting_key, m]));
+
+        const grandPrixData = sessions
+          .filter((session) => {
+            const sessionDate = new Date(session.date_start);
+            return tab === "past"
+              ? sessionDate < new Date()
+              : sessionDate >= new Date();
+          })
+          .map((session) =>
+            f1Service.transformToGrandPrix(
+              session,
+              meetingsMap.get(session.meeting_key)!
+            )
+          )
+          .filter((gp) => gp !== null);
+
+        setGrandPrixList(grandPrixData);
+      } catch (err) {
+        setError("Failed to fetch racing data");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [tab, season]);
+
+  const allPastSeasons = Array.from(
+    new Set(
+      grandPrixList
+        .filter((gp) => new Date(gp.date) < new Date())
+        .map((gp) => gp.season)
+    )
+  )
+    .sort()
+    .reverse();
+
+  const searchFiltered = grandPrixList.filter((gp) => {
     const target =
       `${gp.track.countryName} ${gp.track.trackName}`.toLowerCase();
     return target.includes(search.toLowerCase());
@@ -30,8 +78,16 @@ export default function Racing() {
 
   const filteredRaces =
     tab === "past" && season
-      ? searchFiltered.filter((gp) => gp.season === season)
-      : searchFiltered;
+      ? searchFiltered.filter(
+          (gp) => new Date(gp.date) < new Date() && gp.season === season
+        )
+      : tab === "past"
+      ? searchFiltered.filter((gp) => new Date(gp.date) < new Date())
+      : tab === "upcoming" && season
+      ? searchFiltered.filter(
+          (gp) => new Date(gp.date) >= new Date() && gp.season === season
+        )
+      : searchFiltered.filter((gp) => new Date(gp.date) >= new Date());
 
   const totalPages = Math.ceil(filteredRaces.length / ITEMS_PER_PAGE);
   const paginatedRaces = filteredRaces.slice(
@@ -46,15 +102,21 @@ export default function Racing() {
     setSeason("");
   };
 
-  const availableSeasons = [
-    ...new Set(
-      mockGrandPrix
-        .filter((gp) => new Date(gp.date) < today)
-        .map((gp) => gp.season)
-    ),
-  ]
-    .sort()
-    .reverse();
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-xl">Loading...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-xl text-red-600">{error}</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 relative overflow-hidden py-14 lg:py-16 sm:py-18">
@@ -75,7 +137,7 @@ export default function Racing() {
           {tab === "past" && (
             <div className="w-auto sm:w-auto">
               <SeasonFilter
-                seasons={availableSeasons}
+                seasons={allPastSeasons}
                 selected={season}
                 onChange={setSeason}
               />

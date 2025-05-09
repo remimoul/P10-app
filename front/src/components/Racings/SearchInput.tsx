@@ -48,7 +48,7 @@ export const SearchInput = ({ value, onChange }: SearchInputProps) => {
             className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500 transition"
             aria-label="Clear search"
           >
-            <X className="w-4 h-4" />
+            <X className="w-6 h-6" />
           </motion.button>
         )}
       </AnimatePresence>
@@ -66,7 +66,7 @@ export const SearchInput = ({ value, onChange }: SearchInputProps) => {
           ${
             isActive || isFocused
               ? "border-[var(--primary-red)] ring-2 ring-[var(--primary-red)]/50"
-              : "border-gray-300 hover:border-gray-400"
+              : "border-[var(--primary-blue)] hover:border-[var(--primary-gray)]"
           }`}
       />
     </motion.div>
