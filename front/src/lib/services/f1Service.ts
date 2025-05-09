@@ -1,4 +1,4 @@
-import { GrandPrix, Session, Meeting, Driver } from "@/types/racing";
+import { GrandPrix, Session, Meeting, Driver, Position, Lap, Grid, LapTime, Stint } from "@/lib/types/racing";
 
 const BASE_URL = "https://api.openf1.org/v1";
 
@@ -33,6 +33,56 @@ export const f1Service = {
     const response = await fetch(url.toString());
     if (!response.ok) {
       throw new Error("Failed to fetch drivers");
+    }
+    return response.json();
+  },
+
+  async getPositions(sessionKey: string): Promise<Position[]> {
+    const url = new URL(`${BASE_URL}/position`);
+    url.searchParams.append("session_key", sessionKey);
+    const response = await fetch(url.toString());
+    if (!response.ok) {
+      throw new Error("Failed to fetch positions");
+    }
+    return response.json();
+  },
+
+  async getLaps(sessionKey: string): Promise<Lap[]> {
+    const url = new URL(`${BASE_URL}/laps`);
+    url.searchParams.append("session_key", sessionKey);
+    const response = await fetch(url.toString());
+    if (!response.ok) {
+      throw new Error("Failed to fetch laps");
+    }
+    return response.json();
+  },
+
+  async getGrid(sessionKey: string): Promise<Grid[]> {
+    const url = new URL(`${BASE_URL}/starting_grid`);
+    url.searchParams.append("session_key", sessionKey);
+    const response = await fetch(url.toString());
+    if (!response.ok) {
+      throw new Error("Failed to fetch starting grid");
+    }
+    return response.json();
+  },
+
+  async getLapTimes(sessionKey: string): Promise<LapTime[]> {
+    const url = new URL(`${BASE_URL}/lap_times`);
+    url.searchParams.append("session_key", sessionKey);
+    const response = await fetch(url.toString());
+    if (!response.ok) {
+      throw new Error("Failed to fetch lap times");
+    }
+    return response.json();
+  },
+
+  async getStints(sessionKey: string): Promise<Stint[]> {
+    const url = new URL(`${BASE_URL}/stints`);
+    url.searchParams.append("session_key", sessionKey);
+    const response = await fetch(url.toString());
+    if (!response.ok) {
+      throw new Error("Failed to fetch stints");
     }
     return response.json();
   },

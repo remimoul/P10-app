@@ -7,7 +7,7 @@ import { Pagination } from "@/components/Racings/Pagination";
 import { SearchInput } from "@/components/Racings/SearchInput";
 import { SeasonFilter } from "@/components/Racings/SeasonFilter";
 import { f1Service } from "@/lib/services/f1Service";
-import { GrandPrix } from "@/types/racing";
+import { GrandPrix } from "@/lib/types/racing";
 
 const ITEMS_PER_PAGE = 10;
 
