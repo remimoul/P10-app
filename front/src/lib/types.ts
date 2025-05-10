@@ -66,6 +66,24 @@ export interface ExitLeagueProps {
   onConfirmExit: () => void;
 }
 
+export interface UserAvatarProps {
+  avatarUrl?: string;
+  fullName?: string;
+}
+
+// viewLeague pop-up
+export type DialogContentProps = {
+  onClose: () => void;
+  onConfirmExit: () => void;
+};
+
+export type AddMemberContentProps = {
+  email: string;
+  onEmailChange: (email: string) => void;
+  onSubmit: (e: React.FormEvent) => void;
+  onClose: () => void;
+};
+
 // page racing
 export interface Track {
   id: string;
@@ -124,6 +142,11 @@ export interface SeasonFilterProps {
   seasons: string[];
   selected: string;
   onChange: (value: string) => void;
+}
+
+export interface RacingListProps {
+  grandPrixList: RacingCardProps["grandPrix"][];
+  isPast: boolean;
 }
 
 // page ranking

@@ -1,4 +1,4 @@
-import { Participant } from "@/types";
+import { Participant } from "@/lib/types";
 import { motion } from "framer-motion";
 import { RiUser3Fill } from "react-icons/ri";
 import { FaUserFriends } from "react-icons/fa";

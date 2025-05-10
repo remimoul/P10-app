@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import toast from "react-hot-toast";
-import { Participant } from "@/types";
+import { Participant } from "@/lib/types";
 import { GiRaceCar } from "react-icons/gi";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";

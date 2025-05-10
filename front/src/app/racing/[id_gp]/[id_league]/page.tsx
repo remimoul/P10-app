@@ -1,15 +1,16 @@
 "use client";
 
+import { use } from "react";
 import { Podium } from "@/components/Ranking/Podium";
 import { ParticipantsList } from "@/components/Ranking/ParticipantsList";
-import { LeagueRankingData } from "@/types";
+import { LeagueRankingData } from "@/lib/types";
 
 export default function LeagueRankingPage({
   params,
 }: {
-  params: { id_gp: string; id_league: string };
+  params: Promise<{ id_gp: string; id_league: string }>;
 }) {
-  const { id_gp, id_league } = params;
+  const { id_gp, id_league } = use(params);
 
   const mockRanking: LeagueRankingData = {
     grandPrixName: "Brazil",

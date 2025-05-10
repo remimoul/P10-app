@@ -1,6 +1,6 @@
-import { Participant } from "@/types";
+import { Participant } from "@/lib/types";
 import { motion } from "framer-motion";
-import { GiPodiumWinner as GiPodium } from "react-icons/gi";
+import { GiTrophyCup } from "react-icons/gi";
 
 const Ranking = ({ participants }: { participants: Participant[] }) => (
   <div className="relative bg-gradient-to-br from-white to-red-50 rounded-3xl p-8 shadow-lg border border-red-500/30 overflow-hidden">
@@ -10,14 +10,16 @@ const Ranking = ({ participants }: { participants: Participant[] }) => (
     <div className="relative z-10">
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-3">
-          <GiPodium className="text-4xl text-red-500" />
+          <GiTrophyCup className="text-5xl text-[var(--primary-red)]" />
           <div className="flex flex-col">
-            <h2 className="text-3xl font-black text-red-500">League Ranking</h2>
-            <span className="text-sm text-red-500/70">Season 2024</span>
+            <h2 className="text-3xl font-black text-[var(--primary-red)]">
+              League Ranking
+            </h2>
+            <span className="text-lg text-red-500/70">Season {new Date().getFullYear()}</span>
           </div>
         </div>
-        <div className="flex items-center gap-2 text-red-500/70">
-          <span className="text-sm uppercase tracking-wider">
+        <div className="flex items-center gap-2 text-[var(--primary-red)]">
+          <span className="text-xl uppercase tracking-wider">
             Total Players
           </span>
           <span className="text-xl font-bold">{participants.length}</span>
@@ -60,10 +62,10 @@ const Ranking = ({ participants }: { participants: Participant[] }) => (
                   </span>
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-xl font-medium text-black group-hover:text-red-500 transition-colors">
+                  <span className="text-xl font-medium text-black group-hover:text-[var(--secondary-red)] transition-colors">
                     {participant.name}
                   </span>
-                  <span className="text-lg text-[#EF233C]/70">
+                  <span className="text-lg text-[var(--secondary-red)]">
                     {index === 0
                       ? "Champion"
                       : index === 1

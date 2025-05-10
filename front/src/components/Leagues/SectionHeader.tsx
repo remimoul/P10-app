@@ -1,29 +1,31 @@
 "use client";
 
 import { motion } from "framer-motion";
-import type { SectionHeaderProps } from "@/types";
-import { GiTyre, GiCheckeredFlag } from "react-icons/gi";
+import type { SectionHeaderProps } from "@/lib/types";
+import { GiTyre, GiSteeringWheel } from "react-icons/gi";
 
-export const SectionHeader = ({ title, isPublic }: SectionHeaderProps) => (
+const SectionHeader = ({ title, isPublic }: SectionHeaderProps) => (
   <motion.div
     className="flex items-center gap-6 mb-6"
     initial={{ opacity: 0 }}
     whileInView={{ opacity: 1 }}
   >
     <div className="h-px flex-1 bg-gradient-to-r from-transparent via-red-600 to-transparent" />
-    <h2 className="text-3xl font-bold text-gray-900 flex items-center gap-4">
+    <h2 className="text-4xl font-extrabold text-gray-900 flex items-center gap-4">
       {isPublic ? (
         <GiTyre className="text-red-600 text-3xl animate-spin-slow" />
       ) : (
-        <GiCheckeredFlag className="text-blue-600 text-3xl" />
+        <GiSteeringWheel className="text-blue-600 text-3xl animate-steering-spin-accel" />
       )}
       {title}
       {isPublic ? (
         <GiTyre className="text-red-600 text-3xl animate-spin-slow" />
       ) : (
-        <GiCheckeredFlag className="text-blue-600 text-3xl" />
+        <GiSteeringWheel className="text-blue-600 text-3xl animate-steering-spin-accel" />
       )}
     </h2>
     <div className="h-px flex-1 bg-gradient-to-r from-transparent via-blue-600 to-transparent" />
   </motion.div>
 );
+
+export default SectionHeader;

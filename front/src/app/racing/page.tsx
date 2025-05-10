@@ -1,130 +1,76 @@
 "use client";
 
-import { useState } from "react";
-import { GrandPrix } from "@/types";
+import { useState, useEffect } from "react";
 import { RacingTabs } from "@/components/Racings/RacingTabs";
 import { RacingList } from "@/components/Racings/RacingList";
 import { Pagination } from "@/components/Racings/Pagination";
 import { SearchInput } from "@/components/Racings/SearchInput";
 import { SeasonFilter } from "@/components/Racings/SeasonFilter";
+import { f1Service } from "@/lib/services/f1Service";
+import { GrandPrix } from "@/types/racing";
 
-const ITEMS_PER_PAGE = 2;
-
-const mockGrandPrix: GrandPrix[] = [
-  {
-    id: "1",
-    season: "2025",
-    date: "2025-11-03",
-    time: "14:00",
-    track: {
-      id: "1",
-      countryName: "Brazil",
-      trackName: "Interlagos",
-    },
-    ranking: [
-      {
-        id: "r1",
-        position: 10,
-        isDNF: false,
-        pilot: { id: "p1", name: "Charles Leclerc", acronym: "LEC" },
-      },
-      {
-        id: "r2",
-        position: 5,
-        isDNF: false,
-        pilot: { id: "p2", name: "Esteban Ocon", acronym: "OCO" },
-      },
-    ],
-  },
-  {
-    id: "45",
-    season: "2023",
-    date: "2023-11-03",
-    time: "14:00",
-    track: {
-      id: "1",
-      countryName: "Brazil",
-      trackName: "Interlagos",
-    },
-    ranking: [
-      {
-        id: "r1",
-        position: 10,
-        isDNF: false,
-        pilot: { id: "p1", name: "Charles Leclerc", acronym: "LEC" },
-      },
-      {
-        id: "r2",
-        position: 5,
-        isDNF: false,
-        pilot: { id: "p2", name: "Esteban Ocon", acronym: "OCO" },
-      },
-    ],
-  },
-  {
-    id: "2",
-    season: "2025",
-    date: "2025-12-01",
-    time: "15:00",
-    track: { id: "2", countryName: "USA", trackName: "Las Vegas" },
-  },
-  {
-    id: "3",
-    season: "2024",
-    date: "2024-12-01",
-    time: "15:00",
-    track: { id: "3", countryName: "France", trackName: "Paul Ricard" },
-    ranking: [
-      {
-        id: "r3",
-        position: 10,
-        isDNF: false,
-        pilot: { id: "p3", name: "Fernando Alonso", acronym: "ALO" },
-      },
-      {
-        id: "r4",
-        position: 2,
-        isDNF: false,
-        pilot: { id: "p4", name: "Carlos Sainz", acronym: "SAI" },
-      },
-    ],
-  },
-  {
-    id: "4",
-    season: "2024",
-    date: "2024-11-01",
-    time: "15:00",
-    track: { id: "4", countryName: "Japon", trackName: "Suzuka" },
-    ranking: [
-      {
-        id: "r5",
-        position: 0,
-        isDNF: true,
-        pilot: { id: "p5", name: "Max Verstappen", acronym: "VER" },
-      },
-      {
-        id: "r6",
-        position: 10,
-        isDNF: false,
-        pilot: { id: "p6", name: "Lando Norris", acronym: "NOR" },
-      },
-    ],
-  },
-];
+const ITEMS_PER_PAGE = 10;
 
 export default function Racing() {
   const [tab, setTab] = useState<"upcoming" | "past">("upcoming");
   const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState("");
   const [season, setSeason] = useState("");
+  const [grandPrixList, setGrandPrixList] = useState<GrandPrix[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const today = new Date();
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
 
-  const tabFiltered = mockGrandPrix.filter((gp) =>
-    tab === "past" ? new Date(gp.date) < today : new Date(gp.date) >= today
-  );
+        const [sessions, meetings] = await Promise.all([
+          f1Service.getSessions(season || undefined),
+          f1Service.getMeetings(season || undefined),
+        ]);
 
-  const searchFiltered = tabFiltered.filter((gp) => {
+        const meetingsMap = new Map(meetings.map((m) => [m.meeting_key, m]));
+
+        const grandPrixData = sessions
+          .filter((session) => {
+            const sessionDate = new Date(session.date_start);
+            return tab === "past"
+              ? sessionDate < new Date()
+              : sessionDate >= new Date();
+          })
+          .map((session) =>
+            f1Service.transformToGrandPrix(
+              session,
+              meetingsMap.get(session.meeting_key)!
+            )
+          )
+          .filter((gp) => gp !== null);
+
+        setGrandPrixList(grandPrixData);
+      } catch (err) {
+        setError("Failed to fetch racing data");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [tab, season]);
+
+  const allPastSeasons = Array.from(
+    new Set(
+      grandPrixList
+        .filter((gp) => new Date(gp.date) < new Date())
+        .map((gp) => gp.season)
+    )
+  )
+    .sort()
+    .reverse();
+
+  const searchFiltered = grandPrixList.filter((gp) => {
     const target =
       `${gp.track.countryName} ${gp.track.trackName}`.toLowerCase();
     return target.includes(search.toLowerCase());
@@ -132,8 +78,16 @@ export default function Racing() {
 
   const filteredRaces =
     tab === "past" && season
-      ? searchFiltered.filter((gp) => gp.season === season)
-      : searchFiltered;
+      ? searchFiltered.filter(
+          (gp) => new Date(gp.date) < new Date() && gp.season === season
+        )
+      : tab === "past"
+      ? searchFiltered.filter((gp) => new Date(gp.date) < new Date())
+      : tab === "upcoming" && season
+      ? searchFiltered.filter(
+          (gp) => new Date(gp.date) >= new Date() && gp.season === season
+        )
+      : searchFiltered.filter((gp) => new Date(gp.date) >= new Date());
 
   const totalPages = Math.ceil(filteredRaces.length / ITEMS_PER_PAGE);
   const paginatedRaces = filteredRaces.slice(
@@ -148,24 +102,26 @@ export default function Racing() {
     setSeason("");
   };
 
-  const availableSeasons = [
-    ...new Set(
-      mockGrandPrix
-        .filter((gp) => new Date(gp.date) < today)
-        .map((gp) => gp.season)
-    ),
-  ]
-    .sort()
-    .reverse();
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-xl">Loading...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-xl text-red-600">{error}</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 relative overflow-hidden py-14 lg:py-16 sm:py-18">
       <main className="relative z-10 max-w-7xl mx-auto px-4 py-12 space-y-8">
-        <h1
-          className="text-5xl sm:text-6xl font-extrabold text-center tracking-tighter mb-6 
-    bg-gradient-to-r from-red-600 to-red-300 bg-clip-text text-transparent 
-    drop-shadow-md"
-        >
+        <h1 className="text-5xl font-bold bg-gradient-to-r from-red-900 to-red-600 bg-clip-text text-transparent mb-4">
           Racing
         </h1>
 
@@ -181,7 +137,7 @@ export default function Racing() {
           {tab === "past" && (
             <div className="w-auto sm:w-auto">
               <SeasonFilter
-                seasons={availableSeasons}
+                seasons={allPastSeasons}
                 selected={season}
                 onChange={setSeason}
               />

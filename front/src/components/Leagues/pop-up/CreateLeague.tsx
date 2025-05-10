@@ -9,11 +9,15 @@ import {
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
-import { CreateLeagueProps } from "@/types";
+import { CreateLeagueProps } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 
-export const CreateLeague = ({ isOpen, onClose, onCreate }: CreateLeagueProps) => {
+export const CreateLeague = ({
+  isOpen,
+  onClose,
+  onCreate,
+}: CreateLeagueProps) => {
   const router = useRouter();
   const [leagueName, setLeagueName] = useState("");
   const [isPrivate, setIsPrivate] = useState(false);
@@ -44,7 +48,7 @@ export const CreateLeague = ({ isOpen, onClose, onCreate }: CreateLeagueProps) =
           className="p-8"
         >
           <DialogHeader className="text-center">
-            <DialogTitle className="text-4xl font-extrabold bg-gradient-to-r from-[#D90429] to-gray-800 bg-clip-text text-transparent font-racing tracking-wider">
+            <DialogTitle className="text-4xl font-extrabold bg-gradient-to-r from-[var(--primary-red)] to-gray-800 bg-clip-text text-transparent font-racing tracking-wider">
               Create a League
             </DialogTitle>
           </DialogHeader>
@@ -74,7 +78,7 @@ export const CreateLeague = ({ isOpen, onClose, onCreate }: CreateLeagueProps) =
                     type="radio"
                     checked={!isPrivate}
                     onChange={() => setIsPrivate(false)}
-                    className="h-5 w-5 text-[#D90429] border-2 border-gray-300 checked:border-[#D90429] focus:ring-[#D90429]"
+                    className="h-5 w-5 text-[var(--primary-red)] border-2 border-gray-300 checked:border-[var(--primary-red)] focus:ring-[var(--primary-red)]"
                   />
                   <span className="font-medium text-gray-700 text-xl">
                     Public
@@ -85,7 +89,7 @@ export const CreateLeague = ({ isOpen, onClose, onCreate }: CreateLeagueProps) =
                     type="radio"
                     checked={isPrivate}
                     onChange={() => setIsPrivate(true)}
-                    className="h-5 w-5 text-[#D90429] border-2 border-gray-300 checked:border-[#D90429] focus:ring-[#D90429]"
+                    className="h-5 w-5 text-[var(--primary-red)] border-2 border-gray-300 checked:border-[var(--primary-red)] focus:ring-[var(--primary-red)]"
                   />
                   <span className="font-medium text-gray-700 text-xl">
                     Private
@@ -105,7 +109,7 @@ export const CreateLeague = ({ isOpen, onClose, onCreate }: CreateLeagueProps) =
               </Button>
               <Button
                 type="submit"
-                className="px-8 py-6 bg-gradient-to-r from-[#D90429] to-[#A60321] hover:from-gray-600 hover:to-gray-900 text-white rounded-full text-xl transition-colors duration-200 shadow-lg hover:shadow-xl relative overflow-hidden"
+                className="px-8 py-6 bg-gradient-to-r from-[var(--primary-red)] to-[#A60321] hover:from-gray-600 hover:to-gray-900 text-white rounded-full text-xl transition-colors duration-200 shadow-lg hover:shadow-xl relative overflow-hidden"
               >
                 Create
               </Button>

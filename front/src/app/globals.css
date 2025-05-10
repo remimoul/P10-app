@@ -3,7 +3,15 @@
 
 @custom-variant dark (&:is(.dark *));
 
-:root {}
+:root {
+  --primary-red: #D90429;
+  --secondary-red: #EF233C;
+  --primary-white: #EDF2F4;
+  --primary-blue: #8D99AE;
+  --secondary-blue: #2B2D42;
+  --primary-grey: #555555;
+  --secondary-grey: #2A3439;
+}
 
 .dark {}
 
@@ -96,4 +104,37 @@
 
 .animate-bounce-horizontal {
   animation: bounce-horizontal 1s infinite;
+}
+
+@keyframes flag-wave {
+  0%, 100% { transform: rotate(-8deg) translateY(0); }
+  50% { transform: rotate(8deg) translateY(-6px); }
+}
+
+@keyframes steering-spin-accel {
+  0%   { transform: rotate(0deg);}
+  60%  { transform: rotate(300deg);}
+  100% { transform: rotate(360deg);}
+}
+.animate-steering-spin-accel {
+  animation: steering-spin-accel 2.5s cubic-bezier(0.4,0,0.2,1) infinite;
+  display: inline-block;
+}
+
+@keyframes f1-flag-wave {
+  0%   { transform: translateY(0) skewX(-6deg) scaleY(1.04);}
+  10%  { transform: translateY(-2px) skewX(6deg) scaleY(0.98);}
+  20%  { transform: translateY(-4px) skewX(-6deg) scaleY(1.02);}
+  30%  { transform: translateY(-2px) skewX(6deg) scaleY(0.96);}
+  40%  { transform: translateY(0)  skewX(-6deg) scaleY(1.04);}
+  50%  { transform: translateY(2px)  skewX(6deg) scaleY(0.98);}
+  60%  { transform: translateY(4px)  skewX(-6deg) scaleY(1.02);}
+  70%  { transform: translateY(2px)  skewX(6deg) scaleY(0.96);}
+  80%  { transform: translateY(0)  skewX(-6deg) scaleY(1.04);}
+  100% { transform: translateY(0) skewX(-6deg) scaleY(1.04);}
+}
+.animate-f1-flag-wave {
+  animation: f1-flag-wave 2.2s cubic-bezier(0.4,0.0,0.2,1) infinite;
+  display: inline-block;
+  will-change: transform;
 }

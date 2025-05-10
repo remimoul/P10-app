@@ -1,4 +1,4 @@
-import { RankedUser } from "@/types";
+import { RankedUser } from "@/lib/types";
 
 interface RankingTableProps {
   participants: RankedUser[];
