@@ -33,7 +33,7 @@ export default function SelectLeaguePage({ params }: PageProps) {
 
   // Navigation vers le classement de la ligue sélectionnée
   const handleViewLeagueRanking = (index: number) => {
-    router.push(`/racing/${id_gp}/${index + 1}`);
+    router.push(`/racing/${id_gp}/ranking/${index + 1}`);
   };
 
   return (

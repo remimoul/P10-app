@@ -50,8 +50,9 @@ export interface Participant {
 export interface UserCardProps {
   participant?: Participant;
   timeLeft: number;
-  rank: number | null;
+  rank?: number | null;
   handleVote: () => void;
+  isButton: boolean;
 }
 
 export interface AddMemberProps {

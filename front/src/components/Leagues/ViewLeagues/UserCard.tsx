@@ -17,6 +17,7 @@ const UserCard = ({
     score: 0,
     hasVoted: false,
     avatar: "",
+    isButton: true,
   };
 
   return (
