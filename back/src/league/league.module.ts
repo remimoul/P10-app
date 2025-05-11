@@ -4,6 +4,7 @@ import { LeagueResolver } from './league.resolver';
 import { PrismaService } from 'src/prisma.service';
 
 @Module({
-    providers: [LeagueService, LeagueResolver, PrismaService]
+  providers: [LeagueService, LeagueResolver, PrismaService],
+  exports: [LeagueService],
 })
-export class LeagueModule { }
+export class LeagueModule {}
