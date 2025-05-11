@@ -21,6 +21,7 @@ import { ClerkClientProvider } from './providers/clerk-client.provider';
 import { ClerkAuthGuard } from './auth/clerk-auth.guard';
 import { AuthModule } from './auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
+import { UserController } from './user/user.controller';
 
 @Module({
   imports: [
@@ -47,7 +48,7 @@ import { APP_GUARD } from '@nestjs/core';
       isGlobal: true,
     }),
   ],
-  controllers: [AppController],
+  controllers: [AppController, UserController],
   providers: [
     AppService,
     PrismaService,
