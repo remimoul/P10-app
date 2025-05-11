@@ -23,8 +23,7 @@ import {
   LapTime,
   Stint,
 } from "@/lib/types/racing";
-import { formatDate } from "@/lib/utils/date";
-import { formatLapTime } from "@/lib/utils/time";
+import { formatDate, formatLapTime } from "@/lib/utils/dateAndTime";
 
 const Ranking = () => {
   const [races, setRaces] = useState<Session[]>([]);
@@ -111,15 +110,22 @@ const Ranking = () => {
 
   const meetingsMap = new Map(meetings.map((m: Meeting) => [m.meeting_key, m]));
 
-  const uniqueDates = Array.from(new Set(filteredRaces.map((session) => formatDate(session.date_start))));
+  const uniqueDates = Array.from(
+    new Set(filteredRaces.map((session) => formatDate(session.date_start)))
+  );
 
   const racesForFilters = filteredRaces
-    .filter((session) => !selectedDate || formatDate(session.date_start) === selectedDate)
+    .filter(
+      (session) =>
+        !selectedDate || formatDate(session.date_start) === selectedDate
+    )
     .map((session) => {
       const meeting = meetingsMap.get(session.meeting_key);
       return {
         id: session.session_key,
-        name: `${meeting?.circuit_short_name || `Session ${session.session_key}`} (${formatDate(session.date_start)})`,
+        name: `${
+          meeting?.circuit_short_name || `Session ${session.session_key}`
+        } (${formatDate(session.date_start)})`,
         country: meeting?.country_code || "",
         date: formatDate(session.date_start),
         season: session.year.toString(),
@@ -128,7 +134,7 @@ const Ranking = () => {
         length: "",
         lapRecord: "",
         recordHolder: "",
-        recordYear: ""
+        recordYear: "",
       };
     });
 
@@ -165,13 +171,26 @@ const Ranking = () => {
   };
 
   const filteredDrivers: DriverTableData[] = drivers
-    .filter((driver: Driver) => !selectedCountry || driver.country_code === selectedCountry)
+    .filter(
+      (driver: Driver) =>
+        !selectedCountry || driver.country_code === selectedCountry
+    )
     .map((driver: Driver) => {
-      const result = positions.find((pos: Position) => pos.driver_number === driver.driver_number);
-      const driverGrid = grid.find((g: Grid) => g.driver_number === driver.driver_number);
-      const driverLaps = laps.filter((l: Lap) => l.driver_number === driver.driver_number);
-      const driverLapTimes = lapTimes.filter((lt: LapTime) => lt.driver_number === driver.driver_number);
-      const driverStints = stints.filter((s: Stint) => s.driver_number === driver.driver_number);
+      const result = positions.find(
+        (pos: Position) => pos.driver_number === driver.driver_number
+      );
+      const driverGrid = grid.find(
+        (g: Grid) => g.driver_number === driver.driver_number
+      );
+      const driverLaps = laps.filter(
+        (l: Lap) => l.driver_number === driver.driver_number
+      );
+      const driverLapTimes = lapTimes.filter(
+        (lt: LapTime) => lt.driver_number === driver.driver_number
+      );
+      const driverStints = stints.filter(
+        (s: Stint) => s.driver_number === driver.driver_number
+      );
 
       const fastestLap = driverLapTimes.reduce((fastest, current) => {
         if (!fastest || current.lap_time < fastest.lap_time) {
@@ -188,9 +207,16 @@ const Ranking = () => {
       const hasFastestLap = fastestLap?.lap_time === raceFastestLap?.lap_time;
 
       const isSprint = selectedRaceData?.session_type === "Sprint";
-      const points = calculatePoints(result?.position || 0, isSprint, hasFastestLap);
+      const points = calculatePoints(
+        result?.position || 0,
+        isSprint,
+        hasFastestLap
+      );
 
-      const positionChange = driverGrid && result?.position ? (driverGrid.position - result.position) : 0;
+      const positionChange =
+        driverGrid && result?.position
+          ? driverGrid.position - result.position
+          : 0;
 
       return {
         id: driver.driver_number,
@@ -200,7 +226,9 @@ const Ranking = () => {
         position: result?.position ?? 0,
         country: driver.country_code,
         number: driver.driver_number,
-        fastestLap: fastestLap?.lap_time ? formatLapTime(fastestLap.lap_time) : "",
+        fastestLap: fastestLap?.lap_time
+          ? formatLapTime(fastestLap.lap_time)
+          : "",
         grid: driverGrid?.position ?? 0,
         status: (result?.status as "Finished" | "DNF") || "DNF",
         laps: totalLaps || 0,
@@ -211,13 +239,13 @@ const Ranking = () => {
         previousPosition: driverGrid?.position ?? 0,
         positionChange,
         car: driver.team_name,
-        compound: lastStint?.compound || ""
+        compound: lastStint?.compound || "",
       };
     })
     .sort((a, b) => {
       if (a.status === "Finished" && b.status !== "Finished") return -1;
       if (a.status !== "Finished" && b.status === "Finished") return 1;
-      return ((a.position ?? 99) - (b.position ?? 99));
+      return (a.position ?? 99) - (b.position ?? 99);
     });
 
   const selectedRaceInfo = selectedRaceData
