@@ -5,12 +5,11 @@ import toast from "react-hot-toast";
 import { motion } from "framer-motion";
 import { GiTrophyCup } from "react-icons/gi";
 import { RiTeamFill, RiArrowRightSLine } from "react-icons/ri";
-
 import { Button } from "@/components/ui/button";
 import { JoinLeague } from "@/components/Leagues/pop-up/JoinLeague";
 import { CreateLeague } from "@/components/Leagues/pop-up/CreateLeague";
 
-export const ReadyToRace = () => {
+const ReadyToRace = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
 
@@ -47,33 +46,12 @@ export const ReadyToRace = () => {
 
   return (
     <div className="relative">
-      <motion.div
+      <div
         className="mt-10 sm:mt-20 bg-gradient-to-br from-[#1c1e22] to-[#2a2f36] backdrop-blur-lg p-4 sm:p-6 md:p-8 rounded-3xl border border-gray-700 relative overflow-hidden shadow-2xl"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
       >
-        <motion.div
-          className="absolute inset-0 rounded-3xl pointer-events-none"
-          animate={{ rotate: [0, 5, 0] }}
-          transition={{ repeat: Infinity, duration: 5, ease: "linear" }}
-          style={{
-            background:
-              "linear-gradient(45deg, rgba(217,4,41,0.5), rgba(42,52,57,0.5))",
-            maskImage: "linear-gradient(#fff 0 0)",
-          }}
-        />
-
-        <motion.div
-          className="absolute top-0 left-[-100%] w-full h-full pointer-events-none"
-          animate={{ x: ["-100%", "100%"] }}
-          transition={{ duration: 2.5, ease: "linear", repeat: Infinity }}
-          style={{ background: "rgba(255,255,255,0.05)" }}
-        />
-
         <div className="max-w-3xl mx-auto flex flex-col md:flex-row gap-6 md:gap-8 items-center justify-between relative z-10">
           <div className="space-y-3 sm:space-y-4 flex-1 text-center md:text-left">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white uppercase tracking-wider font-racing">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white uppercase tracking-wider font-racing whitespace-nowrap">
               Ready to Race ?
             </h2>
             <p className="text-gray-300 text-lg sm:text-xl max-w-md mx-auto md:mx-0">
@@ -82,7 +60,10 @@ export const ReadyToRace = () => {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 w-full sm:w-auto">
-            <motion.div whileHover={{ scale: 1.05 }} className="relative w-full sm:w-auto">
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              className="relative w-full sm:w-auto"
+            >
               <Button
                 onClick={() => setIsCreateModalOpen(true)}
                 className="w-full sm:w-auto h-14 sm:h-16 px-6 sm:px-8 text-base sm:text-lg font-bold text-white rounded-full shadow-2xl 
@@ -109,16 +90,7 @@ export const ReadyToRace = () => {
                 >
                   <GiTrophyCup className="text-xl sm:text-2xl group-hover:rotate-12 transition-transform" />
                   Create League
-                  <motion.div
-                    whileHover={{
-                      x: 5,
-                      rotate: 360,
-                      scale: 1.2,
-                    }}
-                    transition={{ type: "spring", stiffness: 300 }}
-                  >
-                    <RiArrowRightSLine className="ml-2 inline-block text-lg sm:text-xl" />
-                  </motion.div>
+                  <RiArrowRightSLine className="ml-2 inline-block text-lg sm:text-xl" />
                 </motion.span>
 
                 <motion.div
@@ -155,7 +127,10 @@ export const ReadyToRace = () => {
               </Button>
             </motion.div>
 
-            <motion.div whileHover={{ scale: 1.05 }} className="relative w-full sm:w-auto">
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              className="relative w-full sm:w-auto"
+            >
               <Button
                 variant="outline"
                 onClick={() => setIsJoinModalOpen(true)}
@@ -183,16 +158,7 @@ export const ReadyToRace = () => {
                 >
                   <RiTeamFill className="text-xl sm:text-2xl group-hover:translate-x-1 transition-transform" />
                   Join League
-                  <motion.div
-                    whileHover={{
-                      x: 5,
-                      rotate: -360,
-                      scale: 1.2,
-                    }}
-                    transition={{ type: "spring", stiffness: 300 }}
-                  >
-                    <RiArrowRightSLine className="ml-2 inline-block text-lg sm:text-xl" />
-                  </motion.div>
+                  <RiArrowRightSLine className="ml-2 inline-block text-lg sm:text-xl" />
                 </motion.span>
 
                 <motion.div
@@ -233,7 +199,7 @@ export const ReadyToRace = () => {
 
         <div className="absolute -top-20 -right-20 w-40 sm:w-64 h-40 sm:h-64 bg-red-900 rounded-full blur-3xl opacity-20" />
         <div className="absolute -bottom-20 -left-20 w-40 sm:w-64 h-40 sm:h-64 bg-blue-900 rounded-full blur-3xl opacity-20" />
-      </motion.div>
+      </div>
 
       <CreateLeague
         isOpen={isCreateModalOpen}
@@ -249,3 +215,5 @@ export const ReadyToRace = () => {
     </div>
   );
 };
+
+export default ReadyToRace;

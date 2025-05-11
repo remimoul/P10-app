@@ -1,6 +1,32 @@
 "use client";
 
-import { PaginationProps } from "@/types";
+import { PaginationProps } from "@/lib/types";
+
+function getPageNumbers(current: number, total: number) {
+  const delta = 2;
+  const range = [];
+  const rangeWithDots = [];
+  let l: number | undefined = undefined;
+
+  for (let i = 1; i <= total; i++) {
+    if (i === 1 || i === total || (i >= current - delta && i <= current + delta)) {
+      range.push(i);
+    }
+  }
+
+  for (let i = 0; i < range.length; i++) {
+    if (l !== undefined) {
+      if (range[i] - l === 2) {
+        rangeWithDots.push(l + 1);
+      } else if (range[i] - l > 2) {
+        rangeWithDots.push('...');
+      }
+    }
+    rangeWithDots.push(range[i]);
+    l = range[i];
+  }
+  return rangeWithDots;
+}
 
 export const Pagination = ({
   currentPage,
@@ -11,50 +37,61 @@ export const Pagination = ({
 
   const GoBack = currentPage > 1;
   const GoNext = currentPage < totalPages;
+  const pageNumbers = getPageNumbers(currentPage, totalPages);
 
   return (
-    <div className="flex justify-center items-center gap-2 pt-8">
-      {/* Previous */}
-      <button
-        onClick={() => GoBack && onPageChange(currentPage - 1)}
-        disabled={!GoBack}
-        className={`px-3 py-1.5 text-sm rounded-full border transition-all
-          ${
-            GoBack
-              ? "text-gray-600 hover:text-red-600 border-gray-300 hover:border-red-400"
-              : "text-gray-300 border-gray-200 cursor-not-allowed"
-          }`}
+    <div className="w-full flex justify-center pt-8">
+      <div
+        className="flex gap-2 items-center overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 px-2 sm:overflow-x-visible"
+        style={{ maxWidth: '100vw' }}
       >
-        ← Prev
-      </button>
-
-      {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+        {/* Previous */}
         <button
-          key={page}
-          onClick={() => onPageChange(page)}
-          className={`px-3 py-1.5 text-sm font-semibold rounded-full border transition-all
+          onClick={() => GoBack && onPageChange(currentPage - 1)}
+          disabled={!GoBack}
+          className={`min-w-[40px] px-3 py-2 text-lg rounded-full border transition-all
             ${
-              page === currentPage
-                ? "bg-red-600 text-white border-red-600"
-                : "bg-white text-gray-600 border-gray-300 hover:border-red-500 hover:text-red-600"
+              GoBack
+                ? "text-gray-600 hover:text-red-600 border-gray-300 hover:border-red-400"
+                : "text-gray-300 border-gray-200 cursor-not-allowed"
             }`}
         >
-          {page}
+          ←
         </button>
-      ))}
 
-      <button
-        onClick={() => GoNext && onPageChange(currentPage + 1)}
-        disabled={!GoNext}
-        className={`px-3 py-1.5 text-sm rounded-full border transition-all
-          ${
-            GoNext
-              ? "text-gray-600 hover:text-red-600 border-gray-300 hover:border-red-400"
-              : "text-gray-300 border-gray-200 cursor-not-allowed"
-          }`}
-      >
-        Next →
-      </button>
+        {pageNumbers.map((page, idx) =>
+          page === '...'
+            ? (
+              <span key={"ellipsis-" + idx} className="min-w-[40px] px-3 py-2 text-lg text-gray-400 select-none">...</span>
+            ) : (
+              <button
+                key={page}
+                onClick={() => onPageChange(Number(page))}
+                className={`min-w-[40px] px-3 py-2 text-lg font-semibold rounded-full border transition-all
+                  ${
+                    page === currentPage
+                      ? "bg-[var(--secondary-red)] text-white border-[var(--secondary-red)]"
+                      : "bg-white text-gray-600 border-gray-300 hover:border-red-500 hover:text-[var(--secondary-red)]"
+                  }`}
+              >
+                {page}
+              </button>
+            )
+        )}
+
+        <button
+          onClick={() => GoNext && onPageChange(currentPage + 1)}
+          disabled={!GoNext}
+          className={`min-w-[40px] px-3 py-2 text-lg rounded-full border transition-all
+            ${
+              GoNext
+                ? "text-gray-600 hover:text-[var(--secondary-red)] border-gray-300 hover:border-[var(--secondary-red)]"
+                : "text-gray-300 border-gray-200 cursor-not-allowed"
+            }`}
+        >
+          →
+        </button>
+      </div>
     </div>
   );
 };

@@ -2,8 +2,9 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { FaGamepad } from "react-icons/fa6";
-import { FaUsers, FaTrophy } from "react-icons/fa";
+import { FaUsers } from "react-icons/fa";
+import { GiTrophyCup } from "react-icons/gi";
+import { Swords } from "lucide-react";
 
 const HowToPlay = () => {
   const steps = [
@@ -11,18 +12,18 @@ const HowToPlay = () => {
       title: "Challenge your friends",
       description:
         "Create or join leagues (public or private) and compete against other fans",
-      icon: <FaGamepad className="w-12 h-12 text-red-600" />,
+      icon: <Swords className="w-16 h-16 text-red-600" />,
     },
     {
       title: "Choose your pilot",
       description: "Bet on who finishes 10ᵉ at the next F1 race",
-      icon: <FaUsers className="w-12 h-12 text-red-600" />,
+      icon: <FaUsers className="w-16 h-16 text-red-600" />,
     },
     {
       title: "Conquer the podium",
       description:
         "Every winning bet brings you closer to the ultimate trophy!",
-      icon: <FaTrophy className="w-12 h-12 text-red-600" />,
+      icon: <GiTrophyCup className="w-16 h-16 text-red-600" />,
     },
   ];
 
