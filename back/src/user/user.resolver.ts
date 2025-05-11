@@ -21,9 +21,4 @@ export class UserResolver {
   ): Promise<User> {
     return this.userService.getUser(getUserInput);
   }
-
-  //   @Query(() => [User])
-  //   async getAllUsers(): Promise<User[]> {
-  //     return this.userService.getAllUsers();
-  //   }
 }
