@@ -16,6 +16,11 @@ import { TeamModule } from './team/team.module';
 import { TrackModule } from './track/track.module';
 import { UserModule } from './user/user.module';
 import { PrismaService } from './prisma.service';
+import { ConfigModule } from '@nestjs/config';
+import { ClerkClientProvider } from './providers/clerk-client.provider';
+import { ClerkAuthGuard } from './auth/clerk-auth.guard';
+import { AuthModule } from './auth/auth.module';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -36,9 +41,18 @@ import { PrismaService } from './prisma.service';
     PilotteamModule,
     TeamModule,
     TrackModule,
-    UserModule
+    UserModule,
+    AuthModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
   ],
   controllers: [AppController],
-  providers: [AppService, PrismaService],
+  providers: [
+    AppService,
+    PrismaService,
+    ClerkClientProvider,
+    { provide: APP_GUARD, useClass: ClerkAuthGuard },
+  ],
 })
-export class AppModule { }
+export class AppModule {}
