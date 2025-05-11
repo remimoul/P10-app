@@ -22,6 +22,7 @@ import { ClerkAuthGuard } from './auth/clerk-auth.guard';
 import { AuthModule } from './auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { UserController } from './user/user.controller';
+import { LeagueController } from './league/league.controller';
 
 @Module({
   imports: [
@@ -48,7 +49,7 @@ import { UserController } from './user/user.controller';
       isGlobal: true,
     }),
   ],
-  controllers: [AppController, UserController],
+  controllers: [AppController, UserController, LeagueController],
   providers: [
     AppService,
     PrismaService,

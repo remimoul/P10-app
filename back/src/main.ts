@@ -10,7 +10,7 @@ async function bootstrap() {
     .setTitle('P10 ♥︎ API Documentation 🚀')
     .setDescription('Description of the different endpoints of the P10 API')
     .setVersion('1.0')
-    .addTag('users')
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
