@@ -16,6 +16,10 @@ datasource db {
 
 model User {
   id         String       @id @default(uuid())
+  username   String       @unique
+  email      String       @unique
+  firstName  String?
+  lastName   String?
   clerkId    String       @unique
   avatarId   String?
   avatar     Avatar?      @relation(fields: [avatarId], references: [id])

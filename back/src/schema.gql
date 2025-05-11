@@ -48,7 +48,7 @@ type League {
   avatar: Avatar!
   id: String!
   joinCode: User!
-  members: [User!]!
+  members: [User!]
   name: String!
   private: Boolean!
 }
