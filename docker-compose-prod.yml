@@ -16,10 +16,10 @@ services:
   frontend:
     build:
       context: .
-      dockerfile: ./docker/front/Dockerfile.prod
+      dockerfile: ./docker/front/Dockerfile.dev
     container_name: frontend_P10
     environment:
-      NODE_ENV: production
+      # NODE_ENV: production
       NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
       CLERK_SECRET_KEY: ${CLERK_SECRET_KEY}
       NEXT_PUBLIC_CLERK_SIGN_IN_URL: ${NEXT_PUBLIC_CLERK_SIGN_IN_URL}
@@ -39,10 +39,10 @@ services:
   backend:
     build:
       context: .
-      dockerfile: ./docker/back/Dockerfile.prod
+      dockerfile: ./docker/back/Dockerfile.dev
     container_name: backend_P10
     environment:
-      NODE_ENV: production
+      # NODE_ENV: production
       DATABASE_URL: postgres://postgres:${DB_PASSWORD}@postgresql:5432/postgres
       CLERK_PUBLISHABLE_KEY: ${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
       CLERK_SECRET_KEY: ${CLERK_SECRET_KEY}
