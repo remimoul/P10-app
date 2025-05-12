@@ -13,10 +13,11 @@ const ReadyToRace = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
 
-  const handleCreateLeague = async (league: {
-    name: string;
-    isPrivate: boolean;
-  }) => {
+  const handleCreateLeague = async () => {
+    // const handleCreateLeague = async (league: {
+    //   name: string;
+    //   isPrivate: boolean;
+    // }) => {
     const toastId = toast.loading("Creation of the league ...");
     try {
       // Simulation appel API
@@ -30,7 +31,8 @@ const ReadyToRace = () => {
     }
   };
 
-  const handleJoinLeague = async (joinCode: string) => {
+  const handleJoinLeague = async () => {
+    // const handleJoinLeague = async (joinCode: string) => {
     const toastId = toast.loading("Joining the league ...");
     try {
       // Simulation appel API
@@ -46,9 +48,7 @@ const ReadyToRace = () => {
 
   return (
     <div className="relative">
-      <div
-        className="mt-10 sm:mt-20 bg-gradient-to-br from-[#1c1e22] to-[#2a2f36] backdrop-blur-lg p-4 sm:p-6 md:p-8 rounded-3xl border border-gray-700 relative overflow-hidden shadow-2xl"
-      >
+      <div className="mt-10 sm:mt-20 bg-gradient-to-br from-[#1c1e22] to-[#2a2f36] backdrop-blur-lg p-4 sm:p-6 md:p-8 rounded-3xl border border-gray-700 relative overflow-hidden shadow-2xl">
         <div className="max-w-3xl mx-auto flex flex-col md:flex-row gap-6 md:gap-8 items-center justify-between relative z-10">
           <div className="space-y-3 sm:space-y-4 flex-1 text-center md:text-left">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white uppercase tracking-wider font-racing whitespace-nowrap">

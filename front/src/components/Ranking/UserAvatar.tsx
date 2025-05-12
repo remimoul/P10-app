@@ -11,6 +11,7 @@ const UserAvatar = ({ name, avatarUrl }: UserAvatarProps) => {
     .toUpperCase();
 
   return avatarUrl ? (
+    // eslint-disable-next-line @next/next/no-img-element
     <img
       src={avatarUrl}
       alt={name}
