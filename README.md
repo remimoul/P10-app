@@ -74,7 +74,7 @@ docker compose up --build -d
 - Frontend: http://localhost:3000
 - Backend: http://localhost:4500
 - API Documentation: http://localhost:4500/api-docs
-- API Swagger Documentation: http://localhost:4500/api-docs
+- API GraphQl Documentation: http://localhost:4500/(à definir)
 
 ## 📝 Project Structure
 
