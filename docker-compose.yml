@@ -1,0 +1,49 @@
+services:
+  postgresql:
+    image: postgres:16
+    container_name: postgresql_p10
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: ${DB_USER}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data_p10:/var/lib/postgresql/data
+    networks:
+      - web
+
+  frontend:
+    build:
+      context: .
+      dockerfile: ./docker/front/Dockerfile
+    container_name: frontend_P10
+    environment:
+      NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
+      CLERK_SECRET_KEY: ${CLERK_SECRET_KEY}
+      NEXT_PUBLIC_CLERK_SIGN_IN_URL: ${NEXT_PUBLIC_CLERK_SIGN_IN_URL}
+      NEXT_PUBLIC_CLERK_SIGN_UP_URL: ${NEXT_PUBLIC_CLERK_SIGN_UP_URL}
+      NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL: ${NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL}
+      NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL: ${NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL}
+    ports:
+      - "3000:3000"
+
+  backend:
+    build:
+      context: .
+      dockerfile: ./docker/back/Dockerfile
+    container_name: backend_P10
+    environment:
+      DATABASE_URL: postgres://postgres:${DB_PASSWORD}@postgresql:5432/postgres
+      CLERK_PUBLISHABLE_KEY: ${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
+      CLERK_SECRET_KEY: ${CLERK_SECRET_KEY}
+      CLERK_SIGNING_KEY: ${CLERK_SIGNING_KEY}
+      PORT: 4500
+    ports:
+      - "4500:4500"
+    depends_on:
+      - postgresql
+
+volumes:
+  postgres_data_p10:
+    driver: local
