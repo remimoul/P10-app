@@ -52,7 +52,7 @@ services:
       - "4500:4500"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.backend.rule=Host(`grineasy.com`)"
+      - "traefik.http.routers.backend.rule=Host(`grineasy.online`)"
       - "traefik.http.routers.backend.entrypoints=websecure"
       - "traefik.http.routers.backend.tls.certresolver=myresolver"
     networks:
