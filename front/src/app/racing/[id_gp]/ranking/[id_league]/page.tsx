@@ -2,20 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
-import { useRouter } from "next/navigation";
 import { Participant } from "@/lib/types";
 
 import { RiLoader2Fill } from "react-icons/ri";
 import RaceRanking from "@/components/Racings/Ranking/RaceRanking";
 import RaceInfo from "@/components/Racings/Ranking/RaceInfo";
 
-export default function LeagueRankingPage({
-  params,
-}: {
-  params: { id_gp: string; id_league: string };
-}) {
+export default function LeagueRankingPage() {
   const { user, isLoaded: userLoaded } = useUser();
-  const router = useRouter();
   const [participants, setParticipants] = useState<Participant[]>([]);
 
   useEffect(() => {

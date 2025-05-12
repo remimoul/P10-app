@@ -52,7 +52,7 @@ export interface UserCardProps {
   timeLeft: number;
   rank?: number | null;
   handleVote: () => void;
-  isButton: boolean;
+  isButton?: boolean;
 }
 
 export interface AddMemberProps {
@@ -240,4 +240,10 @@ export interface RaceInfoProps {
 export interface ResultsTableProps {
   drivers: Driver[];
   viewMode: ViewMode;
+}
+
+// faq page
+export interface FAQItem {
+  question: string;
+  answer: string;
 }

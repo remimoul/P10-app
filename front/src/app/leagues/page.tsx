@@ -27,7 +27,7 @@ const leagues: League[] = [
   },
 ];
 
-export const Leagues = () => {
+export default function Leagues() {
   const publicLeagues = useMemo(
     () => leagues.filter((l) => l.type === "public"),
     []
@@ -59,6 +59,4 @@ export const Leagues = () => {
       </main>
     </div>
   );
-};
-
-export default Leagues;
+}

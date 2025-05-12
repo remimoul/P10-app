@@ -3,6 +3,7 @@ import { UserAvatarProps } from "@/lib/types";
 
 const UserAvatar: React.FC<UserAvatarProps> = ({ avatarUrl, fullName }) => {
   return avatarUrl ? (
+    // eslint-disable-next-line @next/next/no-img-element
     <img
       src={avatarUrl}
       alt={fullName || "User Avatar"}

@@ -144,7 +144,7 @@ const Ranking = () => {
     ) {
       setSelectedRace(filteredRaces[0]?.session_key || null);
     }
-  }, [selectedSeason, filteredRaces]);
+  }, [selectedSeason, filteredRaces, selectedRace]);
 
   const selectedRaceData = races.find(
     (race: Session) => race.session_key === selectedRace
