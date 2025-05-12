@@ -1,0 +1,130 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String       @id @default(uuid())
+  username   String       @unique
+  email      String       @unique
+  firstName  String?
+  lastName   String?
+  clerkId    String       @unique
+  avatarId   String?
+  avatar     Avatar?      @relation(fields: [avatarId], references: [id])
+  Bet        Bet[]
+  UserLeague UserLeague[]
+}
+
+model League {
+  id         String       @id @default(uuid())
+  name       String
+  private    Boolean
+  joinCode   String?      @unique
+  avatarId   String?
+  avatar     Avatar?      @relation(fields: [avatarId], references: [id])
+  status     String      @default("active")
+  maxMembers Int @default(50)
+  UserLeague UserLeague[]
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+}
+
+model UserLeague {
+  id       String  @id @default(uuid())
+  userId   String
+  user     User    @relation(fields: [userId], references: [id])
+  leagueId String
+  league   League  @relation(fields: [leagueId], references: [id])
+  isAdmin  Boolean @default(false)
+  joinedAt DateTime @default(now())
+}
+
+model Avatar {
+  id      String   @id @default(uuid())
+  picture String
+  User    User[]
+  League  League[]
+}
+
+model Pilot {
+  id               String             @id @default(uuid())
+  name             String
+  picture          String?
+  acronym          String?
+  PilotTeam        PilotTeam[]
+  GrandPrix        GrandPrix?         @relation(fields: [grandPrixId], references: [id])
+  grandPrixId      String?
+  GrandPrixRanking GrandPrixRanking[]
+  Bet              Bet[]
+}
+
+model Team {
+  id        String      @id @default(uuid())
+  name      String
+  logo      String?
+  color     String?
+  PilotTeam PilotTeam[]
+}
+
+model PilotTeam {
+  id      String @id @default(uuid())
+  pilotId String
+  pilot   Pilot  @relation(fields: [pilotId], references: [id])
+  teamId  String
+  team    Team   @relation(fields: [teamId], references: [id])
+  year    String
+}
+
+model GrandPrix {
+  id      String             @id @default(uuid())
+  season  String
+  date    String
+  time    String
+  trackId String
+  track   Track              @relation(fields: [trackId], references: [id])
+  pilots  Pilot[]
+  ranking GrandPrixRanking[]
+  Bet     Bet[]
+}
+
+model Track {
+  id             String      @id @default(uuid())
+  countryName    String
+  trackName      String
+  pictureCountry String?
+  pictureTrack   String?
+  GrandPrix      GrandPrix[]
+}
+
+model GrandPrixRanking {
+  id          String    @id @default(uuid())
+  grandPrixId String
+  grandPrix   GrandPrix @relation(fields: [grandPrixId], references: [id])
+  pilotId     String
+  pilot       Pilot     @relation(fields: [pilotId], references: [id])
+  isDNF       Boolean
+  position    Int
+}
+
+model Bet {
+  id          String    @id @default(uuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  grandPrixId String
+  grandPrix   GrandPrix @relation(fields: [grandPrixId], references: [id])
+  pilotP10Id  String
+  pilotP10    Pilot     @relation(fields: [pilotP10Id], references: [id])
+  pointsP10   Int?
+}

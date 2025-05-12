@@ -1,0 +1,16 @@
+FROM node:23-alpine
+
+WORKDIR /app
+
+COPY ./back .
+
+RUN corepack enable pnpm
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+
+COPY ./back/dev.sh /dev.sh
+RUN chmod +x /dev.sh
+
+EXPOSE 4500
+
+ENTRYPOINT ["/dev.sh"]
