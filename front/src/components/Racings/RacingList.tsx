@@ -4,7 +4,7 @@ import { RacingListProps } from "@/lib/types";
 export const RacingList = ({ grandPrixList, isPast }: RacingListProps) => {
   if (grandPrixList.length === 0) {
     return (
-      <div className="px-4 py-10 text-center text-gray-400 font-mono">
+      <div className="px-4 py-10 text-center text-[var(--primary-blue)] font-mono text-2xl">
         No Grand Prix available.
       </div>
     );

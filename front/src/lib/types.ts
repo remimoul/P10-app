@@ -50,8 +50,9 @@ export interface Participant {
 export interface UserCardProps {
   participant?: Participant;
   timeLeft: number;
-  rank: number | null;
+  rank?: number | null;
   handleVote: () => void;
+  isButton: boolean;
 }
 
 export interface AddMemberProps {
@@ -223,6 +224,9 @@ export interface FiltersProps {
   onSeasonChange: (season: string) => void;
   onRaceChange: (raceId: number) => void;
   onCountryChange: (country: string) => void;
+  uniqueDates: string[];
+  selectedDate: string;
+  onDateChange: (date: string) => void;
 }
 
 export interface NoRacesMessageProps {
