@@ -10,13 +10,11 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data_p10:/var/lib/postgresql/data
-    networks:
-      - web
 
   frontend:
     build:
       context: .
-      dockerfile: ./docker/front/Dockerfile
+      dockerfile: ./docker/front/Dockerfile.dev
     container_name: frontend_P10
     environment:
       NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
@@ -31,7 +29,7 @@ services:
   backend:
     build:
       context: .
-      dockerfile: ./docker/back/Dockerfile
+      dockerfile: ./docker/back/Dockerfile.dev
     container_name: backend_P10
     environment:
       DATABASE_URL: postgres://postgres:${DB_PASSWORD}@postgresql:5432/postgres

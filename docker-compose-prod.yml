@@ -16,7 +16,7 @@ services:
   frontend:
     build:
       context: .
-      dockerfile: ./docker/front/Dockerfile
+      dockerfile: ./docker/front/Dockerfile.prod
     container_name: frontend_P10
     environment:
       NODE_ENV: production
@@ -39,7 +39,7 @@ services:
   backend:
     build:
       context: .
-      dockerfile: ./docker/back/Dockerfile
+      dockerfile: ./docker/back/Dockerfile.prod
     container_name: backend_P10
     environment:
       NODE_ENV: production
