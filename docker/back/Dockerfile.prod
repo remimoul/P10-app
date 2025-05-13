@@ -20,7 +20,6 @@ COPY --from=builder /build/dist ./dist
 COPY --from=builder /build/package.json .
 COPY --from=builder /build/pnpm-lock.yaml .
 COPY --from=builder /build/prisma ./prisma
-COPY --from=builder /build/.env .env
 COPY --from=builder /build/prod.sh .
 RUN chmod +x prod.sh
 
