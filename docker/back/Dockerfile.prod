@@ -1,4 +1,5 @@
 FROM node:23-alpine AS builder
+
 WORKDIR /build
 
 COPY ./back .
@@ -7,10 +8,9 @@ RUN corepack enable pnpm
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 
-# RUN pnpm install --frozen-lockfile
-
-RUN npx prisma generate
-RUN npx nest build
+RUN pnpm install
+RUN pnpm prisma generate
+RUN pnpm nest build
 
 FROM node:23-alpine AS production
 
@@ -25,6 +25,7 @@ COPY --from=builder /build/prod.sh .
 RUN chmod +x prod.sh
 
 COPY --from=builder /build/node_modules ./node_modules
+
 
 RUN corepack enable pnpm
 ENV PNPM_HOME="/pnpm"
