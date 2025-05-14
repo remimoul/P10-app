@@ -1,4 +1,4 @@
-import { Participant } from "@/lib/types";
+import { Participant } from "@/lib/types/leagues";
 import { motion } from "framer-motion";
 import { GiTrophyCup } from "react-icons/gi";
 

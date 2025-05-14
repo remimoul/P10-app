@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { use } from "react";
 import LeagueSection from "@/components/Leagues/LeagueSection";
-import { League } from "@/lib/types";
+import { League } from "@/lib/types/leagues";
 
 interface PageProps {
   params: Promise<{ id_gp: string }>;
