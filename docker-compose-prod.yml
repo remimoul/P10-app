@@ -30,7 +30,7 @@ services:
       DATABASE_URL: postgresql://f10db_owner:${PASSWORD_NEON}@ep-winter-night-a55b4nyo-pooler.us-east-2.aws.neon.tech:5432/f10db
       CLERK_PUBLISHABLE_KEY: ${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
       CLERK_SECRET_KEY: ${CLERK_SECRET_KEY}
-      CLERK_SIGNING_KEY: ${CLERK_SIGNING_KEY
+      CLERK_SIGNING_KEY: ${CLERK_SIGNING_KEY}
       PORT: 4500
     ports:
       - "4500:4500"
