@@ -1,6 +1,6 @@
 "use client";
 
-import { ExitLeagueProps } from "@/lib/types";
+import { ExitLeagueProps } from "@/lib/types/leagues";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import DialogContentExitLeague from "@/components/Leagues/ViewLeagues/pop-up/DialogContentExitLeague";
 

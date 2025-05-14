@@ -27,7 +27,8 @@ const ViewLeague = () => {
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [isAddMemberModalOpen, setIsAddMemberModalOpen] = useState(false);
   const [isExitLeagueModalOpen, setIsExitLeagueModalOpen] = useState(false);
-  const [isEditLeagueNameModalOpen, setIsEditLeagueNameModalOpen] = useState(false);
+  const [isEditLeagueNameModalOpen, setIsEditLeagueNameModalOpen] =
+    useState(false);
 
   useEffect(() => {
     if (userLoaded && user) {
@@ -95,7 +96,7 @@ const ViewLeague = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-red-50 py-20 px-8">
+    <div className="min-h-screen bg-gradient-to-b from-white to-red-50 py-24 px-8">
       <Header
         league={{
           name: organization?.name || "Racing League",

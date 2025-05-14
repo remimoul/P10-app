@@ -1,4 +1,4 @@
-import { Participant } from "@/lib/types";
+import { Participant } from "@/lib/types/leagues";
 import { motion } from "framer-motion";
 import { RiUser3Fill } from "react-icons/ri";
 import { FaUserFriends } from "react-icons/fa";
@@ -10,7 +10,7 @@ const ParticipantsList = ({
   participants: Participant[];
   currentUser?: string;
 }) => (
-  <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 mb-4">
+  <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 mb-4 mx-4 sm:mx-6 md:mx-8 lg:mx-12">
     <div className="col-span-full flex items-center justify-between mb-6">
       <div className="flex items-center gap-3">
         <div className="w-10 h-10 flex items-center justify-center">

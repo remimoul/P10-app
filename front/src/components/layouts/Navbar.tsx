@@ -67,7 +67,7 @@ const Navbar = () => {
   }, [isMenuOpen]);
 
   return (
-    <nav className="fixed top-0 w-full bg-[#EDF2F4]/70 backdrop-blur-md border-b border-[#EDF2F4] z-50">
+    <nav className="fixed top-0 w-full bg-white/70 backdrop-blur-md border-b border-gray-200 z-50">
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center gap-2">
@@ -95,11 +95,12 @@ const Navbar = () => {
                   <Link
                     href={item.path}
                     onClick={() => setActiveTab(item.name)}
-                    className={`min-w-[80px] flex items-center justify-center w-full px-2 py-1 sm:px-3 sm:py-2 text-lg transition-colors ${
-                      activeTab === item.name
-                        ? "text-[var(--primary-red)] font-medium"
-                        : "text-gray-900 hover:text-[var(--secondary-red)]"
-                    }`}
+                    className={`min-w-[80px] flex items-center justify-center w-full px-2 py-1 sm:px-3 sm:py-2 text-lg transition-colors
+                      ${
+                        activeTab === item.name
+                          ? "text-[var(--primary-red)] font-medium"
+                          : "text-gray-900 hover:text-[var(--primary-red)] hover:underline hover:underline-offset-4"
+                      }`}
                   >
                     <item.icon className="h-7 w-7 sm:h-5 sm:w-5 mr-1 sm:mr-2" />
                     <span className="whitespace-nowrap">{item.name}</span>
@@ -122,17 +123,9 @@ const Navbar = () => {
             </SignedIn>
             <SignedOut>
               <SignInButton mode="modal">
-                <button className="hidden sm:flex items-center relative overflow-hidden rounded-full px-3 py-1 group">
-                  <div className="absolute inset-0 z-0 animate-gradient opacity-80 transition-transform duration-500 ease-out group-hover:scale-110 group-hover:opacity-90" />
-
-                  <div className="absolute inset-0 z-10 bg-cover opacity-20 mix-blend-overlay transition-all duration-500 ease-out group-hover:opacity-30" />
-
-                  <div className="relative z-20 flex items-center gap-2 bg-black bg-opacity-60 backdrop-blur-sm rounded-full px-3 py-1 border border-transparent transition-all duration-300 ease-out group-hover:border-red-500 group-hover:shadow-xl group-hover:bg-opacity-70">
-                    <FiUser className="h-5 w-5 text-white transition-colors duration-300 ease-out group-hover:text-red-500" />
-                    <span className="text-lg font-semibold text-white transition-colors duration-300 ease-out group-hover:text-red-500">
-                      Account
-                    </span>
-                  </div>
+                <button className="hidden sm:flex items-center gap-2 px-5 py-2 rounded-full bg-gradient-to-br from-white/70 to-white/20 border-2 border-[var(--primary-red)] shadow-lg text-gray-900 text-lg font-bold transition-all duration-200 hover:scale-105 hover:shadow-[0_4px_24px_rgba(217,4,41,0.25)] hover:bg-gradient-to-br hover:from-[var(--primary-red)]/90 hover:to-white/30 hover:text-white">
+                  <FiUser className="h-5 w-5" />
+                  <span>Account</span>
                 </button>
               </SignInButton>
             </SignedOut>

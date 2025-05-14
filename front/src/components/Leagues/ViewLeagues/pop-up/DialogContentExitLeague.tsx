@@ -2,8 +2,9 @@ import toast from "react-hot-toast";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { DialogContentProps } from "@/lib/types";
+import { DialogContentProps } from "@/lib/types/leagues";
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { IoClose } from "react-icons/io5";
 
 const BUTTON_STYLES = {
   cancel:
@@ -36,8 +37,16 @@ const DialogContentExitLeague = ({
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="p-8"
+      className="p-8 relative"
     >
+      <button
+        onClick={onClose}
+        className="absolute top-0 right-4 z-20 w-10 h-10 flex items-center justify-center rounded-full text-gray-400 hover:text-[var(--primary-red)] hover:bg-gray-100 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[var(--primary-red)]/40"
+        aria-label="Close dialog"
+        type="button"
+      >
+        <IoClose size={36} />
+      </button>
       <DialogHeader className="text-center">
         <DialogTitle className={DIALOG_STYLES.title}>Exit League</DialogTitle>
       </DialogHeader>

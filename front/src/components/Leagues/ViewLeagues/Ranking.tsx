@@ -1,9 +1,9 @@
-import { Participant } from "@/lib/types";
+import { Participant } from "@/lib/types/leagues";
 import { motion } from "framer-motion";
 import { GiTrophyCup } from "react-icons/gi";
 
 const Ranking = ({ participants }: { participants: Participant[] }) => (
-  <div className="relative bg-gradient-to-br from-white to-red-50 rounded-3xl p-8 shadow-lg border border-red-500/30 overflow-hidden">
+  <div className="relative bg-gradient-to-br from-white to-red-50 rounded-3xl p-8 shadow-lg border border-red-500/30 overflow-hidden mx-4 sm:mx-6 md:mx-8 lg:mx-12">
     <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/diagonal-stripes.png')] opacity-10" />
     <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 to-transparent" />
 

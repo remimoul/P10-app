@@ -1,15 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { EditLeagueNameProps } from "@/lib/types";
+import { EditLeagueNameProps } from "@/lib/types/leagues";
 import toast from "react-hot-toast";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import DialogContentEditLeagueName from "@/components/Leagues/ViewLeagues/pop-up/DialogContentEditLeagueName";
-
-const DIALOG_STYLES = {
-  content:
-    "sm:max-w-[425px] bg-gray-50 rounded-3xl border border-gray-50 shadow-xl",
-};
 
 const EditLeagueName = ({ isOpen, onClose, onSave }: EditLeagueNameProps) => {
   const [leagueName, setLeagueName] = useState("");
@@ -32,7 +27,7 @@ const EditLeagueName = ({ isOpen, onClose, onSave }: EditLeagueNameProps) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className={DIALOG_STYLES.content}>
+      <DialogContent className="mx-2 sm:mx-auto w-full max-w-xs sm:max-w-[425px] bg-gray-50 rounded-2xl sm:rounded-3xl border border-gray-50 shadow-xl">
         <DialogContentEditLeagueName
           leagueName={leagueName}
           onLeagueNameChange={setLeagueName}
