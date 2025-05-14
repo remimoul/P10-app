@@ -1,4 +1,5 @@
 FROM node:23-alpine AS builder
+
 WORKDIR /build
 
 COPY ./back .
@@ -7,10 +8,9 @@ RUN corepack enable pnpm
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 
-RUN pnpm install --frozen-lockfile
-
-RUN pnpm exec prisma generate
-RUN pnpm build
+RUN pnpm install
+RUN pnpm prisma generate
+RUN pnpm nest build
 
 FROM node:23-alpine AS production
 
@@ -20,9 +20,10 @@ COPY --from=builder /build/dist ./dist
 COPY --from=builder /build/package.json .
 COPY --from=builder /build/pnpm-lock.yaml .
 COPY --from=builder /build/prisma ./prisma
-COPY --from=builder /build/.env .env
 COPY --from=builder /build/prod.sh .
-RUN chmod +x prod-entrypoint.sh
+# Add this line to copy generated directory
+COPY --from=builder /build/generated ./generated
+RUN chmod +x prod.sh
 
 COPY --from=builder /build/node_modules ./node_modules
 
@@ -30,7 +31,7 @@ RUN corepack enable pnpm
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 
-RUN pnpm install --frozen-lockfile --prod
+RUN pnpm install --prod
 
 EXPOSE 4500
 

@@ -1,9 +1,21 @@
 services:
+  postgresql:
+    image: postgres:16
+    container_name: postgresql_p10_int
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: ${DB_USER}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data_int_p10:/var/lib/postgresql/data
+
   frontend:
     build:
       context: .
       dockerfile: ./docker/front/Dockerfile.prod
-    container_name: frontend_P10
+    container_name: frontend_P10_int
     environment:
       NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
       CLERK_SECRET_KEY: ${CLERK_SECRET_KEY}
@@ -11,47 +23,46 @@ services:
       NEXT_PUBLIC_CLERK_SIGN_UP_URL: ${NEXT_PUBLIC_CLERK_SIGN_UP_URL}
       NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL: ${NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL}
       NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL: ${NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL}
-    ports:
-      - "3000:3000"
+    expose:
+      - "3000"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.frontend.rule=Host(`grineasy.com`)"
-      - "traefik.http.routers.frontend.entrypoints=websecure"
-      - "traefik.http.routers.frontend.tls.certresolver=myresolver"
-    networks:
-      - web
+      - "traefik.http.routers.frontend.rule=Host(`p10appf`)|| HostRegexp(`p10appf:{port:[0-9]+}`)"
+      - "traefik.http.routers.frontend.entrypoints=web"
+      - "traefik.http.services.frontend.loadbalancer.server.port=3000"
 
   backend:
     build:
       context: .
       dockerfile: ./docker/back/Dockerfile.prod
-    container_name: backend_P10
+    container_name: backend_P10_int
     environment:
-      DATABASE_URL: postgresql://f10db_owner:${PASSWORD_NEON}@ep-winter-night-a55b4nyo-pooler.us-east-2.aws.neon.tech:5432/f10db
+      DATABASE_URL: postgres://postgres:${DB_PASSWORD}@postgresql:5432/postgres
       CLERK_PUBLISHABLE_KEY: ${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
       CLERK_SECRET_KEY: ${CLERK_SECRET_KEY}
       CLERK_SIGNING_KEY: ${CLERK_SIGNING_KEY}
-      PORT: 4500
-    ports:
-      - "4500:4500"
+    expose:
+      - "4500"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.backend.rule=Host(`grineasy.online`)"
-      - "traefik.http.routers.backend.entrypoints=websecure"
-      - "traefik.http.routers.backend.tls.certresolver=myresolver"
-    networks:
-      - web
+      - "traefik.http.routers.backend.rule=Host(`p10appb`) || HostRegexp(`p10appb:{port:[0-9]+}`)"
+      - "traefik.http.routers.backend.entrypoints=web"
+      - "traefik.http.services.backend.loadbalancer.server.port=4500"
+    depends_on:
+      - postgresql
 
   traefik:
     image: traefik:v3.2.1
-    container_name: traefik_reverse_proxy
+    container_name: traefik_integration
     command:
+      # Api sur HTTP (pas HTTPS)
+      - "--api.insecure=true"
+      # Configuration par docker pour lecture labels
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
-      - "--providers.file.watch=true"
+      # Entrypoint Web en HTTP (pas HTTPS)
       - "--entrypoints.web.address=:80"
-      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
-      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.web.forwardedHeaders.insecure=true"
       # Activation du /ping pour le healthcheck
       - "--ping=true"
       - "--ping.entrypoint=web"
@@ -64,21 +75,17 @@ services:
       # On ne garde que les erreurs et on log les headers
       - "--accesslog.filters.statuscodes=400-499,500-599"
       - "--accesslog.fields.headers.defaultMode=keep"
-      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
-      - "--certificatesresolvers.myresolver.acme.email=remi.moul@my-digital-school.org"
-      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
     ports:
-      - "443:443"
+      - "80:80"
+    labels:
+      - "traefik.enable=true"
+      # Traefik dashboard
+      - "traefik.http.routers.api.rule=Host(`traefik.p10`)"
+      - "traefik.http.routers.api.service=api@internal"
+      - "traefik.http.routers.external-ping.entrypoints=web"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
-      - "./letsencrypt:/letsencrypt"
-    networks:
-      - web
 
 volumes:
-  postgres_data_p10:
+  postgres_data_int_p10:
     driver: local
-
-networks:
-  web:
-    external: true
