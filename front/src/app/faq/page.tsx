@@ -1,7 +1,6 @@
 import FaqItems from "@/lib/data/faqItems";
 import FAQHeader from "@/components/Faq/FAQHeader";
 import FAQList from "@/components/Faq/FAQList";
-import ContactSupport from "@/components/Faq/ContactSupport";
 
 const Faq = () => {
   return (
@@ -10,7 +9,6 @@ const Faq = () => {
         <div className="max-w-4xl mx-auto space-y-8">
           <FAQHeader />
           <FAQList items={FaqItems} />
-          <ContactSupport />
         </div>
       </main>
     </div>

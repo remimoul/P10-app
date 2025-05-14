@@ -15,6 +15,7 @@ import Ranking from "@/components/Leagues/ViewLeagues/Ranking";
 import UserCard from "@/components/Leagues/ViewLeagues/UserCard";
 import AddMember from "@/components/Leagues/ViewLeagues/pop-up/AddMember";
 import ExitLeague from "@/components/Leagues/ViewLeagues/pop-up/ExitLeague";
+import EditLeagueName from "@/components/Leagues/ViewLeagues/pop-up/EditLeagueName";
 import ParticipantsList from "@/components/Leagues/ViewLeagues/ParticipantsList";
 
 const ViewLeague = () => {
@@ -26,6 +27,7 @@ const ViewLeague = () => {
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [isAddMemberModalOpen, setIsAddMemberModalOpen] = useState(false);
   const [isExitLeagueModalOpen, setIsExitLeagueModalOpen] = useState(false);
+  const [isEditLeagueNameModalOpen, setIsEditLeagueNameModalOpen] = useState(false);
 
   useEffect(() => {
     if (userLoaded && user) {
@@ -65,6 +67,16 @@ const ViewLeague = () => {
     setIsExitLeagueModalOpen(true);
   };
 
+  const handleEditLeagueName = () => {
+    setIsEditLeagueNameModalOpen(true);
+  };
+
+  const handleSaveLeagueName = (newName: string) => {
+    // API call to update the league name
+    toast.success(`League name updated to ${newName}`);
+    setIsEditLeagueNameModalOpen(false);
+  };
+
   const formatTime = (seconds: number) => {
     const days = Math.floor(seconds / 86400);
     const hours = Math.floor(seconds / 3600);
@@ -93,6 +105,7 @@ const ViewLeague = () => {
         formatTime={formatTime}
         handleAddMembers={handleAddMembers}
         handleLeaveLeague={handleLeaveLeague}
+        handleEditLeagueName={handleEditLeagueName}
       />
 
       {participants.length === 1 && (
@@ -146,6 +159,14 @@ const ViewLeague = () => {
             );
             setIsExitLeagueModalOpen(false);
           }}
+        />
+      )}
+
+      {isEditLeagueNameModalOpen && (
+        <EditLeagueName
+          isOpen={isEditLeagueNameModalOpen}
+          onClose={() => setIsEditLeagueNameModalOpen(false)}
+          onSave={handleSaveLeagueName}
         />
       )}
     </div>
