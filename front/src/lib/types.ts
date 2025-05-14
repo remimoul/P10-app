@@ -1,3 +1,5 @@
+import FaqItems from "./data/faqItems";
+
 //Page leagues
 export interface League {
   name: string;
@@ -84,6 +86,31 @@ export type AddMemberContentProps = {
   onSubmit: (e: React.FormEvent) => void;
   onClose: () => void;
 };
+
+export interface EditLeagueNameProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSave: (newName: string) => void;
+}
+
+export interface DialogContentEditLeagueNameProps {
+  leagueName: string;
+  onLeagueNameChange: (value: string) => void;
+  onSubmit: (e: React.FormEvent) => void;
+  onClose: () => void;
+}
+
+export interface HeaderProps {
+  league: {
+    name: string;
+    type: string;
+  };
+  timeLeft: number;
+  formatTime: (seconds: number) => string;
+  handleAddMembers: () => void;
+  handleLeaveLeague: () => void;
+  handleEditLeagueName: () => void;
+}
 
 // page racing
 export interface Track {
@@ -246,4 +273,8 @@ export interface ResultsTableProps {
 export interface FAQItem {
   question: string;
   answer: string;
+}
+
+export interface FAQListProps {
+  items: typeof FaqItems;
 }
