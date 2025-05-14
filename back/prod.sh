@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Generate Prisma client first
-pnpm prisma generate
+pnpm dlx prisma generate
 
 # Then run migrations
 pnpm dlx prisma migrate deploy
