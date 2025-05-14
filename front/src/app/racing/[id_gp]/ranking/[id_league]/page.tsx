@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
-import { Participant } from "@/lib/types";
+import { Participant } from "@/lib/types/leagues";
 
 import { RiLoader2Fill } from "react-icons/ri";
 import RaceRanking from "@/components/Racings/Ranking/RaceRanking";

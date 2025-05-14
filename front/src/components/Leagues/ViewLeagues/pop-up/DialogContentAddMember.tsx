@@ -1,7 +1,8 @@
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { AddMemberContentProps } from "@/lib/types";
+import { AddMemberContentProps } from "@/lib/types/leagues";
+import { IoClose } from "react-icons/io5";
 
 const DIALOG_STYLES = {
   content:
@@ -30,8 +31,16 @@ const AddMemberContent = ({
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="p-8"
+      className="p-8 relative"
     >
+      <button
+        onClick={onClose}
+        className="absolute top-0 right-4 z-20 w-10 h-10 flex items-center justify-center rounded-full text-gray-400 hover:text-[#D90429] hover:bg-gray-100 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#D90429]/40"
+        aria-label="Close dialog"
+        type="button"
+      >
+        <IoClose size={36} />
+      </button>
       <DialogHeader className="text-center">
         <DialogTitle className={DIALOG_STYLES.title}>Add a Member</DialogTitle>
       </DialogHeader>

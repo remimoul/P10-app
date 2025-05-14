@@ -1,4 +1,4 @@
-import { LeagueSectionProps } from "@/lib/types";
+import { LeagueSectionProps } from "@/lib/types/leagues";
 import LeagueCard from "@/components/Leagues/LeagueCard";
 import SectionHeader from "@/components/Leagues/SectionHeader";
 
