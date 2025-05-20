@@ -6,6 +6,8 @@ import {
   FaTachometerAlt,
   FaStopwatch,
   FaUserTie,
+  FaMapMarkerAlt,
+  FaExternalLinkAlt,
 } from "react-icons/fa";
 
 const RaceInfo = ({ race }: RaceInfoProps) => {
@@ -36,7 +38,7 @@ const RaceInfo = ({ race }: RaceInfoProps) => {
       <div className="relative z-10">
         <div className="flex items-center justify-between mb-12">
           <h2 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-800 group-hover:from-red-700 group-hover:to-red-900 transition-colors duration-300 group-hover:scale-105 transform">
-            {race.name}
+            {race.ergastData?.raceName || race.name}
           </h2>
           <div className="flex items-center gap-3 group-hover:scale-105 transform transition-transform duration-300">
             <span className="text-gray-500 font-medium text-2xl group-hover:text-gray-700 transition-colors duration-300">
@@ -53,6 +55,16 @@ const RaceInfo = ({ race }: RaceInfoProps) => {
               </div>
               <div className="text-gray-900 font-medium text-lg group-hover/item:text-red-600 transition-colors duration-300">
                 {race.circuit}
+                {race.ergastData?.circuitUrl && (
+                  <a
+                    href={race.ergastData.circuitUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="ml-2 text-red-500 hover:text-red-600 transition-colors duration-300"
+                  >
+                    <FaExternalLinkAlt className="inline-block" />
+                  </a>
+                )}
               </div>
             </div>
             <div className="flex items-center group/item hover:bg-red-50/50 p-4 rounded-3xl transition-all duration-300">
@@ -64,6 +76,17 @@ const RaceInfo = ({ race }: RaceInfoProps) => {
                 {race.date}
               </div>
             </div>
+            {race.ergastData?.location && (
+              <div className="flex items-center group/item hover:bg-red-50/50 p-4 rounded-3xl transition-all duration-300">
+                <div className="w-48 text-gray-500 font-medium flex items-center text-lg">
+                  <FaMapMarkerAlt className="mr-4 text-red-500 group-hover/item:text-red-600 transition-colors duration-300 text-xl" />
+                  Location:
+                </div>
+                <div className="text-gray-900 font-medium text-lg group-hover/item:text-red-600 transition-colors duration-300">
+                  {race.ergastData.location.locality}, {race.ergastData.location.country}
+                </div>
+              </div>
+            )}
             <div className="flex items-center group/item hover:bg-red-50/50 p-4 rounded-3xl transition-all duration-300">
               <div className="w-48 text-gray-500 font-medium flex items-center text-lg">
                 <FaRuler className="mr-4 text-red-500 group-hover/item:text-red-600 transition-colors duration-300 text-xl" />

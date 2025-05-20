@@ -4,7 +4,9 @@ import { motion } from "framer-motion";
 import { format } from "date-fns";
 import { useRouter } from "next/navigation";
 import { RacingCardProps } from "@/lib/types";
-import { HiOutlineArrowNarrowRight } from "react-icons/hi"; // Chevron moderne
+import { HiOutlineArrowNarrowRight } from "react-icons/hi";
+import { FaMapMarkerAlt, FaFlagCheckered } from "react-icons/fa";
+import { ErgastResult } from "@/lib/types/racing";
 
 export const RacingCard = ({ grandPrix, isPast }: RacingCardProps) => {
   const router = useRouter();
@@ -42,11 +44,29 @@ export const RacingCard = ({ grandPrix, isPast }: RacingCardProps) => {
             Season {grandPrix.season}
           </p>
           <p className="text-base font-bold truncate">
-            {grandPrix.track.countryName}
+            {grandPrix.ergastData?.raceName || grandPrix.track.countryName}
           </p>
           <p className="text-sm text-gray-400 truncate">
-            {grandPrix.track.trackName}
+            {grandPrix.ergastData?.circuit.name || grandPrix.track.trackName}
           </p>
+          {grandPrix.ergastData?.circuit && (
+            <div className="mt-2 space-y-1">
+              <div className="flex items-center text-xs text-gray-400">
+                <FaMapMarkerAlt className="mr-1" />
+                <span>
+                  {grandPrix.ergastData.circuit.location.locality},{" "}
+                  {grandPrix.ergastData.circuit.location.country}
+                </span>
+              </div>
+              <div className="flex items-center text-xs text-gray-400">
+                <FaFlagCheckered className="mr-1" />
+                <span>
+                  {grandPrix.ergastData.circuit.length} •{" "}
+                  {grandPrix.ergastData.circuit.numberOfLaps} laps
+                </span>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="flex flex-col items-end gap-2 min-w-[110px]">
@@ -59,7 +79,20 @@ export const RacingCard = ({ grandPrix, isPast }: RacingCardProps) => {
           </motion.div>
 
           <div className="flex flex-wrap justify-end gap-2 min-h-[30px]">
-            {isPast && grandPrix.ranking ? (
+            {isPast && grandPrix.ergastData?.results ? (
+              grandPrix.ergastData.results.slice(0, 3).map((result: ErgastResult) => (
+                <motion.span
+                  key={result.driver.number}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.3 }}
+                  className="inline-flex items-center gap-1 px-2.5 py-[3px] text-[11px] rounded-full font-bold uppercase tracking-wide bg-red-700 text-red-100 shadow-sm"
+                >
+                  <span>P{result.position}</span>
+                  {result.driver.name.split(" ")[1]}
+                </motion.span>
+              ))
+            ) : isPast && grandPrix.ranking ? (
               grandPrix.ranking
                 .filter((rank) => rank.isDNF || rank.position === 10)
                 .map((rank) => (

@@ -1,4 +1,5 @@
 import FaqItems from "./data/faqItems";
+import { ErgastRaceData, ErgastData } from './types/racing';
 // page racing
 export interface Track {
   id: string;
@@ -26,6 +27,7 @@ export interface GrandPrix {
   time: string;
   track: Track;
   ranking?: GrandPrixRanking[];
+  ergastData?: ErgastData;
 }
 
 export interface RacingCardProps {
@@ -97,6 +99,7 @@ export interface Race {
   recordHolder: string;
   recordYear: string;
   season: string;
+  ergastData?: ErgastRaceData;
 }
 
 export interface RaceResult {

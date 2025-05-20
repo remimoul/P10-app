@@ -7,6 +7,49 @@ export interface Track {
   pictureTrack?: string;
 }
 
+export interface ErgastDriver {
+  name: string;
+  number: string;
+  nationality: string;
+}
+
+export interface ErgastResult {
+  position: string;
+  driver: ErgastDriver;
+  constructor: string;
+  grid: string;
+  status: string;
+  points: string;
+  time?: string;
+  fastestLap?: {
+    time: string;
+    rank: string;
+  };
+}
+
+export interface ErgastCircuitInfo {
+  name: string;
+  location: {
+    locality: string;
+    country: string;
+  };
+  length: string;
+  numberOfLaps: string;
+  lapRecord: {
+    time: string;
+    driver: string;
+    year: string;
+  };
+}
+
+export interface ErgastData {
+  round: string;
+  raceName: string;
+  date: string;
+  circuit: ErgastCircuitInfo;
+  results?: ErgastResult[];
+}
+
 export interface GrandPrix {
   id: string;
   date: string;
@@ -16,6 +59,7 @@ export interface GrandPrix {
   status: string;
   type: string;
   ranking?: GrandPrixRanking[];
+  ergastData?: ErgastData;
 }
 
 export interface GrandPrixRanking {
@@ -141,4 +185,41 @@ export interface DriverTableData {
   positionChange: number;
   car: string;
   compound: string;
+}
+
+export interface ErgastLocation {
+  lat: string;
+  long: string;
+  locality: string;
+  country: string;
+}
+
+export interface ErgastCircuit {
+  circuitId: string;
+  url: string;
+  circuitName: string;
+  Location: ErgastLocation;
+}
+
+export interface ErgastRaceData {
+  round: string;
+  raceName: string;
+  circuitId: string;
+  circuitUrl: string;
+  location: ErgastLocation;
+}
+
+export interface Race {
+  id: number;
+  name: string;
+  country: string;
+  date: string;
+  season: string;
+  circuit: string;
+  laps: number;
+  length: string;
+  lapRecord: string;
+  recordHolder: string;
+  recordYear: string;
+  ergastData?: ErgastRaceData;
 } 
