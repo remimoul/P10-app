@@ -3,7 +3,7 @@
 // import { use } from "react";
 import { Podium } from "@/components/Racings/Ranking/Podium";
 import { ParticipantsList } from "@/components/Racings/Ranking/ParticipantsList";
-import { LeagueRankingData } from "@/lib/types";
+import { LeagueRankingData } from "@/lib/types/leagues";
 
 export default function LeagueRankingPage() {
   const mockRanking: LeagueRankingData = {

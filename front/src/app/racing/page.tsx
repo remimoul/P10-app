@@ -95,6 +95,9 @@ export default function Racing() {
                     circuit: {
                       name: ergastRace.Circuit.circuitName,
                       location: ergastRace.Circuit.Location,
+                      length: ergastRace.circuitInfo?.length || "N/A",
+                      numberOfLaps: ergastRace.circuitInfo?.numberOfLaps || "N/A",
+                      lapRecord: ergastRace.circuitInfo?.lapRecord || { time: "N/A", driver: "N/A", year: "N/A" },
                     },
                     results: results?.results?.map((result) => ({
                       position: result.position,
