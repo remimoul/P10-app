@@ -1,4 +1,4 @@
-import { RaceInfoProps } from "@/lib/types";
+import { RaceInfoProps } from "@/lib/types/racing";
 import { motion } from "framer-motion";
 import {
   FaRuler,
@@ -83,7 +83,8 @@ const RaceInfo = ({ race }: RaceInfoProps) => {
                   Location:
                 </div>
                 <div className="text-gray-900 font-medium text-lg group-hover/item:text-red-600 transition-colors duration-300">
-                  {race.ergastData.location.locality}, {race.ergastData.location.country}
+                  {race.ergastData.location.locality},{" "}
+                  {race.ergastData.location.country}
                 </div>
               </div>
             )}

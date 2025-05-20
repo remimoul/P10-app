@@ -2,7 +2,7 @@
 
 import { useId } from "react";
 import { motion } from "framer-motion";
-import { RacingTabsProps } from "@/lib/types";
+import { RacingTabsProps } from "@/lib/types/racing";
 
 const tabs = [
   { key: "upcoming", label: "Upcoming" },

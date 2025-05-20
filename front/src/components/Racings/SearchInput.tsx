@@ -3,7 +3,7 @@
 import { ChangeEvent, useState } from "react";
 import { Search, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { SearchInputProps } from "@/lib/types";
+import { SearchInputProps } from "@/lib/types/racing";
 
 export const SearchInput = ({ value, onChange }: SearchInputProps) => {
   const [isFocused, setIsFocused] = useState(false);

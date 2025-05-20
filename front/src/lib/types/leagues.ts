@@ -109,3 +109,23 @@ export interface HeaderProps {
   handleLeaveLeague: () => void;
   handleEditLeagueName: () => void;
 }
+
+// page ranking
+export interface RankedUser {
+  id: string;
+  name: string;
+  avatar?: string;
+  points: number;
+}
+
+export interface LeagueRankingData {
+  grandPrixName: string;
+  leagueName: string;
+  participants: RankedUser[];
+}
+
+export interface LeagueShort {
+  id: string;
+  name: string;
+  avatar?: string;
+}

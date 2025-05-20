@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { format } from "date-fns";
 import { useRouter } from "next/navigation";
-import { RacingCardProps } from "@/lib/types";
+import { RacingCardProps } from "@/lib/types/racing";
 import { HiOutlineArrowNarrowRight } from "react-icons/hi";
 import { FaMapMarkerAlt, FaFlagCheckered } from "react-icons/fa";
 import { ErgastResult } from "@/lib/types/racing";

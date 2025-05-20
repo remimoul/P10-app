@@ -1,6 +1,6 @@
 "use client";
 
-import { SeasonFilterProps } from "@/lib/types";
+import { SeasonFilterProps } from "@/lib/types/racing";
 
 export const SeasonFilter = ({
   seasons,

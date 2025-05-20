@@ -4,7 +4,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { FAQListProps } from "@/lib/types";
+import { FAQListProps } from "@/lib/types/other";
 
 const FAQList = ({ items }: FAQListProps) => {
   return (
