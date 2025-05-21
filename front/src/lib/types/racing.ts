@@ -1,3 +1,5 @@
+import { ErgastRace } from "./ergast";
+
 export interface Track {
   id: string;
   trackName: string;
@@ -353,4 +355,73 @@ export interface RaceInfoProps {
 export interface ResultsTableProps {
   drivers: Driver[];
   viewMode: ViewMode;
+}
+
+//hooks
+export interface RacingData {
+  season: string;
+  races: {
+    round: string;
+    raceName: string;
+    date: string;
+    circuit: {
+      name: string;
+      location: {
+        locality: string;
+        country: string;
+      };
+      length: string;
+      numberOfLaps: string;
+      lapRecord: {
+        time: string;
+        driver: string;
+        year: string;
+      };
+    };
+    results?: {
+      position: string;
+      driver: {
+        name: string;
+        number: string;
+        nationality: string;
+      };
+      constructor: string;
+      grid: string;
+      status: string;
+      points: string;
+      time?: string;
+      fastestLap?: {
+        time: string;
+        rank: string;
+      };
+    }[];
+  }[];
+  loading: boolean;
+  error: string | null;
+}
+
+export interface UseRacesReturn {
+  races: Session[];
+  ergastRaces: ErgastRace[];
+  selectedSeason: string;
+  selectedRace: number | null;
+  selectedDate: string;
+  loading: boolean;
+  setSelectedSeason: (season: string) => void;
+  setSelectedRace: (race: number | null) => void;
+  setSelectedDate: (date: string) => void;
+  filteredRaces: Session[];
+  uniqueDates: string[];
+  meetingsMap: Map<number, Meeting>;
+}
+
+export interface UseDriversReturn {
+  drivers: Driver[];
+  positions: Position[];
+  laps: Lap[];
+  grid: Grid[];
+  lapTimes: LapTime[];
+  stints: Stint[];
+  loading: boolean;
+  filteredDrivers: DriverTableData[];
 }

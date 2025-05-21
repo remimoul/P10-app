@@ -1,19 +1,21 @@
-import { useState, useEffect } from 'react';
-import { Driver, Position, Lap, Grid, LapTime, Stint, DriverTableData } from '@/lib/types/racing';
-import { f1Service } from '@/lib/services/f1Service';
-import { formatLapTime } from '@/lib/utils/dateAndTime';
-import { RACE_POINTS, SPRINT_POINTS, FASTEST_LAP_POINTS } from '@/lib/types/racing';
-
-interface UseDriversReturn {
-  drivers: Driver[];
-  positions: Position[];
-  laps: Lap[];
-  grid: Grid[];
-  lapTimes: LapTime[];
-  stints: Stint[];
-  loading: boolean;
-  filteredDrivers: DriverTableData[];
-}
+import { useState, useEffect } from "react";
+import {
+  Driver,
+  Position,
+  Lap,
+  Grid,
+  LapTime,
+  Stint,
+  DriverTableData,
+  UseDriversReturn,
+} from "@/lib/types/racing";
+import { f1Service } from "@/lib/services/f1Service";
+import { formatLapTime } from "@/lib/utils/dateAndTime";
+import {
+  RACE_POINTS,
+  SPRINT_POINTS,
+  FASTEST_LAP_POINTS,
+} from "@/lib/types/racing";
 
 export const useDrivers = (
   selectedRace: number | null,
@@ -172,4 +174,4 @@ export const useDrivers = (
     loading,
     filteredDrivers,
   };
-}; 
+};

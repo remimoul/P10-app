@@ -1,24 +1,9 @@
-import { useState, useEffect } from 'react';
-import { Session, Meeting } from '@/lib/types/racing';
-import { ErgastRace } from '@/lib/types/ergast';
-import { f1Service } from '@/lib/services/f1Service';
-import { ergastService } from '@/lib/services/ergastService';
-import { formatDate } from '@/lib/utils/dateAndTime';
-
-interface UseRacesReturn {
-  races: Session[];
-  ergastRaces: ErgastRace[];
-  selectedSeason: string;
-  selectedRace: number | null;
-  selectedDate: string;
-  loading: boolean;
-  setSelectedSeason: (season: string) => void;
-  setSelectedRace: (race: number | null) => void;
-  setSelectedDate: (date: string) => void;
-  filteredRaces: Session[];
-  uniqueDates: string[];
-  meetingsMap: Map<number, Meeting>;
-}
+import { useState, useEffect } from "react";
+import { Session, Meeting, UseRacesReturn } from "@/lib/types/racing";
+import { ErgastRace } from "@/lib/types/ergast";
+import { f1Service } from "@/lib/services/f1Service";
+import { ergastService } from "@/lib/services/ergastService";
+import { formatDate } from "@/lib/utils/dateAndTime";
 
 export const useRaces = (): UseRacesReturn => {
   const [races, setRaces] = useState<Session[]>([]);
@@ -39,13 +24,13 @@ export const useRaces = (): UseRacesReturn => {
         ]);
         setRaces(sessions);
         setMeetings(meetingsData);
-        
+
         const allSeasons = Array.from(
           new Set(sessions.map((s) => s.year.toString()))
         )
           .sort()
           .reverse();
-        
+
         const currentSeason = allSeasons[0] || "";
         setSelectedSeason(currentSeason);
         setSelectedRace(sessions[0]?.session_key || null);
@@ -105,4 +90,4 @@ export const useRaces = (): UseRacesReturn => {
     uniqueDates,
     meetingsMap,
   };
-}; 
+};

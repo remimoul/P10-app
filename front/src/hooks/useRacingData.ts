@@ -1,52 +1,11 @@
-import { useState, useEffect } from 'react';
-import { ergastService } from '@/lib/services/ergastService';
-import { formatDate } from '@/lib/utils/dateAndTime';
-
-interface RacingData {
-  season: string;
-  races: {
-    round: string;
-    raceName: string;
-    date: string;
-    circuit: {
-      name: string;
-      location: {
-        locality: string;
-        country: string;
-      };
-      length: string;
-      numberOfLaps: string;
-      lapRecord: {
-        time: string;
-        driver: string;
-        year: string;
-      };
-    };
-    results?: {
-      position: string;
-      driver: {
-        name: string;
-        number: string;
-        nationality: string;
-      };
-      constructor: string;
-      grid: string;
-      status: string;
-      points: string;
-      time?: string;
-      fastestLap?: {
-        time: string;
-        rank: string;
-      };
-    }[];
-  }[];
-  loading: boolean;
-  error: string | null;
-}
+import { useState, useEffect } from "react";
+import { ergastService } from "@/lib/services/ergastService";
+import { formatDate } from "@/lib/utils/dateAndTime";
+import { RacingData } from "@/lib/types/racing";
 
 export const useRacingData = (season?: string): RacingData => {
   const [data, setData] = useState<RacingData>({
-    season: '',
+    season: "",
     races: [],
     loading: true,
     error: null,
@@ -56,11 +15,14 @@ export const useRacingData = (season?: string): RacingData => {
     const fetchData = async () => {
       try {
         const races = await ergastService.getRaces(season);
-        
+
         const formattedRaces = await Promise.all(
           races.map(async (race) => {
-            const results = await ergastService.getRaceResults(race.season, race.round);
-            
+            const results = await ergastService.getRaceResults(
+              race.season,
+              race.round
+            );
+
             return {
               round: race.round,
               raceName: race.raceName,
@@ -88,27 +50,29 @@ export const useRacingData = (season?: string): RacingData => {
                 status: result.status,
                 points: result.points,
                 time: result.Time?.time,
-                fastestLap: result.FastestLap ? {
-                  time: result.FastestLap.Time.time,
-                  rank: result.FastestLap.rank,
-                } : undefined,
+                fastestLap: result.FastestLap
+                  ? {
+                      time: result.FastestLap.Time.time,
+                      rank: result.FastestLap.rank,
+                    }
+                  : undefined,
               })),
             };
           })
         );
 
         setData({
-          season: races[0]?.season || '',
+          season: races[0]?.season || "",
           races: formattedRaces,
           loading: false,
           error: null,
         });
       } catch (error) {
-        console.error('Error fetching racing data:', error);
-        setData(prev => ({
+        console.error("Error fetching racing data:", error);
+        setData((prev) => ({
           ...prev,
           loading: false,
-          error: 'Failed to fetch racing data',
+          error: "Failed to fetch racing data",
         }));
       }
     };
@@ -117,4 +81,4 @@ export const useRacingData = (season?: string): RacingData => {
   }, [season]);
 
   return data;
-}; 
+};
