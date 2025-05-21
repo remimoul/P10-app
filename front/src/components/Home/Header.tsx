@@ -21,19 +21,19 @@ const Header = () => {
 
   const slides = [
     {
-      image: "/",
-      alt: "...",
-      caption: "...",
+      image: "/assets/carousel/ecurie.png",
+      alt: "Ecurie",
+      caption: "Ecurie",
     },
     {
-      image: "/",
-      alt: "...",
-      caption: "...",
+      image: "/assets/carousel/2022.png",
+      alt: "Saison 2022",
+      caption: "Saison 2022",
     },
     {
-      image: "/",
-      alt: "...",
-      caption: "...",
+      image: "/assets/carousel/cars.jpg",
+      alt: "F1 Cars",
+      caption: "F1 Cars",
     },
   ];
 
@@ -44,7 +44,7 @@ const Header = () => {
           <div key={index} className="relative h-80 md:h-[600px]">
             <Image
               src={slide.image}
-              alt=""
+              alt={slide.alt}
               fill
               priority={index === 0}
               className="w-full h-full object-cover"

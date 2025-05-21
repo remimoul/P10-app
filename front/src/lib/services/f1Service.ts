@@ -1,90 +1,57 @@
+import axios from "axios";
 import { GrandPrix, Session, Meeting, Driver, Position, Lap, Grid, LapTime, Stint } from "@/lib/types/racing";
 
 const BASE_URL = "https://api.openf1.org/v1";
 
 export const f1Service = {
   async getSessions(year?: string): Promise<Session[]> {
-    const url = new URL(`${BASE_URL}/sessions`);
-    if (year) {
-      url.searchParams.append("year", year);
-    }
-    const response = await fetch(url.toString());
-    if (!response.ok) {
-      throw new Error("Failed to fetch sessions");
-    }
-    return response.json();
+    const url = `${BASE_URL}/sessions`;
+    const params = year ? { year } : {};
+    const response = await axios.get(url, { params });
+    return response.data;
   },
 
   async getMeetings(year?: string): Promise<Meeting[]> {
-    const url = new URL(`${BASE_URL}/meetings`);
-    if (year) {
-      url.searchParams.append("year", year);
-    }
-    const response = await fetch(url.toString());
-    if (!response.ok) {
-      throw new Error("Failed to fetch meetings");
-    }
-    return response.json();
+    const url = `${BASE_URL}/meetings`;
+    const params = year ? { year } : {};
+    const response = await axios.get(url, { params });
+    return response.data;
   },
 
   async getDrivers(sessionKey: string): Promise<Driver[]> {
-    const url = new URL(`${BASE_URL}/drivers`);
-    url.searchParams.append("session_key", sessionKey);
-    const response = await fetch(url.toString());
-    if (!response.ok) {
-      throw new Error("Failed to fetch drivers");
-    }
-    return response.json();
+    const url = `${BASE_URL}/drivers`;
+    const response = await axios.get(url, { params: { session_key: sessionKey } });
+    return response.data;
   },
 
   async getPositions(sessionKey: string): Promise<Position[]> {
-    const url = new URL(`${BASE_URL}/position`);
-    url.searchParams.append("session_key", sessionKey);
-    const response = await fetch(url.toString());
-    if (!response.ok) {
-      throw new Error("Failed to fetch positions");
-    }
-    return response.json();
+    const url = `${BASE_URL}/position`;
+    const response = await axios.get(url, { params: { session_key: sessionKey } });
+    return response.data;
   },
 
   async getLaps(sessionKey: string): Promise<Lap[]> {
-    const url = new URL(`${BASE_URL}/laps`);
-    url.searchParams.append("session_key", sessionKey);
-    const response = await fetch(url.toString());
-    if (!response.ok) {
-      throw new Error("Failed to fetch laps");
-    }
-    return response.json();
+    const url = `${BASE_URL}/laps`;
+    const response = await axios.get(url, { params: { session_key: sessionKey } });
+    return response.data;
   },
 
   async getGrid(sessionKey: string): Promise<Grid[]> {
-    const url = new URL(`${BASE_URL}/starting_grid`);
-    url.searchParams.append("session_key", sessionKey);
-    const response = await fetch(url.toString());
-    if (!response.ok) {
-      throw new Error("Failed to fetch starting grid");
-    }
-    return response.json();
+    const url = `${BASE_URL}/starting_grid`;
+    const response = await axios.get(url, { params: { session_key: sessionKey } });
+    return response.data;
   },
 
   async getLapTimes(sessionKey: string): Promise<LapTime[]> {
-    const url = new URL(`${BASE_URL}/lap_times`);
-    url.searchParams.append("session_key", sessionKey);
-    const response = await fetch(url.toString());
-    if (!response.ok) {
-      throw new Error("Failed to fetch lap times");
-    }
-    return response.json();
+    const url = `${BASE_URL}/lap_times`;
+    const response = await axios.get(url, { params: { session_key: sessionKey } });
+    return response.data;
   },
 
   async getStints(sessionKey: string): Promise<Stint[]> {
-    const url = new URL(`${BASE_URL}/stints`);
-    url.searchParams.append("session_key", sessionKey);
-    const response = await fetch(url.toString());
-    if (!response.ok) {
-      throw new Error("Failed to fetch stints");
-    }
-    return response.json();
+    const url = `${BASE_URL}/stints`;
+    const response = await axios.get(url, { params: { session_key: sessionKey } });
+    return response.data;
   },
 
   transformToGrandPrix(session: Session, meeting: Meeting): GrandPrix {

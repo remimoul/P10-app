@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { NoRacesMessageProps } from "@/lib/types";
+import { NoRacesMessageProps } from "@/lib/types/racing";
 
 const NoRacesMessage = ({ season }: NoRacesMessageProps) => {
   return (

@@ -1,6 +1,6 @@
 "use client";
 
-import { PaginationProps } from "@/lib/types";
+import { PaginationProps } from "@/lib/types/other";
 
 function getPageNumbers(current: number, total: number) {
   const delta = 2;
