@@ -67,7 +67,7 @@ const ReadyToRace = () => {
               <Button
                 onClick={() => setIsCreateModalOpen(true)}
                 className="w-full sm:w-auto h-14 sm:h-16 px-6 sm:px-8 text-base sm:text-lg font-bold text-white rounded-full shadow-2xl 
-                  bg-gradient-to-r from-[#FF1801] to-[#CC0000] 
+                  bg-gradient-to-r from-[#FF1801]/80 to-[#CC0000]/80 
                   hover:shadow-[0_0_30px_-5px] hover:shadow-red-500/50
                   transition-all duration-300 overflow-hidden
                   border-2 border-red-300/30 hover:border-red-300/60
