@@ -124,7 +124,7 @@ const Ranking = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white py-20 px-8">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white py-14 px-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="mb-12">
           <div className="flex items-center justify-between mb-8">

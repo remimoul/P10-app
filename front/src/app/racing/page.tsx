@@ -96,8 +96,13 @@ export default function Racing() {
                       name: ergastRace.Circuit.circuitName,
                       location: ergastRace.Circuit.Location,
                       length: ergastRace.circuitInfo?.length || "N/A",
-                      numberOfLaps: ergastRace.circuitInfo?.numberOfLaps || "N/A",
-                      lapRecord: ergastRace.circuitInfo?.lapRecord || { time: "N/A", driver: "N/A", year: "N/A" },
+                      numberOfLaps:
+                        ergastRace.circuitInfo?.numberOfLaps || "N/A",
+                      lapRecord: ergastRace.circuitInfo?.lapRecord || {
+                        time: "N/A",
+                        driver: "N/A",
+                        year: "N/A",
+                      },
                     },
                     results: results?.results?.map((result) => ({
                       position: result.position,
@@ -189,11 +194,14 @@ export default function Racing() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 relative overflow-hidden py-14 lg:py-16 sm:py-18">
+    <div className="min-h-screen bg-gray-50 relative overflow-hidden py-14 lg:py-14 sm:py-18">
       <main className="relative z-10 max-w-7xl mx-auto px-4 py-12 space-y-8">
-        <h1 className="text-5xl font-bold bg-gradient-to-r from-red-900 to-red-600 bg-clip-text text-transparent mb-4">
-          Racing
-        </h1>
+        <div>
+          <h1 className="text-5xl font-black text-transparent bg-clip-text bg-red-800">
+            RACING
+          </h1>
+          <div className="h-1 w-24 bg-gradient-to-r from-red-600 to-red-800 mt-2 rounded-full" />
+        </div>
 
         <RacingTabs activeTab={tab} onTabChange={handleTabChange} />
 

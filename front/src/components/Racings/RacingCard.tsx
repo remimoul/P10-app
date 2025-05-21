@@ -5,8 +5,6 @@ import { format } from "date-fns";
 import { useRouter } from "next/navigation";
 import { RacingCardProps } from "@/lib/types/racing";
 import { HiOutlineArrowNarrowRight } from "react-icons/hi";
-import { FaMapMarkerAlt, FaFlagCheckered } from "react-icons/fa";
-import { ErgastResult } from "@/lib/types/racing";
 
 export const RacingCard = ({ grandPrix, isPast }: RacingCardProps) => {
   const router = useRouter();
@@ -22,100 +20,83 @@ export const RacingCard = ({ grandPrix, isPast }: RacingCardProps) => {
   return (
     <motion.div
       onClick={handleClick}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      whileHover={{
-        scale: 1.015,
-        y: -2,
-        boxShadow: "0px 8px 24px rgba(255, 30, 30, 0.4)",
-        borderColor: "#ff1e1e",
-      }}
-      transition={{ duration: 0.25, ease: "easeOut" }}
-      className="bg-neutral-900 border border-neutral-700 rounded-xl p-5 flex flex-col justify-between text-white hover:shadow-red-700/40 transition-all duration-200 cursor-pointer"
+      className="relative bg-gradient-to-b from-neutral-900 via-neutral-900 to-black border-t-2 rounded-2xl w-full max-w-[320px] h-[150px] flex flex-col justify-center p-5 shadow-inner cursor-pointer overflow-hidden group transition-transform duration-200 hover:scale-105 hover:shadow-red-600"
+      style={{ minHeight: 150 }}
     >
-      <div className="grid grid-cols-[50px_1fr_auto] items-start gap-4">
-        <div className="flex flex-col items-center sm:items-start leading-tight">
-          <span className="text-3xl font-extrabold text-[#ff1e1e]">{day}</span>
-          <span className="text-xs text-gray-400 tracking-widest">{month}</span>
+      <div className="absolute inset-0 pointer-events-none z-0">
+        <svg width="100%" height="100%" className="absolute inset-0">
+          <defs>
+            <pattern
+              id="f1-checker"
+              width="16"
+              height="16"
+              patternUnits="userSpaceOnUse"
+            >
+              <rect
+                x="0"
+                y="0"
+                width="8"
+                height="8"
+                fill="#fff"
+                fillOpacity="0.025"
+              />
+              <rect
+                x="8"
+                y="8"
+                width="8"
+                height="8"
+                fill="#fff"
+                fillOpacity="0.025"
+              />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#f1-checker)" />
+        </svg>
+        <div className="absolute left-0 top-0 w-2/3 h-1/2 bg-gradient-to-br from-white/10 via-transparent to-transparent rounded-full blur-2xl" />
+      </div>
+
+      <div className="absolute left-2 right-2 top-0 h-5 bg-gradient-to-b from-white/10 to-transparent rounded-t-xl pointer-events-none z-10" />
+
+      <div className="absolute right-5 top-4 z-20">
+        <span className="bg-red-900/40 text-[var(--secondary-red)] text-sm px-3 py-0.5 rounded-full font-medium tracking-wide shadow-sm">
+          Season {grandPrix.season}
+        </span>
+      </div>
+
+      {isPast && (
+        <motion.div
+          className="absolute right-5 top-1/2 -translate-y-1/2 z-20 flex items-center justify-center bg-black/30 rounded-full p-2 group-hover:bg-[var(--primary-red)]/80 transition-colors duration-200"
+          whileHover={{ x: 16 }}
+          transition={{ type: "spring", stiffness: 200, damping: 16 }}
+        >
+          <HiOutlineArrowNarrowRight className="w-6 h-6 text-[var(--secondary-red)] group-hover:text-white group-hover:drop-shadow-[0_0_8px_rgba(239,68,68,0.7)] transition-all duration-300" />
+        </motion.div>
+      )}
+
+      <div className="flex flex-row items-center gap-4 z-10">
+        <div className="flex flex-col items-center min-w-[40px]">
+          <span className="text-2xl font-extrabold text-[var(--primary-red)] leading-none">
+            {day}
+          </span>
+          <span className="text-xl text-[var(--primary-grey)] tracking-widest mt-0.5 font-medium">
+            {month}
+          </span>
         </div>
 
-        <div className="overflow-hidden">
-          <p className="text-[11px] text-[#00FFD1] uppercase font-semibold tracking-wider mb-1">
-            Season {grandPrix.season}
-          </p>
-          <p className="text-base font-bold truncate">
+        <div className="flex-1 flex flex-col justify-center">
+          <span className="text-lg font-bold text-white leading-tight mb-0.5">
             {grandPrix.ergastData?.raceName || grandPrix.track.countryName}
-          </p>
-          <p className="text-sm text-gray-400 truncate">
-            {grandPrix.ergastData?.circuit.name || grandPrix.track.trackName}
-          </p>
-          {grandPrix.ergastData?.circuit && (
-            <div className="mt-2 space-y-1">
-              <div className="flex items-center text-xs text-gray-400">
-                <FaMapMarkerAlt className="mr-1" />
-                <span>
-                  {grandPrix.ergastData.circuit.location.locality},{" "}
-                  {grandPrix.ergastData.circuit.location.country}
-                </span>
-              </div>
-              <div className="flex items-center text-xs text-gray-400">
-                <FaFlagCheckered className="mr-1" />
-                <span>
-                  {grandPrix.ergastData.circuit.length} •{" "}
-                  {grandPrix.ergastData.circuit.numberOfLaps} laps
-                </span>
-              </div>
-            </div>
-          )}
-        </div>
-
-        <div className="flex flex-col items-end gap-2 min-w-[110px]">
-          <motion.div
-            whileHover={{ x: 4 }}
-            transition={{ type: "spring", stiffness: 300, damping: 18 }}
-            className="text-[#ff1e1e]"
-          >
-            <HiOutlineArrowNarrowRight className="w-5 h-5" />
-          </motion.div>
-
-          <div className="flex flex-wrap justify-end gap-2 min-h-[30px]">
-            {isPast && grandPrix.ergastData?.results ? (
-              grandPrix.ergastData.results.slice(0, 3).map((result: ErgastResult) => (
-                <motion.span
-                  key={result.driver.number}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.3 }}
-                  className="inline-flex items-center gap-1 px-2.5 py-[3px] text-[11px] rounded-full font-bold uppercase tracking-wide bg-red-700 text-red-100 shadow-sm"
-                >
-                  <span>P{result.position}</span>
-                  {result.driver.name.split(" ")[1]}
-                </motion.span>
-              ))
-            ) : isPast && grandPrix.ranking ? (
-              grandPrix.ranking
-                .filter((rank) => rank.isDNF || rank.position === 10)
-                .map((rank) => (
-                  <motion.span
-                    key={rank.id}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.3 }}
-                    className={`inline-flex items-center gap-1 px-2.5 py-[3px] text-[11px] rounded-full font-bold uppercase tracking-wide
-                      ${
-                        rank.isDNF
-                          ? "bg-green-700 text-green-100"
-                          : "bg-red-700 text-red-100"
-                      } shadow-sm`}
-                  >
-                    <span>{rank.isDNF ? "DNF" : "P10"}</span>
-                    {rank.pilot.acronym}
-                  </motion.span>
-                ))
-            ) : (
-              <span className="text-xs text-gray-600 italic">—</span>
+          </span>
+          <span className="text-lg text-[var(--primary-white)] leading-tight">
+            {grandPrix.ergastData?.circuit?.name || grandPrix.track.trackName}
+          </span>
+          {grandPrix.ergastData?.circuit?.location?.locality &&
+            grandPrix.ergastData?.circuit?.location?.country && (
+              <span className="text-sm text-[var(--primary-grey)] mt-0.5 block">
+                {grandPrix.ergastData.circuit.location.locality},{" "}
+                {grandPrix.ergastData.circuit.location.country}
+              </span>
             )}
-          </div>
         </div>
       </div>
     </motion.div>
