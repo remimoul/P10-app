@@ -31,7 +31,7 @@ export const teamService = {
       const response = await fetch(
         `${ERGAST_API_BASE}/current/constructors/${constructorId}/results.json?limit=${limit}`
       );
-      const data: ErgastResponse<{ Races: Race[] }> = await response.json();
+      const data: ErgastResponse<Race> = await response.json();
       return data.MRData.RaceTable?.Races.map((race) => {
         const positions = race.Results.map((result) => parseInt(result.position));
         return Math.min(...positions);

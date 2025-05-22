@@ -79,7 +79,7 @@ export class ErgastService {
   async getRaces(season?: string): Promise<ErgastRace[]> {
     try {
       const endpoint = season ? `${season}.json` : "current.json";
-      const response = await this.fetchData<ErgastResponse>(endpoint);
+      const response = await this.fetchData<ErgastResponse<ErgastRace>>(endpoint);
       const races = response.MRData.RaceTable.Races;
 
       const racesWithCircuitInfo = await Promise.all(
@@ -101,10 +101,10 @@ export class ErgastService {
 
   async getCircuitInfo(circuitId: string): Promise<CircuitInfo | null> {
     try {
-      const response = await this.fetchData<ErgastResponse>(
+      const response = await this.fetchData<ErgastResponse<ErgastCircuit>>(
         `circuits/${circuitId}.json`
       );
-      const circuit = response?.MRData?.RaceTable?.Races?.[0]?.Circuit;
+      const circuit = response?.MRData?.RaceTable?.Races?.[0];
 
       if (!circuit) return null;
 
@@ -128,7 +128,7 @@ export class ErgastService {
     round: string
   ): Promise<ErgastRace | null> {
     try {
-      const response = await this.fetchData<ErgastResponse>(
+      const response = await this.fetchData<ErgastResponse<ErgastRace>>(
         `${season}/${round}/results.json`
       );
       const race = response?.MRData?.RaceTable?.Races?.[0];
@@ -152,7 +152,7 @@ export class ErgastService {
 
   async getLatestResults(): Promise<ErgastRace[]> {
     try {
-      const response = await this.fetchData<ErgastResponse>("current.json");
+      const response = await this.fetchData<ErgastResponse<ErgastRace>>("current.json");
       const races = response?.MRData?.RaceTable?.Races || [];
 
       const racesWithResults = await Promise.all(

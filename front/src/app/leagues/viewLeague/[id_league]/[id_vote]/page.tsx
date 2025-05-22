@@ -13,7 +13,6 @@ import { driverService } from "@/lib/services/driverService";
 import { FilterSort } from "@/components/vote/FilterSort";
 import { DriverStatsChart } from "@/components/vote/DriverStatsChart";
 import { DriverComparison } from "@/components/vote/DriverComparison";
-import { RaceInfo } from "@/components/vote/RaceInfo";
 import { motion, AnimatePresence } from "framer-motion";
 import { formatRemainingTime } from "@/lib/utils/dateAndTime";
 import {
@@ -26,6 +25,13 @@ import {
 } from "@/components/ui/dialog";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { RiErrorWarningLine, RiInformationLine } from "react-icons/ri";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "@/components/ui/card";
 
 const VotePage = () => {
   const router = useRouter();
@@ -319,7 +325,7 @@ const VotePage = () => {
               onClick={() => setActiveSection("vote")}
               className="flex-1 relative overflow-hidden group"
             >
-              <span className="relative z-10">Voter</span>
+              <span className="relative z-10">Vote</span>
               <motion.div
                 className="absolute inset-0 bg-red-100"
                 initial={false}
@@ -340,12 +346,94 @@ const VotePage = () => {
               transition={{ duration: 0.3 }}
             >
               {activeSection === "info" ? (
-                <div>
-                  <RaceInfo
-                    drivers={drivers}
-                    totalVotes={totalVotes}
-                    topVotedDrivers={topVotedDrivers}
-                  />
+                <div className="space-y-6">
+                  <Card className="p-6">
+                    <CardHeader>
+                      <CardTitle className="text-2xl font-bold text-gray-900">
+                        Informations sur la course
+                      </CardTitle>
+                      <CardDescription>
+                        Détails et statistiques de la course
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-4">
+                          <div>
+                            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                              Statistiques globales
+                            </h3>
+                            <div className="bg-gray-50 rounded-lg p-4">
+                              <p className="text-gray-600">
+                                Total des votes : {totalVotes}
+                              </p>
+                              <p className="text-gray-600">
+                                Participants : {totalParticipants}
+                              </p>
+                            </div>
+                          </div>
+                          <div>
+                            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                              Top 3 des votes
+                            </h3>
+                            <div className="space-y-2">
+                              {topVotedDrivers.map((driver, index) => (
+                                <div
+                                  key={driver.driverId}
+                                  className="flex items-center justify-between bg-gray-50 rounded-lg p-3"
+                                >
+                                  <span className="text-gray-700">
+                                    {index + 1}.{" "}
+                                    {drivers.find(
+                                      (d) => d.driverId === driver.driverId
+                                    )?.name || "Inconnu"}
+                                  </span>
+                                  <span className="text-gray-500">
+                                    {driver.votes} votes
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="space-y-4">
+                          <div>
+                            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                              Informations sur la course
+                            </h3>
+                            <div className="bg-gray-50 rounded-lg p-4">
+                              <p className="text-gray-600">
+                                Date de la course :{" "}
+                                {voteDeadline
+                                  ? new Date(
+                                      voteDeadline.getTime() + 5 * 60000
+                                    ).toLocaleDateString()
+                                  : "Non définie"}
+                              </p>
+                              <p className="text-gray-600">
+                                Heure de la course :{" "}
+                                {voteDeadline
+                                  ? new Date(
+                                      voteDeadline.getTime() + 5 * 60000
+                                    ).toLocaleTimeString()
+                                  : "Non définie"}
+                              </p>
+                            </div>
+                          </div>
+                          <div>
+                            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                              Temps restant
+                            </h3>
+                            <div className="bg-gray-50 rounded-lg p-4">
+                              <p className="text-gray-600">
+                                {formatTime(timeLeft)}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
                 </div>
               ) : (
                 <div>

@@ -57,7 +57,13 @@ const ViewLeague = () => {
   }, []);
 
   const handleVote = () => {
-    router.push("/vote");
+    const leagueId = organization?.id;
+    const voteId = "1"; // ID temporaire pour le vote
+    if (leagueId) {
+      router.push(`/leagues/viewLeague/${encodeURIComponent(leagueId)}/vote/${voteId}`);
+    } else {
+      router.push(`/leagues/viewLeague/${encodeURIComponent(leagueId)}/vote/${voteId}`);
+    }
   };
 
   const handleAddMembers = () => {

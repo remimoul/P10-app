@@ -89,7 +89,11 @@ export interface ErgastResponse<T> {
     limit: string;
     offset: string;
     total: string;
-    RaceTable?: T;
+    RaceTable: {
+      season?: string;
+      round?: string;
+      Races: T[];
+    };
     DriverTable?: T;
     ConstructorTable?: T;
     StandingsTable?: T;

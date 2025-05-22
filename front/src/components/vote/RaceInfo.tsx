@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DriverStats } from "@/lib/types/drivers";
 import { Button } from "@/components/ui/button";
-import { RiSunLine} from "react-icons/ri";
+import { RiSunLine } from "react-icons/ri";
 
 interface RaceInfoProps {
   drivers: DriverStats[];
@@ -10,7 +10,11 @@ interface RaceInfoProps {
   topVotedDrivers: { driverId: string; votes: number }[];
 }
 
-export const RaceInfo = ({ drivers, totalVotes, topVotedDrivers }: RaceInfoProps) => {
+export const RaceInfo = ({
+  drivers,
+  totalVotes,
+  topVotedDrivers,
+}: RaceInfoProps) => {
   const previousRaces = [
     { race: "GP d'Australie", driver: "Lewis Hamilton", position: "10" },
     { race: "GP d'Arabie Saoudite", driver: "Fernando Alonso", position: "10" },
@@ -62,11 +66,21 @@ export const RaceInfo = ({ drivers, totalVotes, topVotedDrivers }: RaceInfoProps
               <h3 className="font-semibold mb-2">Top 3 des votes</h3>
               <div className="space-y-2">
                 {topVotedDrivers.map((driver, index) => {
-                  const driverInfo = drivers.find(d => d.driverId === driver.driverId);
-                  const percentage = ((driver.votes / totalVotes) * 100).toFixed(1);
+                  const driverInfo = drivers.find(
+                    (d) => d.driverId === driver.driverId
+                  );
+                  const percentage = (
+                    (driver.votes / totalVotes) *
+                    100
+                  ).toFixed(1);
                   return (
-                    <div key={driver.driverId} className="flex justify-between items-center">
-                      <span>{index + 1}. {driverInfo?.name}</span>
+                    <div
+                      key={driver.driverId}
+                      className="flex justify-between items-center"
+                    >
+                      <span>
+                        {index + 1}. {driverInfo?.name}
+                      </span>
                       <span>{percentage}%</span>
                     </div>
                   );
@@ -78,14 +92,11 @@ export const RaceInfo = ({ drivers, totalVotes, topVotedDrivers }: RaceInfoProps
       </Card>
 
       <Card className="lg:col-span-2">
-        <CardHeader>
-          <CardTitle>Informations importantes</CardTitle>
-        </CardHeader>
         <CardContent>
           <Tabs defaultValue="history">
             <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="history">Historique</TabsTrigger>
               <TabsTrigger value="rules">Règles</TabsTrigger>
+              <TabsTrigger value="history">Historique</TabsTrigger>
             </TabsList>
             <TabsContent value="history">
               <div className="space-y-4">
@@ -95,7 +106,9 @@ export const RaceInfo = ({ drivers, totalVotes, topVotedDrivers }: RaceInfoProps
                     <div key={race.race} className="bg-gray-50 p-4 rounded-lg">
                       <p className="font-medium">{race.race}</p>
                       <p>{race.driver}</p>
-                      <p className="text-sm text-gray-500">Position: {race.position}</p>
+                      <p className="text-sm text-gray-500">
+                        Position: {race.position}
+                      </p>
                     </div>
                   ))}
                 </div>
@@ -107,16 +120,24 @@ export const RaceInfo = ({ drivers, totalVotes, topVotedDrivers }: RaceInfoProps
                   <h3 className="font-semibold mb-2">Comment voter ?</h3>
                   <p>1. Sélectionnez le pilote que vous pensez finir 10ème</p>
                   <p>2. Cliquez sur le bouton &quot;Voter&quot;</p>
-                  <p>3. Vous pouvez modifier votre vote jusqu&apos;à la clôture</p>
+                  <p>
+                    3. Vous pouvez modifier votre vote jusqu&apos;à la clôture
+                  </p>
                 </div>
                 <div>
                   <h3 className="font-semibold mb-2">Clôture des votes</h3>
-                  <p>Les votes sont clôturés 5 minutes avant le départ de la course</p>
+                  <p>
+                    Les votes sont clôturés 5 minutes avant le départ de la
+                    course
+                  </p>
                 </div>
                 <div>
                   <h3 className="font-semibold mb-2">Attribution des points</h3>
                   <p>• 3 points si vous avez voté pour le bon pilote</p>
-                  <p>• 1 point si le pilote finit dans les 3 positions autour (8-12)</p>
+                  <p>
+                    • 1 point si le pilote finit dans les 3 positions autour
+                    (8-12)
+                  </p>
                   <p>• 0 point dans les autres cas</p>
                 </div>
               </div>
@@ -126,4 +147,4 @@ export const RaceInfo = ({ drivers, totalVotes, topVotedDrivers }: RaceInfoProps
       </Card>
     </div>
   );
-}; 
+};

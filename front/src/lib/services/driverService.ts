@@ -31,7 +31,7 @@ export const driverService = {
       const response = await fetch(
         `${ERGAST_API_BASE}/current/drivers/${driverId}/results.json?limit=${limit}`
       );
-      const data: ErgastResponse<{ Races: Race[] }> = await response.json();
+      const data: ErgastResponse<Race> = await response.json();
       return data.MRData.RaceTable?.Races.map((race) => parseInt(race.Results[0].position)) ?? [];
     } catch (error) {
       console.error(`Error fetching results for driver ${driverId}:`, error);
