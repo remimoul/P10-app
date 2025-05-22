@@ -104,7 +104,7 @@ export class ErgastService {
       const response = await this.fetchData<ErgastResponse>(
         `circuits/${circuitId}.json`
       );
-      const circuit = response.MRData.RaceTable.Races[0]?.Circuit;
+      const circuit = response?.MRData?.RaceTable?.Races?.[0]?.Circuit;
 
       if (!circuit) return null;
 
@@ -131,7 +131,7 @@ export class ErgastService {
       const response = await this.fetchData<ErgastResponse>(
         `${season}/${round}/results.json`
       );
-      const race = response.MRData.RaceTable.Races[0];
+      const race = response?.MRData?.RaceTable?.Races?.[0];
 
       if (!race) return null;
 
@@ -153,7 +153,7 @@ export class ErgastService {
   async getLatestResults(): Promise<ErgastRace[]> {
     try {
       const response = await this.fetchData<ErgastResponse>("current.json");
-      const races = response.MRData.RaceTable.Races;
+      const races = response?.MRData?.RaceTable?.Races || [];
 
       const racesWithResults = await Promise.all(
         races.map(async (race) => {
