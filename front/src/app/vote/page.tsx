@@ -7,15 +7,11 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import toast from "react-hot-toast";
 import { DriverStats } from "@/lib/types/drivers";
+import { Vote, FilterOptions } from "@/lib/types/vote";
 import { driverService } from "@/lib/services/driverService";
-import { FilterSort, FilterOptions } from "@/components/vote/FilterSort";
+import { FilterSort } from "@/components/vote/FilterSort";
 import { DriverStatsChart } from "@/components/vote/DriverStatsChart";
 import { DriverComparison } from "@/components/vote/DriverComparison";
-
-interface Vote {
-  driverId: string;
-  timestamp: number;
-}
 
 const VotePage = () => {
   const { user, isLoaded: userLoaded } = useUser();

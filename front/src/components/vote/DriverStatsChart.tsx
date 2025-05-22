@@ -1,4 +1,4 @@
-import { DriverStats } from "@/lib/types/drivers";
+import { DriverStatsChartProps } from "@/lib/types/vote";
 import {
   XAxis,
   YAxis,
@@ -8,10 +8,6 @@ import {
   LineChart,
   Line,
 } from "recharts";
-
-interface DriverStatsChartProps {
-  driver: DriverStats;
-}
 
 export const DriverStatsChart = ({ driver }: DriverStatsChartProps) => {
   const lineChartData = driver.stats.previousRaces.map((position, index) => ({

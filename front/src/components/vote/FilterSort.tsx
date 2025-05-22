@@ -9,18 +9,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
+import { FilterOptions } from "@/lib/types/vote";
 
 interface FilterSortProps {
   onFilterChange: (filters: FilterOptions) => void;
-}
-
-export interface FilterOptions {
-  search: string;
-  sortBy: string;
-  sortOrder: "asc" | "desc";
-  teamFilter: string;
-  minPoints: number;
-  maxPoints: number;
 }
 
 export const FilterSort = ({ onFilterChange }: FilterSortProps) => {

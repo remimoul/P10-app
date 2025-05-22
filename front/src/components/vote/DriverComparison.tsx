@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { DriverStats } from "@/lib/types/drivers";
+import { DriverComparisonProps } from "@/lib/types/vote";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -18,11 +18,6 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
-
-interface DriverComparisonProps {
-  drivers: DriverStats[];
-  onClose: () => void;
-}
 
 export const DriverComparison = ({
   drivers,
