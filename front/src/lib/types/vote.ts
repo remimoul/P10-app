@@ -22,3 +22,8 @@ export interface DriverComparisonProps {
 export interface DriverStatsChartProps {
   driver: DriverStats;
 } 
+
+export interface VoteTabsProps {
+  activeTab: "Info" | "Vote";
+  onTabChange: (tab: "Info" | "Vote") => void;
+}

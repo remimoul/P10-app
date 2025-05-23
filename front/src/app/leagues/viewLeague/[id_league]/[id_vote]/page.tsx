@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
-import { RiLoader2Fill, RiTimeLine } from "react-icons/ri";
+import { RiLoader2Fill, RiTimeLine, RiUserAddLine, RiTrophyLine, RiTimerLine } from "react-icons/ri";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import toast from "react-hot-toast";
@@ -25,13 +25,7 @@ import {
 } from "@/components/ui/dialog";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { RiErrorWarningLine, RiInformationLine } from "react-icons/ri";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "@/components/ui/card";
+import { VoteTabs } from "@/components/vote/VoteTabs";
 
 const VotePage = () => {
   const router = useRouter();
@@ -62,7 +56,7 @@ const VotePage = () => {
   const [topVotedDrivers, setTopVotedDrivers] = useState<
     { driverId: string; votes: number }[]
   >([]);
-  const [activeSection, setActiveSection] = useState<"info" | "vote">("info");
+  const [tab, setTab] = useState<"Info" | "Vote">("Info");
 
   useEffect(() => {
     const loadInitialData = async () => {
@@ -188,6 +182,10 @@ const VotePage = () => {
     });
   };
 
+  const handleTabChange = (newTab: "Info" | "Vote") => {
+    setTab(newTab);
+  };
+
   const filteredAndSortedDrivers = useMemo(() => {
     return drivers
       .filter((driver) => {
@@ -276,7 +274,7 @@ const VotePage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-red-50 py-24 px-8">
       <div className="max-w-6xl mx-auto">
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
+        <div className="p-6 mb-8">
           <div className="flex flex-col items-center mb-6">
             <div className="text-center">
               <h1 className="text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-800">
@@ -289,106 +287,93 @@ const VotePage = () => {
             </h2>
           </div>
 
+          <VoteTabs activeTab={tab} onTabChange={handleTabChange} />
+
           <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center space-x-2">
-              <RiTimeLine className="text-red-500" />
-              <span className="text-sm font-medium">
-                {voteDeadline
-                  ? `Clôture des votes : ${voteDeadline.toLocaleString()}`
-                  : "Temps restant : "}
-                {formatTime(timeLeft)}
-              </span>
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center gap-2">
+                <span className="text-xl font-semibold text-[var(--primary-red)]">Clôture des votes :</span>
+                <span className="text-xl font-bold text-gray-800">
+                  {voteDeadline
+                    ? new Date(voteDeadline.getTime() + 5 * 60000).toLocaleDateString('fr-FR', {
+                        day: 'numeric',
+                        month: 'long',
+                        year: 'numeric'
+                      })
+                    : "Non définie"}
+                </span>
+              </div>
+              <div className="flex flex-col xs:flex-row xs:items-center gap-2 xs:gap-3 bg-gradient-to-br from-white/80 to-white/30 px-4 py-2 xs:px-6 xs:py-3 rounded-full border border-[#D90429] whitespace-nowrap w-fit">
+                <div className="flex items-center gap-1">
+                  <RiTimerLine className="text-xl xs:text-2xl text-[#D90429]" />
+                  <span className="font-mono text-lg xs:text-2xl text-gray-800 font-bold tracking-wider">
+                    {formatTime(timeLeft)}
+                  </span>
+                  <span className="text-xs xs:text-sm text-gray-600 font-mono">LAP</span>
+                </div>
+              </div>
             </div>
-            <div className="text-sm text-gray-500">
+            <div className="text-2xl text-gray-700 font-semibold">
               {totalParticipants} participants
             </div>
           </div>
 
-          <div className="flex gap-4 mb-6">
-            <Button
-              variant={activeSection === "info" ? "default" : "outline"}
-              onClick={() => setActiveSection("info")}
-              className="flex-1 relative overflow-hidden group"
-            >
-              <span className="relative z-10">Informations</span>
-              <motion.div
-                className="absolute inset-0 bg-red-100"
-                initial={false}
-                animate={{
-                  x: activeSection === "info" ? "0%" : "-100%",
-                }}
-                transition={{ duration: 0.3 }}
-              />
-            </Button>
-            <Button
-              variant={activeSection === "vote" ? "default" : "outline"}
-              onClick={() => setActiveSection("vote")}
-              className="flex-1 relative overflow-hidden group"
-            >
-              <span className="relative z-10">Vote</span>
-              <motion.div
-                className="absolute inset-0 bg-red-100"
-                initial={false}
-                animate={{
-                  x: activeSection === "vote" ? "0%" : "-100%",
-                }}
-                transition={{ duration: 0.3 }}
-              />
-            </Button>
-          </div>
-
           <AnimatePresence mode="wait">
             <motion.div
-              key={activeSection}
+              key={tab}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
             >
-              {activeSection === "info" ? (
-                <div className="space-y-6">
-                  <Card className="p-6">
-                    <CardHeader>
-                      <CardTitle className="text-2xl font-bold text-gray-900">
-                        Informations sur la course
-                      </CardTitle>
-                      <CardDescription>
-                        Détails et statistiques de la course
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="space-y-4">
-                          <div>
-                            <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                              Statistiques globales
-                            </h3>
-                            <div className="bg-gray-50 rounded-lg p-4">
-                              <p className="text-gray-600">
-                                Total des votes : {totalVotes}
-                              </p>
-                              <p className="text-gray-600">
-                                Participants : {totalParticipants}
-                              </p>
-                            </div>
+              {tab === "Info" ? (
+                <div className="space-y-12">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="relative bg-gradient-to-br from-white to-red-50 rounded-3xl p-8 shadow-lg border border-red-500/30 overflow-hidden"
+                    >
+                      <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/diagonal-stripes.png')] opacity-10" />
+                      <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 to-transparent" />
+                      <div className="relative z-10">
+                        <h3 className="text-3xl font-black text-[var(--primary-red)] mb-8">
+                          Statistiques globales
+                        </h3>
+                        <div className="space-y-6">
+                          <div className="group relative p-4 rounded-2xl bg-white/80 backdrop-blur-sm flex justify-between items-center hover:bg-white/90 transition-all duration-300 border border-transparent hover:border-red-500/20">
+                            <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-red-500/0 via-red-500/5 to-red-500/0 opacity-0 group-hover:opacity-100 transition-opacity" />
+                            <span className="text-xl font-medium text-black group-hover:text-[var(--secondary-red)] transition-colors">
+                              Total des votes
+                            </span>
+                            <span className="text-2xl font-bold text-[var(--primary-red)]">
+                              {totalVotes}
+                            </span>
                           </div>
-                          <div>
-                            <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                              Top 3 des votes
-                            </h3>
-                            <div className="space-y-2">
+                          <div className="group relative p-4 rounded-2xl bg-white/80 backdrop-blur-sm flex justify-between items-center hover:bg-white/90 transition-all duration-300 border border-transparent hover:border-red-500/20">
+                            <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-red-500/0 via-red-500/5 to-red-500/0 opacity-0 group-hover:opacity-100 transition-opacity" />
+                            <span className="text-xl font-medium text-black group-hover:text-[var(--secondary-red)] transition-colors">
+                              Participants
+                            </span>
+                            <span className="text-2xl font-bold text-[var(--primary-red)]">
+                              {totalParticipants}
+                            </span>
+                          </div>
+                          <div className="group relative p-4 rounded-2xl bg-white/80 backdrop-blur-sm hover:bg-white/90 transition-all duration-300 border border-transparent hover:border-red-500/20">
+                            <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-red-500/0 via-red-500/5 to-red-500/0 opacity-0 group-hover:opacity-100 transition-opacity" />
+                            <span className="text-xl font-medium text-black group-hover:text-[var(--secondary-red)] transition-colors mb-4">
+                              Pilotes les plus votés
+                            </span>
+                            <div className="space-y-3">
                               {topVotedDrivers.map((driver, index) => (
-                                <div
-                                  key={driver.driverId}
-                                  className="flex items-center justify-between bg-gray-50 rounded-lg p-3"
-                                >
-                                  <span className="text-gray-700">
-                                    {index + 1}.{" "}
-                                    {drivers.find(
-                                      (d) => d.driverId === driver.driverId
-                                    )?.name || "Inconnu"}
-                                  </span>
-                                  <span className="text-gray-500">
+                                <div key={driver.driverId} className="flex items-center justify-between">
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-lg font-bold text-[var(--primary-red)]">#{index + 1}</span>
+                                    <span className="text-gray-700">
+                                      {drivers.find(d => d.driverId === driver.driverId)?.name}
+                                    </span>
+                                  </div>
+                                  <span className="text-lg font-bold text-[var(--primary-red)]">
                                     {driver.votes} votes
                                   </span>
                                 </div>
@@ -396,44 +381,174 @@ const VotePage = () => {
                             </div>
                           </div>
                         </div>
-                        <div className="space-y-4">
-                          <div>
-                            <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                              Informations sur la course
-                            </h3>
-                            <div className="bg-gray-50 rounded-lg p-4">
-                              <p className="text-gray-600">
-                                Date de la course :{" "}
-                                {voteDeadline
-                                  ? new Date(
-                                      voteDeadline.getTime() + 5 * 60000
-                                    ).toLocaleDateString()
-                                  : "Non définie"}
-                              </p>
-                              <p className="text-gray-600">
-                                Heure de la course :{" "}
-                                {voteDeadline
-                                  ? new Date(
-                                      voteDeadline.getTime() + 5 * 60000
-                                    ).toLocaleTimeString()
-                                  : "Non définie"}
-                              </p>
-                            </div>
-                          </div>
-                          <div>
-                            <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                              Temps restant
-                            </h3>
-                            <div className="bg-gray-50 rounded-lg p-4">
-                              <p className="text-gray-600">
-                                {formatTime(timeLeft)}
-                              </p>
+                      </div>
+                    </motion.div>
+
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.1 }}
+                      className="relative bg-gradient-to-br from-white to-red-50 rounded-3xl p-8 shadow-lg border border-red-500/30 overflow-hidden"
+                    >
+                      <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/diagonal-stripes.png')] opacity-10" />
+                      <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 to-transparent" />
+                      <div className="relative z-10">
+                        <h3 className="text-3xl font-black text-[var(--primary-red)] mb-8">
+                          Informations sur la course
+                        </h3>
+                        <div className="space-y-6">
+                          <div className="group relative p-6 rounded-2xl bg-white/80 backdrop-blur-sm hover:bg-white/90 transition-all duration-300 border border-transparent hover:border-red-500/20">
+                            <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-red-500/0 via-red-500/5 to-red-500/0 opacity-0 group-hover:opacity-100 transition-opacity" />
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                              <div>
+                                <div className="flex items-center gap-2 mb-4">
+                                  <RiTimeLine className="text-xl text-[var(--primary-red)]" />
+                                  <span className="text-lg font-semibold text-gray-900">Date et heure</span>
+                                </div>
+                                <p className="text-gray-700">
+                                  {voteDeadline
+                                    ? new Date(
+                                        voteDeadline.getTime() + 5 * 60000
+                                      ).toLocaleDateString()
+                                    : "Non définie"}
+                                </p>
+                                <p className="text-gray-700">
+                                  {voteDeadline
+                                    ? new Date(
+                                        voteDeadline.getTime() + 5 * 60000
+                                      ).toLocaleTimeString()
+                                    : "Non définie"}
+                                </p>
+                              </div>
+
+                              <div>
+                                <div className="flex items-center gap-2 mb-4">
+                                  <RiTimeLine className="text-xl text-[var(--primary-red)]" />
+                                  <span className="text-lg font-semibold text-gray-900">Circuit</span>
+                                </div>
+                                <p className="text-gray-700">Monaco</p>
+                                <p className="text-gray-700">Circuit de Monaco</p>
+                                <p className="text-gray-700">Monte-Carlo, Monaco</p>
+                                <p className="text-gray-700">Longueur : 3.337 km</p>
+                                <p className="text-gray-700">Nombre de tours : 78</p>
+                              </div>
+
+                              <div>
+                                <div className="flex items-center gap-2 mb-4">
+                                  <RiTimeLine className="text-xl text-[var(--primary-red)]" />
+                                  <span className="text-lg font-semibold text-gray-900">Conditions</span>
+                                </div>
+                                <p className="text-gray-700">Météo : Ensoleillé</p>
+                                <p className="text-gray-700">Température : 24°C</p>
+                                <p className="text-gray-700">Humidité : 45%</p>
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
-                    </CardContent>
-                  </Card>
+                    </motion.div>
+                  </div>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                    className="relative bg-gradient-to-br from-white to-red-50 rounded-3xl p-8 shadow-lg border border-red-500/30 overflow-hidden"
+                  >
+                    <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/diagonal-stripes.png')] opacity-10" />
+                    <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 to-transparent" />
+                    <div className="relative z-10">
+                      <h3 className="text-3xl font-black text-[var(--primary-red)] mb-8">
+                        Règles du vote
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div className="group relative p-8 rounded-2xl bg-gradient-to-br from-white to-red-50/50 backdrop-blur-sm hover:from-white hover:to-red-50 transition-all duration-300 border border-red-500/20 hover:border-red-500/40 hover:shadow-lg">
+                          <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-red-500/0 via-red-500/5 to-red-500/0 opacity-0 group-hover:opacity-100 transition-opacity" />
+                          <div className="flex flex-col items-center text-center">
+                            <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center mb-6 shadow-lg transform group-hover:scale-110 transition-transform">
+                              <RiUserAddLine className="text-3xl text-white" />
+                            </div>
+                            <h4 className="text-2xl font-bold text-gray-900 mb-6">Comment voter ?</h4>
+                            <ul className="space-y-4 text-gray-700">
+                              <li className="flex items-start gap-3">
+                                <span className="w-6 h-6 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0 mt-1">
+                                  <span className="text-sm font-bold text-[var(--primary-red)]">1</span>
+                                </span>
+                                <span>Sélectionne le pilote que tu penses finir 10ème</span>
+                              </li>
+                              <li className="flex items-start gap-3">
+                                <span className="w-6 h-6 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0 mt-1">
+                                  <span className="text-sm font-bold text-[var(--primary-red)]">2</span>
+                                </span>
+                                <span>Clique sur le bouton &quot;Voter&quot;</span>
+                              </li>
+                              <li className="flex items-start gap-3">
+                                <span className="w-6 h-6 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0 mt-1">
+                                  <span className="text-sm font-bold text-[var(--primary-red)]">3</span>
+                                </span>
+                                <span>Tu peux modifier ton vote jusqu&apos;à la clôture</span>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+
+                        <div className="group relative p-8 rounded-2xl bg-gradient-to-br from-white to-red-50/50 backdrop-blur-sm hover:from-white hover:to-red-50 transition-all duration-300 border border-red-500/20 hover:border-red-500/40 hover:shadow-lg">
+                          <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-red-500/0 via-red-500/5 to-red-500/0 opacity-0 group-hover:opacity-100 transition-opacity" />
+                          <div className="flex flex-col items-center text-center">
+                            <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center mb-6 shadow-lg transform group-hover:scale-110 transition-transform">
+                              <RiTimeLine className="text-3xl text-white" />
+                            </div>
+                            <h4 className="text-2xl font-bold text-gray-900 mb-6">Clôture des votes</h4>
+                            <div className="flex flex-col items-center gap-4 text-gray-700">
+                              <div className="flex items-center gap-3 bg-red-50/50 px-6 py-4 rounded-xl">
+                                <RiTimeLine className="text-2xl text-[var(--primary-red)]" />
+                                <p className="text-lg">Les votes sont clôturés 5 minutes avant le départ de la course</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="group relative p-8 rounded-2xl bg-gradient-to-br from-white to-red-50/50 backdrop-blur-sm hover:from-white hover:to-red-50 transition-all duration-300 border border-red-500/20 hover:border-red-500/40 hover:shadow-lg">
+                          <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-red-500/0 via-red-500/5 to-red-500/0 opacity-0 group-hover:opacity-100 transition-opacity" />
+                          <div className="flex flex-col items-center text-center">
+                            <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center mb-6 shadow-lg transform group-hover:scale-110 transition-transform">
+                              <RiTrophyLine className="text-3xl text-white" />
+                            </div>
+                            <h4 className="text-2xl font-bold text-gray-900 mb-6">Attribution des points</h4>
+                            <ul className="space-y-4 text-gray-700">
+                              <li className="flex items-start gap-3">
+                                <span className="w-6 h-6 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0 mt-1">
+                                  <span className="text-sm font-bold text-[var(--primary-red)]">3</span>
+                                </span>
+                                <div>
+                                  <span className="font-bold text-[var(--primary-red)]">3 points</span>
+                                  <p>pour le bon pilote</p>
+                                </div>
+                              </li>
+                              <li className="flex items-start gap-3">
+                                <span className="w-6 h-6 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0 mt-1">
+                                  <span className="text-sm font-bold text-[var(--primary-red)]">1</span>
+                                </span>
+                                <div>
+                                  <span className="font-bold text-[var(--primary-red)]">1 point</span>
+                                  <p>si le pilote finit dans les 3 positions autour (8-12)</p>
+                                </div>
+                              </li>
+                              <li className="flex items-start gap-3">
+                                <span className="w-6 h-6 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0 mt-1">
+                                  <span className="text-sm font-bold text-[var(--primary-red)]">0</span>
+                                </span>
+                                <div>
+                                  <span className="font-bold text-[var(--primary-red)]">0 point</span>
+                                  <p>dans les autres cas</p>
+                                </div>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
                 </div>
               ) : (
                 <div>
