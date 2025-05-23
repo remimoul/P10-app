@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
-import { RiLoader2Fill, RiTimeLine, RiUserAddLine, RiTrophyLine, RiTimerLine } from "react-icons/ri";
+import { RiLoader2Fill, RiTimeLine, RiUserAddLine, RiTrophyLine, RiTimerLine, RiArrowUpSLine, RiArrowDownSLine } from "react-icons/ri";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import toast from "react-hot-toast";
@@ -20,12 +20,14 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
-  DialogFooter,
 } from "@/components/ui/dialog";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { RiErrorWarningLine, RiInformationLine } from "react-icons/ri";
 import { VoteTabs } from "@/components/vote/VoteTabs";
+import { Pagination } from "@/components/Racings/Pagination";
+import { IoClose } from "react-icons/io5";
+import { f1Service } from "@/lib/services/f1Service";
+import { Position, Driver as F1Driver } from "@/lib/types/racing";
 
 const VotePage = () => {
   const router = useRouter();
@@ -57,6 +59,14 @@ const VotePage = () => {
     { driverId: string; votes: number }[]
   >([]);
   const [tab, setTab] = useState<"Info" | "Vote">("Info");
+  const [currentPage, setCurrentPage] = useState(1);
+  const driversPerPage = 6;
+  const [raceInfo, setRaceInfo] = useState({
+    country: "",
+    circuit: "",
+    location: "",
+    date: "",
+  });
 
   useEffect(() => {
     const loadInitialData = async () => {
@@ -66,7 +76,45 @@ const VotePage = () => {
           setError(null);
 
           const driversStats = await driverService.getAllDriversStats();
-          setDrivers(driversStats);
+
+          const sessions = await f1Service.getSessions("2024");
+          const raceSession = sessions.find(s => s.session_type === "Race");
+          let positions: Position[] = [];
+          let meeting = null;
+          let f1Drivers: F1Driver[] = [];
+          if (raceSession) {
+            positions = await f1Service.getPositions(String(raceSession.session_key));
+            f1Drivers = await f1Service.getDrivers(String(raceSession.session_key));
+            const meetings = await f1Service.getMeetings("2024");
+            meeting = meetings.find(m => String(m.meeting_key) === String(raceSession.meeting_key));
+            setVoteDeadline(new Date(raceSession.date_start));
+            setRaceInfo({
+              country: meeting?.country_code || "",
+              circuit: meeting?.circuit_short_name || "",
+              location: meeting?.location || "",
+              date: raceSession.date_start,
+            });
+          }
+
+          const driverIdToNumber: Record<string, number> = {};
+          f1Drivers.forEach(d => {
+            const fullName = `${d.first_name} ${d.last_name}`;
+            const ergastDriver = driversStats.find(ds => ds.name === fullName);
+            if (ergastDriver) {
+              driverIdToNumber[ergastDriver.driverId] = d.driver_number;
+            }
+          });
+
+          const enrichedDrivers = driversStats.map(driver => {
+            const driverNumber = driverIdToNumber[driver.driverId];
+            const pos = positions.find(p => p.driver_number === driverNumber);
+            return {
+              ...driver,
+              racePosition: pos ? pos.position : null,
+            };
+          });
+
+          setDrivers(enrichedDrivers);
 
           setTotalVotes(150);
           setTopVotedDrivers([
@@ -74,10 +122,6 @@ const VotePage = () => {
             { driverId: "alonso", votes: 30 },
             { driverId: "norris", votes: 25 },
           ]);
-
-          const raceStart = new Date("2024-05-26T15:00:00");
-          const deadline = new Date(raceStart.getTime() - 5 * 60000);
-          setVoteDeadline(deadline);
 
           if (user) {
             //chargement du vote de l'utilisateur
@@ -236,6 +280,16 @@ const VotePage = () => {
     setIsComparisonOpen(true);
   };
 
+  const paginatedDrivers = useMemo(() => {
+    const startIndex = (currentPage - 1) * driversPerPage;
+    const endIndex = startIndex + driversPerPage;
+    return filteredAndSortedDrivers.slice(startIndex, endIndex);
+  }, [filteredAndSortedDrivers, currentPage]);
+
+  const totalPages = Math.ceil(filteredAndSortedDrivers.length / driversPerPage);
+
+  const uniqueTeams = Array.from(new Set(drivers.map(d => d.team))).sort();
+
   if (!userLoaded || loading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-white to-red-50 flex flex-col items-center justify-center">
@@ -289,7 +343,7 @@ const VotePage = () => {
 
           <VoteTabs activeTab={tab} onTabChange={handleTabChange} />
 
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-12">
             <div className="flex flex-col gap-2">
               <div className="flex items-center gap-2">
                 <span className="text-xl font-semibold text-[var(--primary-red)]">Clôture des votes :</span>
@@ -317,6 +371,43 @@ const VotePage = () => {
               {totalParticipants} participants
             </div>
           </div>
+
+          <div className="h-8" />
+
+          {tab === "Vote" && (
+            <div>
+              <div className="flex justify-between items-start mb-6">
+                <div className="flex flex-col gap-2">
+                  <Button
+                    variant="outline"
+                    onClick={handleOpenComparison}
+                    className="flex items-center gap-2 bg-white hover:bg-gray-50"
+                    disabled={comparisonDrivers.length < 2}
+                  >
+                    <span className="text-[var(--primary-red)]">Comparer les pilotes</span>
+                    <span className="bg-[var(--primary-red)] text-white px-2 py-0.5 rounded-full text-sm">
+                      {comparisonDrivers.length}/3
+                    </span>
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    onClick={() => setFilters({
+                      search: "",
+                      sortBy: "averagePosition",
+                      sortOrder: "asc",
+                      teamFilter: "all",
+                      minPoints: 0,
+                      maxPoints: 500,
+                    })}
+                    className="text-sm text-[var(--primary-red)] hover:text-[var(--primary-red)]/80"
+                  >
+                    Réinitialiser les filtres
+                  </Button>
+                </div>
+                <FilterSort onFilterChange={setFilters} teams={uniqueTeams} />
+              </div>
+            </div>
+          )}
 
           <AnimatePresence mode="wait">
             <motion.div
@@ -426,9 +517,8 @@ const VotePage = () => {
                                   <RiTimeLine className="text-xl text-[var(--primary-red)]" />
                                   <span className="text-lg font-semibold text-gray-900">Circuit</span>
                                 </div>
-                                <p className="text-gray-700">Monaco</p>
-                                <p className="text-gray-700">Circuit de Monaco</p>
-                                <p className="text-gray-700">Monte-Carlo, Monaco</p>
+                                <p className="text-gray-700">{raceInfo.circuit}</p>
+                                <p className="text-gray-700">{raceInfo.location}</p>
                                 <p className="text-gray-700">Longueur : 3.337 km</p>
                                 <p className="text-gray-700">Nombre de tours : 78</p>
                               </div>
@@ -556,28 +646,31 @@ const VotePage = () => {
                     <motion.div
                       initial={{ opacity: 0, scale: 0.95 }}
                       animate={{ opacity: 1, scale: 1 }}
-                      className="bg-green-100 border border-green-300 text-green-700 p-4 rounded-xl text-center mb-6 flex items-center justify-between"
+                      className="bg-gradient-to-r from-green-50 to-green-100 border border-green-300 text-green-700 p-6 rounded-2xl text-center mb-8 flex items-center justify-between"
                     >
                       <div className="flex items-center gap-4">
-                        <span>
-                          Votre vote actuel:{" "}
-                          {
-                            drivers.find(
-                              (d) => d.driverId === userVote.driverId
-                            )?.name
-                          }
-                        </span>
+                        <div className="flex items-center gap-3">
+                          <div className="w-12 h-12 rounded-full bg-green-200 flex items-center justify-center">
+                            <RiUserAddLine className="text-2xl text-green-600" />
+                          </div>
+                          <div className="text-left">
+                            <p className="text-lg font-semibold">Votre vote actuel</p>
+                            <p className="text-xl font-bold">
+                              {drivers.find((d) => d.driverId === userVote.driverId)?.name}
+                            </p>
+                          </div>
+                        </div>
                         {confirmedVote === userVote.driverId && (
-                          <span className="text-sm font-medium bg-green-200 px-2 py-1 rounded">
+                          <span className="px-4 py-2 bg-green-200 rounded-full text-sm font-medium">
                             Vote confirmé
                           </span>
                         )}
                       </div>
-                      <div className="flex gap-2">
+                      <div className="flex gap-3">
                         {!confirmedVote && (
                           <Button
                             onClick={handleConfirmVote}
-                            className="bg-green-600 hover:bg-green-700"
+                            className="bg-green-600 hover:bg-green-700 text-white px-6"
                           >
                             Confirmer le vote
                           </Button>
@@ -585,7 +678,7 @@ const VotePage = () => {
                         <Button
                           variant="outline"
                           onClick={handleCancelVote}
-                          className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                          className="text-red-500 hover:text-red-700 hover:bg-red-50 border-red-300"
                         >
                           Annuler le vote
                         </Button>
@@ -593,99 +686,106 @@ const VotePage = () => {
                     </motion.div>
                   )}
 
-                  <div className="flex justify-end mb-4">
-                    <Button
-                      variant="outline"
-                      onClick={handleOpenComparison}
-                      className="flex items-center gap-2"
-                      disabled={comparisonDrivers.length < 2}
-                    >
-                      Comparer les pilotes ({comparisonDrivers.length}/3)
-                    </Button>
-                  </div>
-
-                  <FilterSort onFilterChange={setFilters} />
-
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {filteredAndSortedDrivers.map((driver) => (
+                    {paginatedDrivers.map((driver) => (
                       <motion.div
                         key={driver.driverId}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.3 }}
-                        className={`bg-white border rounded-xl p-6 shadow-md transition-all ${
+                        className={`group relative bg-white border rounded-2xl p-6 shadow-sm hover:shadow-md transition-all ${
                           selectedDriver === driver.driverId
-                            ? "border-red-500 ring-2 ring-red-500"
-                            : "border-gray-200 hover:border-red-300"
+                            ? "border-[var(--primary-red)] ring-2 ring-[var(--primary-red)]"
+                            : "border-gray-200 hover:border-[var(--primary-red)]"
                         }`}
                       >
-                        <div className="flex justify-between items-start mb-2">
+                        <div className="flex justify-between items-start mb-4">
                           <div>
-                            <h2 className="text-xl font-bold">{driver.name}</h2>
+                            <h2 className="text-2xl font-bold text-gray-900">{driver.name}</h2>
                             <p className="text-gray-600">{driver.team}</p>
                           </div>
-                          <Checkbox
-                            id={`compare-${driver.driverId}`}
-                            checked={comparisonDrivers.includes(
-                              driver.driverId
-                            )}
-                            onCheckedChange={() =>
-                              handleComparisonSelect(driver.driverId)
-                            }
-                            className="ml-2"
-                          />
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm text-gray-600">Comparer</span>
+                            <Checkbox
+                              id={`compare-${driver.driverId}`}
+                              checked={comparisonDrivers.includes(driver.driverId)}
+                              onCheckedChange={() => handleComparisonSelect(driver.driverId)}
+                            />
+                          </div>
                         </div>
 
-                        <div className="space-y-2 mb-4">
-                          <p>
-                            Position moyenne:{" "}
-                            {driver.stats.averagePosition.toFixed(1)}
-                          </p>
-                          <p>
-                            Performance de l&apos;écurie:{" "}
-                            {(driver.stats.teamPerformance * 100).toFixed(1)}%
-                          </p>
-                          <p>Points: {driver.stats.points}</p>
-                          <p>Victoires: {driver.stats.wins}</p>
-                          <p>
-                            Dernières courses:{" "}
-                            {driver.stats.previousRaces.join(", ")}
-                          </p>
+                        <div className="space-y-3 mb-6">
+                          <div className="flex justify-between items-center">
+                            <span className="text-gray-600">Position moyenne</span>
+                            <span className="font-semibold">{driver.stats.averagePosition.toFixed(1)}</span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-gray-600">Performance écurie</span>
+                            <span className="font-semibold">{(driver.stats.teamPerformance * 100).toFixed(1)}%</span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-gray-600">Points</span>
+                            <span className="font-semibold">{driver.stats.points}</span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-gray-600">Victoires</span>
+                            <span className="font-semibold">{driver.stats.wins}</span>
+                          </div>
                         </div>
 
-                        <div className="flex gap-2">
-                          <Button
-                            onClick={() => handleVote(driver.driverId)}
-                            variant={
-                              selectedDriver === driver.driverId
-                                ? "destructive"
-                                : "outline"
-                            }
-                            className="flex-1"
-                            disabled={timeLeft === 0}
-                          >
-                            {selectedDriver === driver.driverId
-                              ? "Vote enregistré"
-                              : "Voter"}
-                          </Button>
+                        <div className="flex gap-3">
+                          {selectedDriver === driver.driverId ? (
+                            <Button
+                              onClick={handleCancelVote}
+                              variant="destructive"
+                              className="flex-1 bg-[var(--primary-red)] hover:bg-[var(--primary-red)]/90"
+                              disabled={timeLeft === 0}
+                            >
+                              Annuler mon vote
+                            </Button>
+                          ) : (
+                            <Button
+                              onClick={() => handleVote(driver.driverId)}
+                              variant="outline"
+                              className="flex-1 hover:bg-[var(--primary-red)]/10"
+                              disabled={timeLeft === 0}
+                            >
+                              Voter
+                            </Button>
+                          )}
                           <Button
                             variant="outline"
-                            size="icon"
                             onClick={() => toggleChart(driver.driverId)}
-                            className="shrink-0"
+                            className="shrink-0 hover:bg-gray-100 flex items-center gap-2"
                           >
-                            {expandedCharts.has(driver.driverId) ? "▼" : "▶"}
+                            <span className="text-sm">Statistiques</span>
+                            {expandedCharts.has(driver.driverId) ? (
+                              <RiArrowUpSLine className="text-lg" />
+                            ) : (
+                              <RiArrowDownSLine className="text-lg" />
+                            )}
                           </Button>
                         </div>
 
                         {expandedCharts.has(driver.driverId) && (
-                          <div className="mt-6">
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className="mt-6"
+                          >
                             <DriverStatsChart driver={driver} />
-                          </div>
+                          </motion.div>
                         )}
                       </motion.div>
                     ))}
                   </div>
+
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={setCurrentPage}
+                  />
                 </div>
               )}
             </motion.div>
@@ -703,25 +803,49 @@ const VotePage = () => {
       )}
 
       <Dialog open={showCancelDialog} onOpenChange={setShowCancelDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Annuler le vote</DialogTitle>
-            <DialogDescription>
-              Êtes-vous sûr de vouloir annuler votre vote ? Cette action est
-              irréversible.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button
-              variant="outline"
+        <DialogContent className="sm:max-w-[425px] bg-gray-50 rounded-3xl border border-gray-50 shadow-xl p-0 overflow-visible">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="p-8 relative"
+          >
+            <button
               onClick={() => setShowCancelDialog(false)}
+              className="absolute top-0 right-4 z-20 w-10 h-10 flex items-center justify-center rounded-full text-gray-400 hover:text-[var(--primary-red)] hover:bg-gray-100 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[var(--primary-red)]/40"
+              aria-label="Fermer la pop-up"
+              type="button"
             >
-              Non, garder mon vote
-            </Button>
-            <Button variant="destructive" onClick={confirmCancelVote}>
-              Oui, annuler mon vote
-            </Button>
-          </DialogFooter>
+              <IoClose size={36} />
+            </button>
+            <DialogHeader className="text-center">
+              <DialogTitle className="text-4xl font-extrabold bg-gradient-to-r from-[var(--primary-red)] to-gray-800 bg-clip-text text-transparent font-racing tracking-wider">
+                Annuler le vote
+              </DialogTitle>
+            </DialogHeader>
+            <div className="mt-8 space-y-6">
+              <p className="text-2xl font-medium text-gray-600 text-center">
+                Êtes-vous sûr de vouloir annuler votre vote ?<br />
+                <span className="text-red-500 font-semibold">Cette action est irréversible.</span>
+              </p>
+              <div className="flex justify-center gap-6 pt-4">
+                <Button
+                  type="button"
+                  onClick={() => setShowCancelDialog(false)}
+                  variant="outline"
+                  className="px-8 py-6 border border-gray-200/80 text-gray-600 hover:border-gray-300 hover:bg-gray-50/80 rounded-full text-xl transition-colors duration-200 shadow-sm hover:shadow-md"
+                >
+                  Non, garder mon vote
+                </Button>
+                <Button
+                  type="button"
+                  onClick={confirmCancelVote}
+                  className="px-8 py-6 bg-gradient-to-r from-[var(--primary-red)] to-[#A60321] hover:from-gray-600 hover:to-gray-900 text-white rounded-full text-xl transition-colors duration-200 shadow-lg hover:shadow-xl relative overflow-hidden"
+                >
+                  Oui, annuler mon vote
+                </Button>
+              </div>
+            </div>
+          </motion.div>
         </DialogContent>
       </Dialog>
 

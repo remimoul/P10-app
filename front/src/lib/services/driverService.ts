@@ -41,9 +41,9 @@ export const driverService = {
 
   async getDriverStats(driverId: string): Promise<DriverStats> {
     try {
-      const [standings, results] = await Promise.all([
+      const [standings, resultsData] = await Promise.all([
         this.getDriverStandings(),
-        this.getDriverResults(driverId),
+        fetch(`${ERGAST_API_BASE}/current/drivers/${driverId}/results.json`).then(res => res.json())
       ]);
 
       const driverStanding = standings.find(
@@ -54,21 +54,54 @@ export const driverService = {
         throw new Error(`Driver ${driverId} not found in standings`);
       }
 
-      const averagePosition =
-        results.reduce((sum, position) => sum + position, 0) / results.length;
+      // Toutes les courses du pilote
+      const races: Race[] = resultsData.MRData.RaceTable?.Races ?? [];
+      const previousRaces = races.map((race: Race) => parseInt(race.Results[0].position));
+      const averagePosition = previousRaces.length
+        ? previousRaces.reduce((sum: number, pos: number) => sum + pos, 0) / previousRaces.length
+        : 0;
+
+      // Podiums
+      const podiums = previousRaces.filter((pos: number) => pos >= 1 && pos <= 3).length;
+
+      // Fastest laps
+      const fastestLaps = races.filter((race: Race) =>
+        race.Results[0].FastestLap && race.Results[0].FastestLap.rank === "1"
+      ).length;
+
+      // Team performance (moyenne des points des pilotes de l'équipe)
+      const teamName = driverStanding.Constructors[0].name;
+      const teamDrivers = standings.filter(
+        s => s.Constructors[0].name === teamName
+      );
+      const teamPoints = teamDrivers.reduce(
+        (sum, s) => sum + parseInt(s.points),
+        0
+      );
+      const maxTeamPoints = Math.max(
+        ...standings.reduce((arr, s) => {
+          const team = s.Constructors[0].name;
+          const teamSum = standings
+            .filter(ss => ss.Constructors[0].name === team)
+            .reduce((sum, ss) => sum + parseInt(ss.points), 0);
+          arr.push(teamSum);
+          return arr;
+        }, [] as number[])
+      );
+      const teamPerformance = maxTeamPoints ? teamPoints / maxTeamPoints : 0;
 
       return {
         driverId,
         name: `${driverStanding.Driver.givenName} ${driverStanding.Driver.familyName}`,
-        team: driverStanding.Constructors[0].name,
+        team: teamName,
         stats: {
-          previousRaces: results,
+          previousRaces,
           averagePosition,
-          teamPerformance: 0.8,
+          teamPerformance,
           points: parseInt(driverStanding.points),
           wins: parseInt(driverStanding.wins),
-          podiums: 0,
-          fastestLaps: 0,
+          podiums,
+          fastestLaps,
         },
       };
     } catch (error) {

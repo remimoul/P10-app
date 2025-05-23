@@ -27,3 +27,14 @@ export interface VoteTabsProps {
   activeTab: "Info" | "Vote";
   onTabChange: (tab: "Info" | "Vote") => void;
 }
+
+export interface TopVotedDriver {
+  driverId: string;
+  votes: number;
+}
+
+export interface VoteStats {
+  totalVotes: number;
+  topVotedDrivers: TopVotedDriver[];
+  totalParticipants: number;
+}

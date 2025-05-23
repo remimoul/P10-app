@@ -58,11 +58,15 @@ const ViewLeague = () => {
 
   const handleVote = () => {
     const leagueId = organization?.id;
-    const voteId = "1"; // ID temporaire pour le vote
+    // const voteId = "1"; // ID temporaire pour le vote
     if (leagueId) {
-      router.push(`/leagues/viewLeague/${encodeURIComponent(leagueId)}/vote/${voteId}`);
+      router.push(
+        // `/leagues/viewLeague/${encodeURIComponent(leagueId)}/vote/${voteId}`
+        `/leagues/viewLeague/${encodeURIComponent(leagueId)}/vote/1`
+      );
     } else {
-      router.push(`/leagues/viewLeague/${encodeURIComponent(leagueId)}/vote/${voteId}`);
+      toast.error("Aucune league sélectionnée !");
+      router.push("/leagues/viewLeague/1");
     }
   };
 
