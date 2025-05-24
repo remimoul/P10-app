@@ -1,150 +1,146 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { DriverStats } from "@/lib/types/drivers";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { RiSunLine } from "react-icons/ri";
+import { formatDate } from "@/lib/utils/dateAndTime";
+import { f1Service } from "@/lib/services/f1Service";
+import { Position } from "@/lib/types/racing";
+import { useState, useEffect } from "react";
 
-interface RaceInfoProps {
-  drivers: DriverStats[];
-  totalVotes: number;
-  topVotedDrivers: { driverId: string; votes: number }[];
+interface F1Driver {
+  driver_number: number;
+  first_name: string;
+  last_name: string;
 }
 
-export const RaceInfo = ({
-  drivers,
-  totalVotes,
-  topVotedDrivers,
-}: RaceInfoProps) => {
-  const previousRaces = [
-    { race: "GP d'Australie", driver: "Lewis Hamilton", position: "10" },
-    { race: "GP d'Arabie Saoudite", driver: "Fernando Alonso", position: "10" },
-    { race: "GP de Bahreïn", driver: "Lance Stroll", position: "10" },
-  ];
+interface DriverStats {
+  driverId: string;
+  name: string;
+}
+
+interface RaceInfoProps {
+  raceInfo: {
+    grandPrix: string;
+    country: string;
+    circuit: string;
+    location: string;
+    date: string;
+    startTime: string;
+    weather?: string;
+    temperature?: string;
+    humidity?: string;
+  };
+}
+
+export const RaceInfo = ({ raceInfo }: RaceInfoProps) => {
+  const {
+    grandPrix,
+    country,
+    circuit,
+    location,
+    date,
+    startTime,
+    weather,
+    temperature,
+    humidity,
+  } = raceInfo;
+
+  const [driversStats, setDriversStats] = useState<DriverStats[]>([]);
+
+  const formattedDate = date ? formatDate(date) : "-";
+  const formattedTime = startTime ? startTime.slice(0, 5) : "-";
+
+  useEffect(() => {
+    const fetchRaceData = async () => {
+      try {
+        const sessions = await f1Service.getSessions("2024");
+        const raceSession = sessions.find(s => s.session_type === "Race");
+        let positions: Position[] = [];
+        let f1Drivers: F1Driver[] = [];
+
+        if (raceSession) {
+          positions = await f1Service.getPositions(String(raceSession.session_key));
+          f1Drivers = await f1Service.getDrivers(String(raceSession.session_key));
+          const meetings = await f1Service.getMeetings("2024");
+          const meeting = meetings.find(m => String(m.meeting_key) === String(raceSession.meeting_key));
+          
+          if (meeting) {
+            setDriversStats([
+              {
+                driverId: "1",
+                name: `${meeting.circuit_short_name} - ${meeting.location}`
+              }
+            ]);
+          }
+        }
+
+        const driverIdToNumber: Record<string, number> = {};
+        f1Drivers.forEach(d => {
+          const fullName = `${d.first_name} ${d.last_name}`;
+          const ergastDriver = driversStats.find(ds => ds.name === fullName);
+          if (ergastDriver) {
+            driverIdToNumber[ergastDriver.driverId] = d.driver_number;
+          }
+        });
+
+        const enrichedDrivers = driversStats.map(driver => {
+          const driverNumber = driverIdToNumber[driver.driverId];
+          const pos = positions.find(p => p.driver_number === driverNumber);
+          return {
+            ...driver,
+            racePosition: pos ? pos.position : null,
+          };
+        });
+
+        setDriversStats(enrichedDrivers);
+      } catch (error) {
+        console.error("Error fetching race data:", error);
+      }
+    };
+
+    fetchRaceData();
+  }, []);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-      <Card>
-        <CardHeader>
-          <CardTitle>Grand Prix de Monaco</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div>
-              <p className="text-lg font-semibold">Circuit de Monaco</p>
-              <p>Date: 26 Mai 2024</p>
-              <p>Heure de départ: 15:00</p>
-            </div>
-
-            <div>
-              <h3 className="font-semibold mb-2">Conditions météo</h3>
-              <div className="flex items-center gap-2">
-                <RiSunLine className="text-yellow-500 text-xl" />
-                <p>Ensoleillé, 24°C</p>
-              </div>
-              <p className="text-sm text-gray-500">Humidité: 65%</p>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-2">Points en jeu</h3>
-              <p>1 point pour le 10ème</p>
-            </div>
-
-            <Button variant="outline" className="w-full">
-              Voir le classement du championnat
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Statistiques de vote</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <p>Total des votes: {totalVotes}</p>
-            <div>
-              <h3 className="font-semibold mb-2">Top 3 des votes</h3>
-              <div className="space-y-2">
-                {topVotedDrivers.map((driver, index) => {
-                  const driverInfo = drivers.find(
-                    (d) => d.driverId === driver.driverId
-                  );
-                  const percentage = (
-                    (driver.votes / totalVotes) *
-                    100
-                  ).toFixed(1);
-                  return (
-                    <div
-                      key={driver.driverId}
-                      className="flex justify-between items-center"
-                    >
-                      <span>
-                        {index + 1}. {driverInfo?.name}
-                      </span>
-                      <span>{percentage}%</span>
-                    </div>
-                  );
-                })}
-              </div>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="relative bg-gradient-to-br from-white to-red-50 rounded-3xl p-8 shadow-lg border border-red-500/30 overflow-hidden"
+    >
+      <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/diagonal-stripes.png')] opacity-10" />
+      <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 to-transparent" />
+      <div className="relative z-10">
+        <h3 className="text-3xl font-black text-[var(--primary-red)] mb-8">
+          Informations course
+        </h3>
+        <div className="space-y-6">
+          <div className="group relative p-4 rounded-2xl bg-white/80 backdrop-blur-sm flex flex-col gap-1 hover:bg-white/90 transition-all duration-300 border border-transparent hover:border-red-500/20">
+            <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-red-500/0 via-red-500/5 to-red-500/0 opacity-0 group-hover:opacity-100 transition-opacity" />
+            <span className="text-xl font-medium text-black group-hover:text-[var(--secondary-red)] transition-colors mb-1">
+              {grandPrix}
+            </span>
+            <div className="flex flex-col gap-1">
+              <span className="text-base font-semibold text-black">{circuit}</span>
+              <span className="text-sm text-gray-700">{location}, {country}</span>
+              <span className="text-sm text-gray-700">Date: {formattedDate}</span>
+              <span className="text-sm text-gray-700">Heure de départ: {formattedTime}</span>
             </div>
           </div>
-        </CardContent>
-      </Card>
-
-      <Card className="lg:col-span-2">
-        <CardContent>
-          <Tabs defaultValue="history">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="rules">Règles</TabsTrigger>
-              <TabsTrigger value="history">Historique</TabsTrigger>
-            </TabsList>
-            <TabsContent value="history">
-              <div className="space-y-4">
-                <h3 className="font-semibold">Derniers 10èmes</h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {previousRaces.map((race) => (
-                    <div key={race.race} className="bg-gray-50 p-4 rounded-lg">
-                      <p className="font-medium">{race.race}</p>
-                      <p>{race.driver}</p>
-                      <p className="text-sm text-gray-500">
-                        Position: {race.position}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </TabsContent>
-            <TabsContent value="rules">
-              <div className="space-y-4">
-                <div>
-                  <h3 className="font-semibold mb-2">Comment voter ?</h3>
-                  <p>1. Sélectionnez le pilote que vous pensez finir 10ème</p>
-                  <p>2. Cliquez sur le bouton &quot;Voter&quot;</p>
-                  <p>
-                    3. Vous pouvez modifier votre vote jusqu&apos;à la clôture
-                  </p>
-                </div>
-                <div>
-                  <h3 className="font-semibold mb-2">Clôture des votes</h3>
-                  <p>
-                    Les votes sont clôturés 5 minutes avant le départ de la
-                    course
-                  </p>
-                </div>
-                <div>
-                  <h3 className="font-semibold mb-2">Attribution des points</h3>
-                  <p>• 3 points si vous avez voté pour le bon pilote</p>
-                  <p>
-                    • 1 point si le pilote finit dans les 3 positions autour
-                    (8-12)
-                  </p>
-                  <p>• 0 point dans les autres cas</p>
-                </div>
-              </div>
-            </TabsContent>
-          </Tabs>
-        </CardContent>
-      </Card>
-    </div>
+          <div className="group relative p-4 rounded-2xl bg-white/80 backdrop-blur-sm flex flex-col gap-1 hover:bg-white/90 transition-all duration-300 border border-transparent hover:border-red-500/20">
+            <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-red-500/0 via-red-500/5 to-red-500/0 opacity-0 group-hover:opacity-100 transition-opacity" />
+            <span className="text-xl font-medium text-black group-hover:text-[var(--secondary-red)] transition-colors mb-1">
+              Conditions météo
+            </span>
+            <div className="flex items-center gap-2">
+              <RiSunLine className="text-yellow-500 text-xl" />
+              <span className="text-base font-semibold text-black">{weather || "-"}{temperature ? `, ${temperature}` : ""}</span>
+            </div>
+            <span className="text-sm text-gray-700">Humidité : {humidity || "-"}</span>
+          </div>
+          <Button variant="outline" className="w-full font-bold text-[var(--primary-red)] text-base py-6 hover:bg-red-50 transition-colors">
+            Voir le classement du championnat
+          </Button>
+        </div>
+      </div>
+    </motion.div>
   );
 };

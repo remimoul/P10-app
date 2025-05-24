@@ -22,8 +22,7 @@ interface VotingSectionProps {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
-  filters: any;
-  onFilterChange: (filters: any) => void;
+  onFilterChange: (filters: Record<string, unknown>) => void;
   resetFilters: () => void;
   teams: string[];
 }
@@ -43,7 +42,6 @@ export const VotingSection = ({
   currentPage,
   totalPages,
   onPageChange,
-  filters,
   onFilterChange,
   resetFilters,
   teams,

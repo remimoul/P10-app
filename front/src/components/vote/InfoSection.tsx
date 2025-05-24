@@ -6,12 +6,16 @@ import { DriverStats } from "@/lib/types/drivers";
 interface InfoSectionProps {
   drivers: DriverStats[];
   raceInfo: {
+    grandPrix: string;
     country: string;
     circuit: string;
     location: string;
     date: string;
+    startTime: string;
+    weather?: string;
+    temperature?: string;
+    humidity?: string;
   };
-  voteDeadline: Date | null;
   totalVotes: number;
   totalParticipants: number;
   topVotedDrivers: { driverId: string; votes: number }[];
@@ -20,7 +24,6 @@ interface InfoSectionProps {
 export const InfoSection = ({
   drivers,
   raceInfo,
-  voteDeadline,
   totalVotes,
   totalParticipants,
   topVotedDrivers,
@@ -35,7 +38,19 @@ export const InfoSection = ({
           drivers={drivers}
         />
 
-        <RaceInfo raceInfo={raceInfo} voteDeadline={voteDeadline} />
+        <RaceInfo 
+          raceInfo={{
+            grandPrix: raceInfo.grandPrix || "",
+            country: raceInfo.country,
+            circuit: raceInfo.circuit,
+            location: raceInfo.location,
+            date: raceInfo.date,
+            startTime: raceInfo.startTime || "",
+            weather: raceInfo.weather,
+            temperature: raceInfo.temperature,
+            humidity: raceInfo.humidity,
+          }}
+        />
       </div>
 
       <VoteRules />
