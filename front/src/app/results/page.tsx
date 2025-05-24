@@ -7,8 +7,8 @@ import Filters from "@/components/Results/Filters";
 import RaceInfo from "@/components/Results/RaceInfo";
 import ResultsTable from "@/components/Results/ResultsTable";
 import NoRacesMessage from "@/components/Results/NoRacesMessage";
-import { useRaces } from "@/hooks/useRaces";
-import { useDrivers } from "@/hooks/useDrivers";
+import { useRaces } from "@/lib/hooks/useRaces";
+import { useDrivers } from "@/lib/hooks/useDrivers";
 import { formatDate } from "@/lib/utils/dateAndTime";
 
 const Ranking = () => {

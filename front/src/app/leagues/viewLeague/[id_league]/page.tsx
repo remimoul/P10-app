@@ -57,7 +57,17 @@ const ViewLeague = () => {
   }, []);
 
   const handleVote = () => {
-    router.push("/vote");
+    const leagueId = organization?.id;
+    // const voteId = "1"; // ID temporaire pour le vote
+    if (leagueId) {
+      router.push(
+        // `/leagues/viewLeague/${encodeURIComponent(leagueId)}/vote/${voteId}`
+        `/leagues/viewLeague/${encodeURIComponent(leagueId)}/vote/1`
+      );
+    } else {
+      toast.error("Aucune league sélectionnée !");
+      router.push("/leagues/viewLeague/1");
+    }
   };
 
   const handleAddMembers = () => {
