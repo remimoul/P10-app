@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FiMenu, FiX, FiHome, FiUser } from "react-icons/fi";
 import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { UserButton, SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
+import { usePathname } from "next/navigation";
 
 const navItems = [
   { name: "Home", icon: FiHome, minWidth: 640, path: "/" },
@@ -37,7 +38,11 @@ const menuVariants = {
 };
 
 const Navbar = () => {
-  const [activeTab, setActiveTab] = useState(navItems[0].name);
+  const pathname = usePathname();
+  const activeTab = useMemo(() => {
+    const found = navItems.find((item) => item.path === pathname);
+    return found ? found.name : navItems[0].name;
+  }, [pathname]);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const windowWidth = useWindowWidth();
   const mobileMenuRef = useRef<HTMLDivElement>(null);
@@ -48,8 +53,7 @@ const Navbar = () => {
   );
 
   const handleTabClick = useCallback(
-    (name: string) => {
-      setActiveTab(name);
+    () => {
       if (isMenuOpen) {
         setIsMenuOpen(false);
       }
@@ -94,7 +98,7 @@ const Navbar = () => {
                 >
                   <Link
                     href={item.path}
-                    onClick={() => setActiveTab(item.name)}
+                    onClick={handleTabClick}
                     className={`min-w-[80px] flex items-center justify-center w-full px-2 py-1 sm:px-3 sm:py-2 text-lg transition-colors
                       ${
                         activeTab === item.name
@@ -160,7 +164,7 @@ const Navbar = () => {
                   <Link
                     href={item.path}
                     key={item.name}
-                    onClick={() => handleTabClick(item.name)}
+                    onClick={handleTabClick}
                     className={`w-full flex items-center px-4 py-3 rounded-full transition-colors ${
                       activeTab === item.name
                         ? "bg-red-600/10 text-[var(--primary-red)]"

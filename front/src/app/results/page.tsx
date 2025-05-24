@@ -7,8 +7,8 @@ import Filters from "@/components/Results/Filters";
 import RaceInfo from "@/components/Results/RaceInfo";
 import ResultsTable from "@/components/Results/ResultsTable";
 import NoRacesMessage from "@/components/Results/NoRacesMessage";
-import { useRaces } from "@/hooks/useRaces";
-import { useDrivers } from "@/hooks/useDrivers";
+import { useRaces } from "@/lib/hooks/useRaces";
+import { useDrivers } from "@/lib/hooks/useDrivers";
 import { formatDate } from "@/lib/utils/dateAndTime";
 
 const Ranking = () => {
@@ -115,6 +115,16 @@ const Ranking = () => {
       }
     : null;
 
+  const handleDateChange = (date: string) => {
+    setSelectedDate(date);
+    const filtered = filteredRaces.filter(
+      (session) => !date || formatDate(session.date_start) === date
+    );
+    if (filtered.length === 1) {
+      setSelectedRace(filtered[0].session_key);
+    }
+  };
+
   if (racesLoading || driversLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center text-xl">
@@ -127,9 +137,9 @@ const Ranking = () => {
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white py-14 px-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="mb-12">
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
             <div>
-              <h1 className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-800">
+              <h1 className="text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-800">
                 RACES RESULTS
               </h1>
               <div className="h-1 w-24 bg-gradient-to-r from-red-600 to-red-800 mt-2 rounded-full" />
@@ -196,7 +206,7 @@ const Ranking = () => {
             onSeasonChange={setSelectedSeason}
             onRaceChange={setSelectedRace}
             onCountryChange={setSelectedCountry}
-            onDateChange={setSelectedDate}
+            onDateChange={handleDateChange}
           />
 
           {viewMode === "race" && selectedRaceInfo && (
