@@ -1,6 +1,25 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@font-face {
+  font-family: 'Formula1';
+  src: url('/font/Formula1-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Formula1';
+  src: url('/font/Formula1-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+body, * {
+  font-family: 'Formula1', sans-serif !important;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 :root {
