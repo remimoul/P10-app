@@ -48,25 +48,25 @@ const ReadyToRace = () => {
 
   return (
     <div className="relative">
-      <div className="mt-10 sm:mt-20 bg-gradient-to-br from-[#1c1e22] to-[#2a2f36] backdrop-blur-lg p-4 sm:p-6 md:p-8 rounded-3xl border border-gray-700 relative overflow-hidden shadow-2xl mx-6 sm:mx-10 md:mx-0">
-        <div className="max-w-3xl mx-auto flex flex-col md:flex-row gap-6 md:gap-8 items-center justify-between relative z-10">
-          <div className="space-y-3 sm:space-y-4 flex-1 text-center md:text-left">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white uppercase tracking-wider font-racing whitespace-nowrap">
+      <div className="mt-10 sm:mt-20 bg-gradient-to-br from-[#1c1e22] to-[#2a2f36] backdrop-blur-lg p-4 sm:p-6 md:p-8 rounded-3xl border border-gray-700 relative overflow-hidden shadow-2xl mx-6 sm:mx-10 md:mx-16">
+        <div className="max-w-3xl mx-auto flex flex-col md:flex-row gap-6 md:gap-8 items-start justify-between relative z-10 lg:items-center">
+          <div className="space-y-3 sm:space-y-4 flex-1 text-left">
+            <h2 className="text-2xl sm:text-3xl md:text-2xl font-bold text-white uppercase tracking-wider font-racing whitespace-nowrap text-left">
               Ready to Race ?
             </h2>
-            <p className="text-gray-300 text-lg sm:text-xl max-w-md mx-auto md:mx-0">
+            <p className="text-gray-300 text-lg sm:text-lg max-w-md md:mx-0 text-left">
               Start your engines and join the ultimate racing challenge !
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 w-full sm:w-auto">
+          <div className="flex flex-col gap-4 w-full items-center lg:flex-row lg:gap-6 lg:items-center lg:justify-center">
             <motion.div
               whileHover={{ scale: 1.05 }}
               className="relative w-full sm:w-auto"
             >
               <Button
                 onClick={() => setIsCreateModalOpen(true)}
-                className="w-full sm:w-auto h-14 sm:h-16 px-6 sm:px-8 text-base sm:text-lg font-bold text-white rounded-full shadow-2xl 
+                className="w-full lg:w-auto sm:w-auto h-14 sm:h-16 px-6 sm:px-8 text-base sm:text-lg font-bold text-white rounded-full shadow-2xl 
                   bg-gradient-to-r from-[#FF1801]/80 to-[#CC0000]/80 
                   hover:shadow-[0_0_30px_-5px] hover:shadow-red-500/50
                   transition-all duration-300 overflow-hidden
@@ -88,9 +88,9 @@ const ReadyToRace = () => {
                   whileHover={{ gap: "8px" }}
                   transition={{ type: "spring", stiffness: 300 }}
                 >
-                  <GiTrophyCup className="text-xl sm:text-2xl group-hover:rotate-12 transition-transform" />
+                  <GiTrophyCup className="text-2xl sm:text-2xl group-hover:rotate-12 transition-transform" />
                   Create League
-                  <RiArrowRightSLine className="ml-2 inline-block text-lg sm:text-xl" />
+                  <RiArrowRightSLine className="ml-2 inline-block text-2xl sm:text-2xl" />
                 </motion.span>
 
                 <motion.div
@@ -134,7 +134,7 @@ const ReadyToRace = () => {
               <Button
                 variant="outline"
                 onClick={() => setIsJoinModalOpen(true)}
-                className="w-full sm:w-auto h-14 sm:h-16 px-6 sm:px-8 text-base sm:text-lg font-bold text-white rounded-full shadow-2xl 
+                className="w-full lg:w-auto sm:w-auto h-14 sm:h-16 px-6 sm:px-8 text-base sm:text-lg font-bold text-white rounded-full shadow-2xl 
                   bg-gradient-to-r from-[#00D2FF] to-[#0078FF] 
                   hover:shadow-[0_0_30px_-5px] hover:shadow-blue-500/50
                   transition-all duration-300 overflow-hidden
