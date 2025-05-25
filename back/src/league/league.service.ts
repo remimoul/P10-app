@@ -91,11 +91,52 @@ export class LeagueService {
     }
   }
 
-  async getLeague(getLeagueInput: GetLeagueInput): Promise<League> {
-    const league = await this.prisma.league.findUnique({
-      where: {
-        id: getLeagueInput.id,
-      },
+  // async getLeague(getLeagueInput: GetLeagueInput): Promise<League> {
+  //   const league = await this.prisma.league.findUnique({
+  //     where: {
+  //       id: getLeagueInput.id,
+  //     },
+  //     include: {
+  //       avatar: true,
+  //       UserLeague: {
+  //         include: {
+  //           user: true,
+  //         },
+  //       },
+  //     },
+  //   });
+
+  //   if (!league) {
+  //     throw new Error('League not found');
+  //   }
+
+  //   return {
+  //     id: league.id as any,
+  //     name: league.name,
+  //     private: league.private,
+  //     joinCode: league.joinCode,
+  //     avatar: league.avatar
+  //       ? {
+  //           id: league.avatar.id as UUID,
+  //           url: league.avatar.picture,
+  //         }
+  //       : null,
+  //     admin: null,
+  //     members: league.UserLeague.map((userLeague) => ({
+  //       id: userLeague.user.id as UUID,
+  //       clerkId: userLeague.user.clerkId,
+  //       username: userLeague.user.username,
+  //       firstName: userLeague.user.firstName,
+  //       lastName: userLeague.user.lastName,
+  //       email: userLeague.user.email,
+  //       password: '',
+  //       leagues: [],
+  //     })),
+  //   };
+  // }
+
+  async getAllLeagues(): Promise<League[]> {
+    const leagues = await this.prisma.league.findMany({
       include: {
         avatar: true,
         UserLeague: {
@@ -106,11 +147,7 @@ export class LeagueService {
       },
     });
 
-    if (!league) {
-      throw new Error('League not found');
-    }
-
-    return {
+    return leagues.map((league) => ({
       id: league.id as any,
       name: league.name,
       private: league.private,
@@ -132,6 +169,6 @@ export class LeagueService {
         password: '',
         leagues: [],
       })),
-    };
+    }));
   }
 }

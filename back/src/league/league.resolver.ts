@@ -65,10 +65,8 @@ export class LeagueResolver {
   }
 
   @Public()
-  @Query(() => League)
-  async getLeague(
-    @Args('getLeagueInput') getLeagueInput: GetLeagueInput,
-  ): Promise<League> {
-    return this.leagueService.getLeague(getLeagueInput);
+  @Query(() => [League])
+  async getAllLeagues(): Promise<League[]> {
+    return this.leagueService.getAllLeagues();
   }
 }

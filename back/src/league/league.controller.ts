@@ -35,7 +35,7 @@ export class LeagueController {
   @Public()
   @ApiBearerAuth()
   @ApiOperation({
-    summary: 'Create a new league',
+    summary: 'Create a new league only for authenticated users with Clerk',
     description: 'Creates a new league with the authenticated user as admin',
   })
   @ApiBody({ type: CreateLeagueInput })
@@ -117,34 +117,18 @@ export class LeagueController {
     // Create league with the provided user ID
     return this.leagueService.createLeague(createLeagueInput, userId);
   }
-
   @Get()
   @Public()
   @ApiOperation({
-    summary: 'Get league details',
-    description: 'Retrieves details of a specific league',
+    summary: 'Get all leagues',
+    description: 'Retrieves a list of all available leagues',
   })
-  @ApiQuery({
-    name: 'id',
-    required: false,
-    type: String,
-    description: 'League ID',
+  @ApiResponse({
+    status: 200,
+    description: 'List of all leagues',
+    type: [League],
   })
-  @ApiQuery({
-    name: 'name',
-    required: false,
-    type: String,
-    description: 'League name',
-  })
-  @ApiQuery({
-    name: 'adminId',
-    required: false,
-    type: String,
-    description: 'Admin user ID',
-  })
-  @ApiResponse({ status: 200, description: 'League found', type: League })
-  @ApiResponse({ status: 404, description: 'League not found' })
-  async getLeague(@Query() getLeagueInput: GetLeagueInput) {
-    return this.leagueService.getLeague(getLeagueInput);
+  async getAllLeagues() {
+    return this.leagueService.getAllLeagues();
   }
 }
