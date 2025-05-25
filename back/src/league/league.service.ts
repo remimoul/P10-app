@@ -262,4 +262,66 @@ export class LeagueService {
       throw new Error(`Failed to join league: ${error.message}`);
     }
   }
+
+  async getLeague(getLeagueInput: GetLeagueInput): Promise<League> {
+    const { id, name } = getLeagueInput;
+
+    // Construire la condition de recherche
+    const whereCondition: any = {};
+    if (id) whereCondition.id = id;
+    if (name) whereCondition.name = name;
+
+    // Rechercher la league
+    const league = await this.prisma.league.findFirst({
+      where: whereCondition,
+      include: {
+        avatar: true,
+        UserLeague: {
+          include: {
+            user: true,
+          },
+        },
+      },
+    });
+
+    if (!league) {
+      throw new NotFoundException('League not found');
+    }
+
+    // Trouver l'administrateur
+    const adminUserLeague = league.UserLeague.find((ul) => ul.isAdmin);
+
+    // Retourner le résultat formaté
+    return {
+      id: league.id as any,
+      name: league.name,
+      private: league.private,
+      joinCode: league.joinCode,
+      avatar: league.avatar
+        ? {
+            id: league.avatar.id as UUID,
+            url: league.avatar.picture,
+          }
+        : null,
+      admin: adminUserLeague?.user
+        ? {
+            id: adminUserLeague.user.id as UUID,
+            clerkId: adminUserLeague.user.clerkId,
+            email: adminUserLeague.user.email,
+            password: '',
+            leagues: [],
+          }
+        : null,
+      members: league.UserLeague.map((userLeague) => ({
+        id: userLeague.user.id as UUID,
+        clerkId: userLeague.user.clerkId,
+        username: userLeague.user.username,
+        firstName: userLeague.user.firstName,
+        lastName: userLeague.user.lastName,
+        email: userLeague.user.email,
+        password: '',
+        leagues: [],
+      })),
+    };
+  }
 }

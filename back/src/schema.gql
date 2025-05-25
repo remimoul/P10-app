@@ -25,6 +25,12 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+input GetLeagueInput {
+  adminId: String
+  id: String
+  name: String
+}
+
 input GetUserInput {
   clerkId: String
   email: String
@@ -94,6 +100,7 @@ type Query {
   getAllLeagues: [League!]!
   getAvatar(id: String!): Avatar!
   getAvatars: [Avatar!]!
+  getLeague(input: GetLeagueInput!): League!
   getPilotteams: [PilotTeam!]!
   user(getUserInput: GetUserInput!): User!
 }

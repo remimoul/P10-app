@@ -71,6 +71,14 @@ export class LeagueResolver {
   }
 
   @Public()
+  @Query(() => League)
+  async getLeague(
+    @Args('input') getLeagueInput: GetLeagueInput,
+  ): Promise<League> {
+    return this.leagueService.getLeague(getLeagueInput);
+  }
+
+  @Public()
   @Mutation(() => League)
   async joinLeague(
     @Args('joinLeague') joinLeagueInput: JoinLeagueInput,

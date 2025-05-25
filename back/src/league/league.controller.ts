@@ -43,7 +43,27 @@ export class LeagueController {
     summary: 'Create a new league only for authenticated users with Clerk',
     description: 'Creates a new league with the authenticated user as admin',
   })
-  @ApiBody({ type: CreateLeagueInput })
+  @ApiBody({
+    type: CreateLeagueInput,
+    examples: {
+      publicLeague: {
+        summary: 'Public League',
+        description: 'Example for creating a public league',
+        value: {
+          name: 'My Public League',
+          private: false,
+        },
+      },
+      privateLeague: {
+        summary: 'Private League',
+        description: 'Example for creating a private league',
+        value: {
+          name: 'My Private League',
+          private: true,
+        },
+      },
+    },
+  })
   @ApiResponse({
     status: 201,
     description: 'League successfully created',
@@ -241,5 +261,31 @@ export class LeagueController {
 
     // Create league with the provided user ID
     return this.leagueService.createLeague(createLeagueInput, userId);
+  }
+
+  @Get(':id')
+  @Public()
+  @ApiOperation({
+    summary: 'Get league by ID',
+    description: 'Retrieves a specific league by its ID',
+  })
+  @ApiParam({ name: 'id', description: 'League ID' })
+  @ApiResponse({ status: 200, description: 'League found', type: League })
+  @ApiResponse({ status: 404, description: 'League not found' })
+  async getLeagueById(@Param('id') id: string) {
+    return this.leagueService.getLeague({ id });
+  }
+
+  @Get('by-name/:name')
+  @Public()
+  @ApiOperation({
+    summary: 'Get league by name',
+    description: 'Retrieves a league by its name',
+  })
+  @ApiParam({ name: 'name', description: 'League name' })
+  @ApiResponse({ status: 200, description: 'League found', type: League })
+  @ApiResponse({ status: 404, description: 'League not found' })
+  async getLeagueByName(@Param('name') name: string) {
+    return this.leagueService.getLeague({ name });
   }
 }
