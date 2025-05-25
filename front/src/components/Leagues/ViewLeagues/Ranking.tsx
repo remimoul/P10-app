@@ -8,7 +8,7 @@ const Ranking = ({ participants }: { participants: Participant[] }) => (
     <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 to-transparent" />
 
     <div className="relative z-10">
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-4 mb-8">
         <div className="flex items-center gap-3">
           <GiTrophyCup className="text-5xl text-[var(--primary-red)]" />
           <div className="flex flex-col">
@@ -18,7 +18,7 @@ const Ranking = ({ participants }: { participants: Participant[] }) => (
             <span className="text-lg text-red-500/70">Season {new Date().getFullYear()}</span>
           </div>
         </div>
-        <div className="flex items-center gap-2 text-[var(--primary-red)]">
+        <div className="flex items-center gap-2 text-[var(--primary-red)] justify-center sm:justify-end w-full sm:w-auto">
           <span className="text-xl uppercase tracking-wider">
             Total Players
           </span>
@@ -35,11 +35,11 @@ const Ranking = ({ participants }: { participants: Participant[] }) => (
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: index * 0.1 }}
-              className="group relative p-4 rounded-full bg-white/80 backdrop-blur-sm flex justify-between items-center hover:bg-white/90 transition-all duration-300 border border-transparent hover:border-red-500/20"
+              className="group relative p-2 sm:p-4 rounded-full bg-white/80 backdrop-blur-sm flex flex-col sm:flex-row justify-between items-center gap-2 sm:gap-0 hover:bg-white/90 transition-all duration-300 border border-transparent hover:border-red-500/20"
             >
               <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-red-500/0 via-red-500/5 to-red-500/0 opacity-0 group-hover:opacity-100 transition-opacity" />
 
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2 sm:gap-4">
                 <div className="relative flex items-center justify-center">
                   <span
                     className={`text-2xl font-bold ${
@@ -62,10 +62,10 @@ const Ranking = ({ participants }: { participants: Participant[] }) => (
                   </span>
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-xl font-medium text-black group-hover:text-[var(--secondary-red)] transition-colors">
+                  <span className="text-base sm:text-xl font-medium text-black group-hover:text-[var(--secondary-red)] transition-colors">
                     {participant.name}
                   </span>
-                  <span className="text-lg text-[var(--secondary-red)]">
+                  <span className="text-sm sm:text-lg text-[var(--secondary-red)]">
                     {index === 0
                       ? "Champion"
                       : index === 1
@@ -84,10 +84,10 @@ const Ranking = ({ participants }: { participants: Participant[] }) => (
                   transition={{ duration: 0.3, delay: index * 0.1 + 0.2 }}
                   className="flex items-center gap-2"
                 >
-                  <span className="text-red-500 font-bold text-xl">
+                  <span className="text-red-500 font-bold text-base sm:text-xl">
                     {participant.score}
                   </span>
-                  <span className="text-sm text-red-500/70 uppercase tracking-wider">
+                  <span className="text-xs sm:text-sm text-red-500/70 uppercase tracking-wider">
                     pts
                   </span>
                 </motion.div>

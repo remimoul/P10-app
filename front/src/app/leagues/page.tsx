@@ -7,42 +7,42 @@ import ReadyToRace from "@/components/Leagues/ReadyToRace";
 import LeagueSection from "@/components/Leagues/LeagueSection";
 import { useRouter } from "next/navigation";
 
-// const leagues: League[] = []; // simulate when no leagues
+const leagues: League[] = []; // simulate when no leagues
 
-const leagues: League[] = [
-  {
-    name: "RED RACING",
-    members: 6,
-    points: 328,
-    position: 1,
-    type: "public",
-    id: "1",
-  },
-  {
-    name: "POKEMON",
-    members: 6,
-    points: 295,
-    position: 2,
-    type: "private",
-    id: "2",
-  },
-  {
-    name: "THE NEW AVENGERS",
-    members: 6,
-    points: 267,
-    position: 3,
-    type: "public",
-    id: "3",
-  },
-  {
-    name: "AVENGERS",
-    members: 6,
-    points: 245,
-    position: 4,
-    type: "private",
-    id: "4",
-  },
-];
+// const leagues: League[] = [
+//   {
+//     name: "RED RACING",
+//     members: 6,
+//     points: 328,
+//     position: 1,
+//     type: "public",
+//     id: "1",
+//   },
+//   {
+//     name: "POKEMON",
+//     members: 6,
+//     points: 295,
+//     position: 2,
+//     type: "private",
+//     id: "2",
+//   },
+//   {
+//     name: "THE NEW AVENGERS",
+//     members: 6,
+//     points: 267,
+//     position: 3,
+//     type: "public",
+//     id: "3",
+//   },
+//   {
+//     name: "AVENGERS",
+//     members: 6,
+//     points: 245,
+//     position: 4,
+//     type: "private",
+//     id: "4",
+//   },
+// ];
 
 export default function Leagues() {
   const router = useRouter();
