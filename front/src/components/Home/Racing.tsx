@@ -1,12 +1,13 @@
 "use client";
 
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { TbTargetArrow } from "react-icons/tb";
 import { Button } from "@/components/ui/button";
-import React, { useState, useEffect } from "react";
-import { AiOutlineClockCircle } from "react-icons/ai";
+import { TimerOff } from "lucide-react";
+import { TbTargetArrow } from "react-icons/tb";
+import { useNextRace } from "@/lib/hooks/useNextRace";
 
 const TimerUnit = ({ value, label }: { value: number; label: string }) => (
   <motion.div
@@ -23,8 +24,12 @@ const TimerUnit = ({ value, label }: { value: number; label: string }) => (
 );
 
 const Racing = () => {
+  const nextRace = useNextRace();
+  const [isHovered, setIsHovered] = useState(false);
+
   const calculateTimeLeft = () => {
-    const difference = +new Date("2024-03-01T12:00:00") - +new Date();
+    if (!nextRace.date) return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+    const difference = +new Date(nextRace.date) - +new Date();
     return {
       days: Math.max(0, Math.floor(difference / (1000 * 60 * 60 * 24))),
       hours: Math.max(0, Math.floor((difference / (1000 * 60 * 60)) % 24)),
@@ -34,18 +39,17 @@ const Racing = () => {
   };
 
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
-  const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => setTimeLeft(calculateTimeLeft()), 1000);
     return () => clearInterval(timer);
-  }, []);
+  }, [nextRace.date]);
 
   const hasTimeLeft = Object.values(timeLeft).some((v) => v > 0);
 
   return (
-    <div className="max-w-6xl mx-auto px-4 my-12 md:my-20">
-      <div className="bg-white/80 rounded-2xl shadow-2xl overflow-hidden border border-gray-100 relative group transition-shadow duration-300 hover:shadow-3xl">
+    <div className="max-w-6xl mx-auto px-10 my-12 md:my-20">
+      <div className="bg-white/80 rounded-3xl shadow-2xl overflow-hidden border border-gray-100 relative group transition-shadow duration-300 hover:shadow-3xl">
         <motion.div
           className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-600 via-white to-red-600 opacity-90"
           initial={{ backgroundPosition: "-200% 0" }}
@@ -65,20 +69,20 @@ const Racing = () => {
               className="text-4xl md:text-4xl font-bold text-gray-900 mb-6"
             >
               <span className="text-red-600 block mb-2">PREDICT THE 10TH</span>
-              Australian Grand Prix 2024
+              {nextRace.name || "Loading..."}
             </motion.h2>
 
-            <p className="text-gray-600 text-xl leading-relaxed mb-4">
+            <p className="text-gray-600 text-lg leading-relaxed mb-4">
               Create your own prediction and challenge your friends in the
               league...
             </p>
-            <p className="text-gray-600 text-xl leading-relaxed mb-8">
+            <p className="text-gray-600 text-lg leading-relaxed mb-8">
               Let the race begin !
             </p>
 
             <div className="flex items-center mb-6">
-              <AiOutlineClockCircle className="text-red-600" size={40} />
-              <div className="flex space-x-4 px-6 py-3 rounded-lg">
+              <TimerOff className="text-red-600" size={40} />
+              <div className="flex space-x-4 px-6 py-3 rounded-sm">
                 {hasTimeLeft ? (
                   Object.entries(timeLeft).map(([unit, value]) => (
                     <TimerUnit
@@ -116,10 +120,10 @@ const Racing = () => {
                     </motion.div>
                     <span className="relative">
                       <span className="block transform transition-transform">
-                        Choose your stable
+                        Choose your pilot
                       </span>
                       <span className="absolute inset-0 text-transparent bg-clip-text bg-gradient-to-b from-white/50 to-transparent">
-                        Choose your stable
+                        Choose your pilot
                       </span>
                     </span>
                   </div>
@@ -127,12 +131,6 @@ const Racing = () => {
                     <div className="w-full h-full bg-[url('/svg/racing-line.svg')] bg-contain animate-racing-line" />
                   </div>
                 </Button>
-
-                <div className="absolute -right-2 -top-2 bg-white px-3 py-1 rounded-full text-sm font-bold shadow-md flex items-center border border-gray-200">
-                  <span className="bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
-                    AVAILABLE LEAGUES
-                  </span>
-                </div>
               </Link>
             </motion.div>
           </div>

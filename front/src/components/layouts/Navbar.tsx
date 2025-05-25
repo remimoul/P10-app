@@ -126,7 +126,7 @@ const Navbar = () => {
 
   return (
     <nav
-      className="fixed top-4 left-0 right-0 mx-4 bg-white/70 backdrop-blur-md border-b border-gray-200 z-50 rounded-3xl md:rounded-full"
+      className="fixed top-4 left-0 right-0 mx-4 bg-white/50 backdrop-blur-sm border-b border-gray-200 z-50 rounded-3xl md:rounded-full"
       role="navigation"
       aria-label="Main navigation"
     >
