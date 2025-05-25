@@ -7,7 +7,7 @@ const LeagueSection = ({ title, leagues, isPublic }: LeagueSectionProps) => (
     <SectionHeader title={title} isPublic={isPublic} />
 
     {leagues.length === 0 ? (
-      <p className="text-center text-gray-500 text-lg">
+      <p className="text-center text-gray-600 text-2xl sm:text-2xl">
         No league for the moment.
       </p>
     ) : (

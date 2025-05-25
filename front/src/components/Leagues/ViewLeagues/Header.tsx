@@ -39,22 +39,20 @@ const Header = ({
       className="mb-12 px-4 sm:px-6 lg:px-8"
     >
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 max-w-7xl mx-auto">
-        <div className="flex items-center gap-4">
-          <div className="group relative">
+        <div className="text-center w-full">
+          <div className="flex items-center gap-3 justify-center">
             <LeagueTypeIcon type={league.type} />
-          </div>
-          <div>
-            <h1 className="text-4xl xs:text-5xl sm:text-5xl md:text-5xl font-extrabold bg-gradient-to-r from-[#D90429] to-gray-800 bg-clip-text text-transparent font-racing tracking-wider mb-2 sm:mb-3 break-words max-w-xs xs:max-w-sm sm:max-w-none drop-shadow-[0_2px_6px_rgba(0,0,0,0.18)]">
+            <h1 className="text-4xl xs:text-5xl sm:text-5xl md:text-5xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-800 mb-4">
               {league.name}
             </h1>
-            <div className="flex flex-col xs:flex-row xs:items-center gap-2 xs:gap-3 bg-gradient-to-br from-white/80 to-white/30 px-4 py-2 xs:px-6 xs:py-3 rounded-full border border-[#D90429] whitespace-nowrap w-fit">
-              <div className="flex items-center gap-1">
-                <RiTimerLine className="text-xl xs:text-2xl text-[#D90429]" />
-                <span className="font-mono text-lg xs:text-2xl text-gray-800 font-bold tracking-wider">
-                  {formatTime(timeLeft)}
-                </span>
-                <span className="text-xs xs:text-sm text-gray-600 font-mono">LAP</span>
-              </div>
+          </div>
+          <div className="flex flex-col xs:flex-row xs:items-center gap-2 xs:gap-3 bg-gradient-to-br from-white/80 to-white/30 px-4 py-2 xs:px-6 xs:py-3 rounded-full border border-[#D90429] whitespace-nowrap w-fit mx-auto mt-2">
+            <div className="flex items-center gap-1">
+              <RiTimerLine className="text-xl xs:text-2xl text-[#D90429]" />
+              <span className="font-mono text-lg xs:text-2xl text-gray-800 font-bold tracking-wider">
+                {formatTime(timeLeft)}
+              </span>
+              <span className="text-xs xs:text-sm text-gray-600 font-mono">LAP</span>
             </div>
           </div>
         </div>

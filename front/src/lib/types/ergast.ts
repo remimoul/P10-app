@@ -36,6 +36,7 @@ export interface ErgastRace {
   raceName: string;
   Circuit: ErgastCircuit;
   date: string;
+  time?: string;
   results?: ErgastResult[];
   circuitInfo?: CircuitInfo;
 }

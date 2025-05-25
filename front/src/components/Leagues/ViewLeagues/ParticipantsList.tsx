@@ -17,7 +17,7 @@ const ParticipantsList = ({
           <FaUserFriends className="text-5xl text-[#2A3439]" />
         </div>
         <div className="flex flex-col">
-          <h2 className="text-4xl font-black text-transparent bg-clip-text bg-[#2A3439]">
+          <h2 className="text-4xl text-transparent bg-clip-text bg-[#2A3439]">
             Participants
           </h2>
           <span className="text-lg text-[#2B2D42]">
@@ -45,10 +45,10 @@ const ParticipantsList = ({
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <h3 className="text-xl font-bold text-black group-hover:text-red-500 transition-colors">
+                <h3 className="text-lg font-semibold text-black group-hover:text-red-500 transition-colors">
                   {participant.name}
                 </h3>
-                <span className="text-red-500/70 text-xl group-hover:text-red-500 transition-colors">
+                <span className="text-red-500/70 text-lg group-hover:text-red-500 transition-colors">
                   • {participant.score} points
                 </span>
               </div>

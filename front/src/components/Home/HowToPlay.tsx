@@ -12,18 +12,18 @@ const HowToPlay = () => {
       title: "Challenge your friends",
       description:
         "Create or join leagues (public or private) and compete against other fans",
-      icon: <Swords className="w-16 h-16 text-red-600" />,
+      icon: <Swords className="w-14 h-14 text-[var(--secondary-red)]" />,
     },
     {
       title: "Choose your pilot",
       description: "Bet on who finishes 10ᵉ at the next F1 race",
-      icon: <FaUsers className="w-16 h-16 text-red-600" />,
+      icon: <FaUsers className="w-14 h-14 text-[var(--secondary-red)]" />,
     },
     {
       title: "Conquer the podium",
       description:
         "Every winning bet brings you closer to the ultimate trophy!",
-      icon: <GiTrophyCup className="w-16 h-16 text-red-600" />,
+      icon: <GiTrophyCup className="w-14 h-14 text-[var(--secondary-red)]" />,
     },
   ];
 
@@ -40,12 +40,12 @@ const HowToPlay = () => {
         }}
       />
 
-      <div className="max-w-7xl mx-auto px-6 sm:px-12 lg:px-16">
+      <div className="max-w-7xl mx-auto px-10 sm:px-12 lg:px-16">
         <motion.h2
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
-          className="text-5xl font-bold text-center mb-8 md:mb-16 text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-800"
+          className="text-4xl font-semibold text-center mb-8 md:mb-16 text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-800"
         >
           How to play ?
         </motion.h2>
@@ -61,7 +61,7 @@ const HowToPlay = () => {
               className="bg-white rounded-3xl shadow-2xl p-4 md:p-8 flex flex-col items-center text-center transform transition-transform hover:scale-105 hover:shadow-red-600"
             >
               <div className="mb-4 flex justify-center">{step.icon}</div>
-              <h3 className="text-xl md:text-2xl font-semibold text-gray-900 mb-2">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
                 {step.title}
               </h3>
               <p className="text-gray-700 text-base md:text-lg leading-relaxed">

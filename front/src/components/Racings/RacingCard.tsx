@@ -66,10 +66,13 @@ export const RacingCard = ({ grandPrix, isPast }: RacingCardProps) => {
       {isPast && (
         <motion.div
           className="absolute right-5 top-1/2 -translate-y-1/2 z-20 flex items-center justify-center bg-black/30 rounded-full p-2 group-hover:bg-[var(--primary-red)]/80 transition-colors duration-200"
-          whileHover={{ x: 16 }}
-          transition={{ type: "spring", stiffness: 200, damping: 16 }}
+          whileHover={{ x: 8, scale: 1.07, rotate: 6 }}
+          transition={{ type: "spring", stiffness: 300, damping: 20 }}
         >
-          <HiOutlineArrowNarrowRight className="w-6 h-6 text-[var(--secondary-red)] group-hover:text-white group-hover:drop-shadow-[0_0_8px_rgba(239,68,68,0.7)] transition-all duration-300" />
+          <HiOutlineArrowNarrowRight
+            className="w-6 h-6 text-[var(--secondary-red)] group-hover:text-white group-hover:drop-shadow-[0_0_6px_rgba(239,68,68,0.5)] transition-all duration-300"
+            style={{ transition: "filter 0.3s, color 0.3s, transform 0.3s" }}
+          />
         </motion.div>
       )}
 
@@ -78,7 +81,7 @@ export const RacingCard = ({ grandPrix, isPast }: RacingCardProps) => {
           <span className="text-2xl font-extrabold text-[var(--primary-red)] leading-none">
             {day}
           </span>
-          <span className="text-xl text-[var(--primary-grey)] tracking-widest mt-0.5 font-medium">
+          <span className="text-xl text-gray-300 tracking-widest mt-0.5 font-medium">
             {month}
           </span>
         </div>
