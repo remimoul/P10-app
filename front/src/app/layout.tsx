@@ -8,6 +8,9 @@ import Footer from "@/components/layouts/Footer";
 export const metadata: Metadata = {
   title: "P10 App",
   description: "",
+  icons: {
+    icon: "/logo.ico",
+  },
 };
 
 const RootLayout = ({

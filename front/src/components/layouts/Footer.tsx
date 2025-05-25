@@ -91,14 +91,6 @@ const Footer = () => {
                   className={logoClass}
                   priority
                 />
-                <Image
-                  src="/logo1.png"
-                  alt="Flags"
-                  width={360}
-                  height={84}
-                  className={logoClass}
-                  priority
-                />
               </div>
               <p className={ambianceClass}>
                 In each race, only one number counts... the 10ᵉ. <br />
