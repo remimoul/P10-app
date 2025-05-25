@@ -33,11 +33,11 @@ export class AppService {
         </head>
         <body>
           <div class="container">
-            <h1>P10 API - NestJs 🚀</h1>
+            <h1>P10 API 🏁</h1>
             <p>Lien documentation Swagger : <a href="/api">Swagger</a></p>
             <p>Lien vers Apollo GraphQL : <a href="/graphql">GraphQL</a></p>
             <br/>
-            <p>Pour toute question, contactez-nous : <a href="mailto:remi.moul@my-digital-school.org">remi.moul@my-digital-school.org</a></p>
+            <p>Développé avec exotisme ☀️🏝️🔥 </p>
           </div>
         </body>
       </html>
