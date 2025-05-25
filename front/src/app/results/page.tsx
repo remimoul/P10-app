@@ -144,10 +144,10 @@ const Ranking = () => {
               </h1>
               <div className="h-1 w-24 bg-gradient-to-r from-red-600 to-red-800 mt-2 rounded-full" />
             </div>
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3 w-full max-w-xs sm:max-w-none">
               <button
                 onClick={() => setViewMode("race")}
-                className={`px-6 py-2.5 rounded-full transition-all duration-300 relative overflow-hidden group text-xl ${
+                className={`w-full sm:w-auto px-6 py-2.5 rounded-full transition-all duration-300 relative overflow-hidden group text-xl ${
                   viewMode === "race"
                     ? "bg-gradient-to-r from-red-600 to-red-800 text-white shadow-lg shadow-red-200"
                     : "bg-white text-gray-700 border border-gray-200 hover:shadow-lg hover:shadow-red-100"
@@ -171,7 +171,7 @@ const Ranking = () => {
               </button>
               <button
                 onClick={() => setViewMode("championship")}
-                className={`px-6 py-2.5 rounded-full transition-all duration-300 relative overflow-hidden group text-xl ${
+                className={`w-full sm:w-auto px-6 py-2.5 rounded-full transition-all duration-300 relative overflow-hidden group text-xl ${
                   viewMode === "championship"
                     ? "bg-gradient-to-r from-red-600 to-red-800 text-white shadow-lg shadow-red-200"
                     : "bg-white text-gray-700 border border-gray-200 hover:shadow-lg hover:shadow-red-100"

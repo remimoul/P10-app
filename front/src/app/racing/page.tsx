@@ -194,10 +194,10 @@ export default function Racing() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 relative overflow-hidden py-14 lg:py-14 sm:py-18">
+    <div className="min-h-screen bg-gray-50 relative overflow-hidden py-18 lg:py-18 sm:py-18">
       <main className="relative z-10 max-w-7xl mx-auto px-4 py-12 space-y-8">
         <div>
-          <h1 className="text-5xl font-black text-transparent bg-clip-text bg-red-800">
+          <h1 className="text-4xl md:text-5xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-800">
             RACING
           </h1>
           <div className="h-1 w-24 bg-gradient-to-r from-red-600 to-red-800 mt-2 rounded-full" />

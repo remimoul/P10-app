@@ -53,7 +53,7 @@ export default function LeagueRankingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-red-50 py-20 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-b from-white to-red-50 py-26 px-4 sm:px-6 lg:px-8">
       <div className="max-w-5xl mx-auto space-y-8">
         <RaceInfo
           raceName="Grand Prix de Monaco"
