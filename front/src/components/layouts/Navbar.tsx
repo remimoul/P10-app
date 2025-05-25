@@ -1,19 +1,25 @@
 "use client";
 
+import React, {
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+  useRef,
+} from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { LuLayers } from "react-icons/lu";
-import { GiCheckeredFlag } from "react-icons/gi";
-import { FaRankingStar } from "react-icons/fa6";
-import { motion, AnimatePresence } from "framer-motion";
-import { FiMenu, FiX, FiHome, FiUser } from "react-icons/fi";
-import { useState, useEffect, useMemo, useCallback, useRef } from "react";
-import { UserButton, SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
+import { FiMenu, FiX, FiUser } from "react-icons/fi";
+import { GiCheckeredFlag, GiCompass } from "react-icons/gi";
+import { FaRankingStar, FaUsers } from "react-icons/fa6";
+import { UserButton, SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
+import { AccountButtonProps } from "@/lib/types/other";
 
 const navItems = [
-  { name: "Home", icon: FiHome, minWidth: 640, path: "/" },
-  { name: "Leagues", icon: LuLayers, minWidth: 0, path: "/leagues" },
+  { name: "Home", icon: GiCompass, minWidth: 640, path: "/" },
+  { name: "Leagues", icon: FaUsers, minWidth: 0, path: "/leagues" },
   { name: "Racing", icon: GiCheckeredFlag, minWidth: 768, path: "/racing" },
   { name: "Results", icon: FaRankingStar, minWidth: 768, path: "/results" },
 ];
@@ -37,6 +43,57 @@ const menuVariants = {
   exit: { opacity: 0, height: 0, transition: { duration: 0.3 } },
 };
 
+type NavLinkItemProps = {
+  item: (typeof navItems)[number];
+  active: boolean;
+  onClick: () => void;
+  className?: string;
+};
+
+const NavLinkItem = React.memo(function NavLinkItem({
+  item,
+  active,
+  onClick,
+  className = "",
+}: NavLinkItemProps) {
+  return (
+    <Link
+      href={item.path}
+      onClick={onClick}
+      className={`flex items-center px-4 py-3 rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary-red)] ${
+        active
+          ? "bg-red-600/10 text-[var(--primary-red)]"
+          : "text-gray-800 hover:bg-gray-300"
+      } ${className}`}
+      aria-current={active ? "page" : undefined}
+      role="menuitem"
+      tabIndex={0}
+    >
+      <item.icon className="h-5 w-5 mr-3" />
+      <span className="text-xl">{item.name}</span>
+    </Link>
+  );
+});
+
+const AccountButton = React.memo(function AccountButton({
+  onClick,
+  className = "",
+}: AccountButtonProps) {
+  return (
+    <SignedOut>
+      <SignInButton mode="modal">
+        <button
+          onClick={onClick}
+          className={`w-full flex items-center px-4 py-3 rounded-full text-gray-800 hover:bg-gray-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary-red)] ${className}`}
+        >
+          <FiUser className="h-5 w-5 mr-3" />
+          <span className="text-xl">Login</span>
+        </button>
+      </SignInButton>
+    </SignedOut>
+  );
+});
+
 const Navbar = () => {
   const pathname = usePathname();
   const activeTab = useMemo(() => {
@@ -52,14 +109,11 @@ const Navbar = () => {
     [windowWidth]
   );
 
-  const handleTabClick = useCallback(
-    () => {
-      if (isMenuOpen) {
-        setIsMenuOpen(false);
-      }
-    },
-    [isMenuOpen]
-  );
+  const handleTabClick = useCallback(() => {
+    if (isMenuOpen) {
+      setIsMenuOpen(false);
+    }
+  }, [isMenuOpen]);
 
   useEffect(() => {
     if (isMenuOpen && mobileMenuRef.current) {
@@ -71,9 +125,13 @@ const Navbar = () => {
   }, [isMenuOpen]);
 
   return (
-    <nav className="fixed top-0 w-full bg-white/70 backdrop-blur-md border-b border-gray-200 z-50">
+    <nav
+      className="fixed top-4 left-0 right-0 mx-4 bg-white/70 backdrop-blur-md border-b border-gray-200 z-50 rounded-3xl md:rounded-full"
+      role="navigation"
+      aria-label="Main navigation"
+    >
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center h-20">
           <div className="flex items-center gap-2">
             <Link href="/">
               <Image
@@ -127,7 +185,7 @@ const Navbar = () => {
             </SignedIn>
             <SignedOut>
               <SignInButton mode="modal">
-                <button className="hidden sm:flex items-center gap-2 px-5 py-2 rounded-full bg-gradient-to-br from-white/70 to-white/20 border-2 border-[var(--primary-red)] shadow-lg text-gray-900 text-lg font-bold transition-all duration-200 hover:scale-105 hover:shadow-[0_4px_24px_rgba(217,4,41,0.25)] hover:bg-gradient-to-br hover:from-[var(--primary-red)]/90 hover:to-white/30 hover:text-white">
+                <button className="hidden sm:flex items-center gap-2 px-4 py-1 rounded-full bg-gradient-to-br from-white/70 to-white/20 border-2 border-[var(--primary-red)] shadow-lg text-gray-900 text-lg font-semibold transition-all duration-200 hover:scale-105 hover:shadow-[0_4px_24px_rgba(217,4,41,0.25)] hover:bg-gradient-to-br hover:from-[var(--primary-red)]/90 hover:to-white/30 hover:text-white">
                   <FiUser className="h-5 w-5" />
                   <span>Account</span>
                 </button>
@@ -158,38 +216,22 @@ const Navbar = () => {
               exit="exit"
               variants={menuVariants}
               className="md:hidden overflow-hidden"
+              role="menu"
             >
               <div className="px-2 pb-4 space-y-1">
                 {navItems.map((item) => (
-                  <Link
-                    href={item.path}
+                  <NavLinkItem
                     key={item.name}
+                    item={item}
+                    active={activeTab === item.name}
                     onClick={handleTabClick}
-                    className={`w-full flex items-center px-4 py-3 rounded-full transition-colors ${
-                      activeTab === item.name
-                        ? "bg-red-600/10 text-[var(--primary-red)]"
-                        : "text-gray-800 hover:bg-gray-300"
-                    }`}
-                  >
-                    <item.icon className="h-5 w-5 mr-3" />
-                    <span className="text-xl">{item.name}</span>
-                  </Link>
+                  />
                 ))}
                 <div className="pt-4 border-t border-gray-300">
                   <SignedIn>
                     <UserButton />
                   </SignedIn>
-                  <SignedOut>
-                    <SignInButton mode="modal">
-                      <button
-                        onClick={() => setIsMenuOpen(false)}
-                        className="w-full flex items-center px-4 py-3 rounded-full text-gray-800 hover:bg-gray-300"
-                      >
-                        <FiUser className="h-5 w-5 mr-3" />
-                        <span className="text-xl">Login</span>
-                      </button>
-                    </SignInButton>
-                  </SignedOut>
+                  <AccountButton onClick={() => setIsMenuOpen(false)} />
                 </div>
               </div>
             </motion.div>

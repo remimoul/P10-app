@@ -176,6 +176,22 @@ export class ErgastService {
       return [];
     }
   }
+
+  async getNextRace(): Promise<ErgastRace | null> {
+    try {
+      const response = await this.fetchData<ErgastResponse<ErgastRace>>("current/next.json");
+      const race = response?.MRData?.RaceTable?.Races?.[0];
+      if (!race) return null;
+      const circuitInfo = await this.getCircuitInfo(race.Circuit.circuitId);
+      return {
+        ...race,
+        circuitInfo: circuitInfo || undefined,
+      };
+    } catch (error) {
+      console.error("Error fetching next race:", error);
+      return null;
+    }
+  }
 }
 
 export const ergastService = new ErgastService();
