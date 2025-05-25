@@ -80,12 +80,12 @@ export class DeleteLeagueInput {
 
 @InputType()
 export class JoinLeagueInput {
-  @Field({ nullable: true })
-  id?: string;
-
-  @Field({ nullable: true })
-  name?: string;
-
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   joinCode?: string;
+
+  @Field(() => String)
+  leagueId: string;
+
+  @Field(() => String, { nullable: true })
+  userId?: string; // Optional user ID for joining the league
 }

@@ -48,6 +48,12 @@ type GrandPrixRanking {
   position: Int!
 }
 
+input JoinLeagueInput {
+  joinCode: String
+  leagueId: String!
+  userId: String
+}
+
 type League {
   admin: User!
   avatar: Avatar!
@@ -63,6 +69,8 @@ type Mutation {
   createLeagueWithUserId(createLeagueInput: CreateLeagueInput!, userId: String!): League!
   createPilotteam(pilotId: String!, teamId: String!, year: String!): PilotTeam!
   createUser(createUserInput: CreateUserInput!): User!
+  joinLeague(joinLeague: JoinLeagueInput!): League!
+  joinLeagueWithUserId(joinLeagueInput: JoinLeagueInput!, userId: String!): League!
 }
 
 type Pilot {
