@@ -25,6 +25,11 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type DeleteLeagueResponse {
+  message: String!
+  success: Boolean!
+}
+
 input GetLeagueInput {
   adminId: String
   id: String
@@ -75,6 +80,8 @@ type Mutation {
   createLeagueWithUserId(createLeagueInput: CreateLeagueInput!, userId: String!): League!
   createPilotteam(pilotId: String!, teamId: String!, year: String!): PilotTeam!
   createUser(createUserInput: CreateUserInput!): User!
+  deleteLeague(leagueId: String!): DeleteLeagueResponse!
+  deleteLeagueWithUserId(leagueId: String!, userId: String!): DeleteLeagueResponse!
   joinLeague(joinLeague: JoinLeagueInput!): League!
   joinLeagueWithUserId(joinLeagueInput: JoinLeagueInput!, userId: String!): League!
 }

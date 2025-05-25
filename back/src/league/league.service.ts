@@ -31,7 +31,6 @@ export class LeagueService {
 
     try {
       return await this.prisma.$transaction(async (prisma) => {
-        // 1. Create the league
         const league = await prisma.league.create({
           data: {
             name: createLeagueInput.name,
@@ -40,7 +39,6 @@ export class LeagueService {
           },
         });
 
-        // 2. Create the UserLeague entry for the admin
         const userLeague = await prisma.userLeague.create({
           data: {
             userId: userId,
@@ -52,7 +50,6 @@ export class LeagueService {
           },
         });
 
-        // 3. Return the league with user data
         return {
           id: league.id as any,
           name: league.name,
@@ -323,5 +320,63 @@ export class LeagueService {
         leagues: [],
       })),
     };
+  }
+
+  async deleteLeague(
+    leagueId: string,
+    userId: string,
+  ): Promise<{ success: boolean; message: string }> {
+    // 1. Vérifier que la league existe
+    const league = await this.prisma.league.findUnique({
+      where: { id: leagueId },
+      include: {
+        UserLeague: {
+          where: { isAdmin: true },
+          include: { user: true },
+        },
+      },
+    });
+
+    if (!league) {
+      throw new NotFoundException(`League with ID ${leagueId} not found`);
+    }
+
+    // 2. Vérifier que l'utilisateur est admin de cette league
+    const isAdmin = league.UserLeague.some((ul) => ul.userId === userId);
+
+    if (!isAdmin) {
+      throw new BadRequestException(
+        'Only the league admin can delete the league',
+      );
+    }
+
+    try {
+      // 3. Utiliser une transaction pour supprimer la league et toutes ses relations
+      await this.prisma.$transaction(async (prisma) => {
+        // Supprimer d'abord les relations UserLeague
+        await prisma.userLeague.deleteMany({
+          where: { leagueId: leagueId },
+        });
+
+        // Supprimer ensuite les avatars associés (si votre modèle les gère)
+        if (league.avatarId) {
+          await prisma.avatar.delete({
+            where: { id: league.avatarId },
+          });
+        }
+
+        // Supprimer finalement la league
+        await prisma.league.delete({
+          where: { id: leagueId },
+        });
+      });
+
+      return {
+        success: true,
+        message: `League "${league.name}" successfully deleted`,
+      };
+    } catch (error) {
+      throw new Error(`Failed to delete league: ${error.message}`);
+    }
   }
 }

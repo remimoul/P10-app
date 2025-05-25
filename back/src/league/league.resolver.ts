@@ -5,6 +5,7 @@ import {
   GetLeagueInput,
   DeleteLeagueInput,
   UpdateLeagueInput,
+  DeleteLeagueResponse,
   JoinLeagueInput,
 } from './league.graphmodel';
 import { LeagueService } from './league.service';
@@ -121,5 +122,50 @@ export class LeagueResolver {
 
     // Rejoindre la ligue avec l'ID utilisateur fourni
     return this.leagueService.joinLeague(joinLeagueInput, userId);
+  }
+
+  @Public()
+  @Mutation(() => DeleteLeagueResponse)
+  async deleteLeague(
+    @Args('leagueId', { type: () => String }) leagueId: string,
+    @Context() context: any,
+  ): Promise<{ success: boolean; message: string }> {
+    // Get the authenticated user from context
+    const clerkId = context.req.user?.clerkId || context.req.auth?.userId;
+
+    if (!clerkId) {
+      throw new Error('User authentication required to delete a league');
+    }
+
+    // Find the user's database ID using the clerkId
+    const user = await this.prisma.user.findUnique({
+      where: { clerkId },
+    });
+
+    if (!user) {
+      throw new Error('User not found in the database');
+    }
+
+    // Delete the league
+    return this.leagueService.deleteLeague(leagueId, user.id);
+  }
+
+  @Public()
+  @Mutation(() => DeleteLeagueResponse)
+  async deleteLeagueWithUserId(
+    @Args('leagueId', { type: () => String }) leagueId: string,
+    @Args('userId', { type: () => String }) userId: string,
+  ): Promise<{ success: boolean; message: string }> {
+    // Find the user
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new Error(`User with ID ${userId} not found`);
+    }
+
+    // Delete the league
+    return this.leagueService.deleteLeague(leagueId, userId);
   }
 }

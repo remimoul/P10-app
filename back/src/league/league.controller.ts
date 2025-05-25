@@ -8,6 +8,7 @@ import {
   Request,
   UnauthorizedException,
   NotFoundException,
+  Delete,
 } from '@nestjs/common';
 import { LeagueService } from './league.service';
 import {
@@ -287,5 +288,110 @@ export class LeagueController {
   @ApiResponse({ status: 404, description: 'League not found' })
   async getLeagueByName(@Param('name') name: string) {
     return this.leagueService.getLeague({ name });
+  }
+
+  @Delete(':id')
+  @Public()
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Delete a league',
+    description:
+      'Deletes a league. Only the admin of the league can delete it.',
+  })
+  @ApiParam({ name: 'id', description: 'League ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'League successfully deleted',
+    schema: {
+      type: 'object',
+      properties: {
+        success: { type: 'boolean', example: true },
+        message: {
+          type: 'string',
+          example: 'League "My League" successfully deleted',
+        },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Only the league admin can delete the league',
+  })
+  @ApiResponse({ status: 401, description: 'User authentication required' })
+  @ApiResponse({ status: 404, description: 'League not found' })
+  async deleteLeague(@Param('id') leagueId: string, @Request() req) {
+    // Extract user ID from request
+    const clerkId = req.user?.clerkId || req.auth?.userId;
+
+    if (!clerkId) {
+      throw new UnauthorizedException(
+        'User authentication required to delete a league',
+      );
+    }
+
+    // Find user in database
+    const user = await this.prisma.user.findUnique({
+      where: { clerkId },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found in database');
+    }
+
+    // Delete the league
+    return this.leagueService.deleteLeague(leagueId, user.id);
+  }
+
+  @Delete('with-user-db/:leagueId/:userId')
+  @Public()
+  @ApiOperation({
+    summary: 'Delete league with specific user ID (development only)',
+    description:
+      'Development endpoint to delete a league with a specific user without authentication',
+  })
+  @ApiParam({
+    name: 'leagueId',
+    type: String,
+    description: 'ID of the league to delete',
+  })
+  @ApiParam({
+    name: 'userId',
+    type: String,
+    description: 'ID of the user in the database (should be admin)',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'League successfully deleted',
+    schema: {
+      type: 'object',
+      properties: {
+        success: { type: 'boolean', example: true },
+        message: {
+          type: 'string',
+          example: 'League "My League" successfully deleted',
+        },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Only the league admin can delete the league',
+  })
+  @ApiResponse({ status: 404, description: 'User or league not found' })
+  async deleteLeagueWithUserId(
+    @Param('leagueId') leagueId: string,
+    @Param('userId') userId: string,
+  ) {
+    // Vérifier si l'utilisateur existe
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new NotFoundException(`User with ID ${userId} not found`);
+    }
+
+    // Supprimer la league
+    return this.leagueService.deleteLeague(leagueId, userId);
   }
 }

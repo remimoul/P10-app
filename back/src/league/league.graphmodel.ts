@@ -78,6 +78,15 @@ export class DeleteLeagueInput {
   adminId?: string;
 }
 
+@ObjectType()
+export class DeleteLeagueResponse {
+  @Field(() => Boolean)
+  success: boolean;
+
+  @Field(() => String)
+  message: string;
+}
+
 @InputType()
 export class JoinLeagueInput {
   @Field(() => String, { nullable: true })
