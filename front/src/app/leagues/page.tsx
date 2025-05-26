@@ -1,90 +1,61 @@
 "use client";
 
-import { useMemo, useEffect, useState } from "react";
+import { useMemo } from "react";
+import { useQuery, gql } from "@apollo/client";
 import type { League } from "@/lib/types/leagues";
 import Header from "@/components/Leagues/Header";
 import ReadyToRace from "@/components/Leagues/ReadyToRace";
 import LeagueSection from "@/components/Leagues/LeagueSection";
 import { useRouter } from "next/navigation";
 
-// Interface pour les données de l'API
-interface ApiLeague {
+// Requête GraphQL
+const GET_ALL_LEAGUES = gql`
+  query GetAllLeagues {
+    getAllLeagues {
+      id
+      name
+      private
+      members {
+        username
+      }
+    }
+  }
+`;
+
+// Interface pour les données GraphQL
+interface GraphQLLeague {
   id: string;
   name: string;
   private: boolean;
-  joinCode: string;
-  avatar: string | null;
-  admin: {
-    id: string;
-    username: string;
-    firstName: string | null;
-    lastName: string | null;
-    email: string;
-  };
   members: Array<{
-    id: string;
     username: string;
-    firstName: string | null;
-    lastName: string | null;
-    email: string;
   }>;
 }
 
 export default function Leagues() {
   const router = useRouter();
-  const [leagues, setLeagues] = useState<League[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchLeagues = async () => {
-      try {
-        setLoading(true);
+  // Requête GraphQL avec Apollo Client
+  const { data, loading, error, refetch } = useQuery(GET_ALL_LEAGUES, {
+    errorPolicy: "all",
+    notifyOnNetworkStatusChange: true,
+  });
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/leagues`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+  // Transformation des données GraphQL vers le format League
+  const leagues: League[] = useMemo(() => {
+    if (!data?.getAllLeagues) return [];
 
-        if (!response.ok) {
-          throw new Error(`Erreur ${response.status}: ${response.statusText}`);
-        }
-
-        const apiLeagues: ApiLeague[] = await response.json();
-
-        // Transformation des données API vers le format League
-        const transformedLeagues: League[] = apiLeagues.map((apiLeague, index) => ({
-          id: apiLeague.id,
-          name: apiLeague.name,
-          members: apiLeague.members.length,
-          points: 0, // À ajuster selon vos besoins
-          position: index + 1, // Position basée sur l'ordre
-          type: apiLeague.private ? "private" : "public",
-        }));
-
-        setLeagues(transformedLeagues);
-        setError(null);
-      } catch (err) {
-        console.error("Erreur lors de la récupération des leagues:", err);
-
-        // Message d'erreur plus détaillé
-        if (err instanceof TypeError && err.message.includes("fetch")) {
-          setError("Impossible de se connecter au serveur. Vérifiez que l'API est démarrée sur localhost:4500");
-        } else {
-          setError(err instanceof Error ? err.message : "Une erreur est survenue");
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchLeagues();
-  }, []);
+    return data.getAllLeagues.map((gqlLeague: GraphQLLeague, index: number) => ({
+      id: gqlLeague.id,
+      name: gqlLeague.name,
+      members: gqlLeague.members.length,
+      points: 0, // À ajuster selon vos besoins
+      position: index + 1, // Position basée sur l'ordre
+      type: gqlLeague.private ? "private" : "public",
+    }));
+  }, [data]);
 
   const publicLeagues = useMemo(() => leagues.filter((l) => l.type === "public"), [leagues]);
-
   const privateLeagues = useMemo(() => leagues.filter((l) => l.type === "private"), [leagues]);
 
   const publicLeaguesWithClick = publicLeagues.map((league) => ({
@@ -101,7 +72,10 @@ export default function Leagues() {
     return (
       <div className="min-h-screen bg-gray-50 relative overflow-hidden py-14 lg:py-16 sm:py-18">
         <main className="relative z-10 max-w-7xl mx-auto px-4 py-12">
-          <div className="text-center">Chargement des leagues...</div>
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-500 mx-auto mb-4"></div>
+            <p className="text-lg text-gray-600">Chargement des leagues...</p>
+          </div>
         </main>
       </div>
     );
@@ -111,7 +85,18 @@ export default function Leagues() {
     return (
       <div className="min-h-screen bg-gray-50 relative overflow-hidden py-14 lg:py-16 sm:py-18">
         <main className="relative z-10 max-w-7xl mx-auto px-4 py-12">
-          <div className="text-center text-red-500">Erreur: {error}</div>
+          <div className="text-center">
+            <div className="text-red-500 mb-4">
+              <p className="text-lg font-semibold">Erreur lors du chargement</p>
+              <p className="text-sm">{error.message}</p>
+            </div>
+            <button
+              onClick={() => refetch()}
+              className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
+            >
+              Réessayer
+            </button>
+          </div>
         </main>
       </div>
     );
