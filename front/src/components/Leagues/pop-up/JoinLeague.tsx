@@ -9,8 +9,9 @@ import {
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
-import { JoinLeagueProps } from "@/lib/types";
+import { JoinLeagueProps } from "@/lib/types/leagues";
 import { Button } from "@/components/ui/button";
+import { IoClose } from "react-icons/io5";
 
 export const JoinLeague = ({ isOpen, onClose, onJoin }: JoinLeagueProps) => {
   const [joinCode, setJoinCode] = useState("");
@@ -36,8 +37,16 @@ export const JoinLeague = ({ isOpen, onClose, onJoin }: JoinLeagueProps) => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="p-8"
+          className="p-8 relative"
         >
+          <button
+            onClick={onClose}
+            className="absolute top-0 right-4 z-20 w-10 h-10 flex items-center justify-center rounded-full text-gray-400 hover:text-[var(--primary-red)] hover:bg-gray-100 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[var(--primary-red)]/40"
+            aria-label="Close dialog"
+            type="button"
+          >
+            <IoClose size={36} />
+          </button>
           <DialogHeader className="text-center">
             <DialogTitle className="text-4xl font-extrabold bg-gradient-to-r from-[var(--primary-red)] to-gray-800 bg-clip-text text-transparent font-racing tracking-wider">
               Join a League

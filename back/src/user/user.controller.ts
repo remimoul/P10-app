@@ -3,7 +3,7 @@ import { ApiOperation, ApiResponse, ApiTags, ApiBody } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { CreateUserInput, GetUserInput } from './user.graphmodel';
 
-@ApiTags('users')
+@ApiTags('Users')
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}

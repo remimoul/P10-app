@@ -1,5 +1,5 @@
 import { RiUser3Fill } from "react-icons/ri";
-import { UserAvatarProps } from "@/lib/types";
+import { UserAvatarProps } from "@/lib/types/leagues";
 
 const UserAvatar: React.FC<UserAvatarProps> = ({ avatarUrl, fullName }) => {
   return avatarUrl ? (

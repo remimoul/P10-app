@@ -5,7 +5,7 @@ import Image from "next/image";
 import { memo } from "react";
 import { FaXTwitter } from "react-icons/fa6";
 import { FiInstagram, FiFacebook, FiYoutube } from "react-icons/fi";
-import { GiStopwatch, GiChart, GiCheckeredFlag } from "react-icons/gi";
+import { GiCheckeredFlag } from "react-icons/gi";
 
 const quickLinks = [
   { label: "Home", href: "/" },
@@ -13,21 +13,6 @@ const quickLinks = [
   { label: "Racing", href: "/racing" },
   { label: "Results", href: "/results" },
   { label: "FAQ", href: "/faq" },
-];
-
-const stats = [
-  {
-    icon: (
-      <GiStopwatch className="mx-auto text-[var(--secondary-red)] text-4xl" />
-    ),
-    value: "2.4K",
-    label: "Online players",
-  },
-  {
-    icon: <GiChart className="mx-auto text-[var(--secondary-red)] text-4xl" />,
-    value: "18.7K",
-    label: "Predictions / day",
-  },
 ];
 
 const socialLinks = [
@@ -49,112 +34,123 @@ const socialLinks = [
   },
 ];
 
+const logoClass = "object-contain h-12 sm:h-16 lg:h-12 w-auto";
+const ambianceClass =
+  "text-lg sm:text-xl lg:text-lg text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.7)] rounded-xl px-4 py-2 text-center sm:text-left max-w-md font-medium sm:font-semibold lg:font-medium";
+
+type NextRaceCardProps = {
+  socialClass: string;
+};
+
+const NextRaceCard = ({ socialClass }: NextRaceCardProps) => (
+  <div className="w-full max-w-[220px] mx-auto bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 shadow p-2 flex flex-col items-center gap-1">
+    <div className="flex items-center gap-1 text-lg text-[var(--primary-white)] uppercase font-semibold tracking-wider">
+      <GiCheckeredFlag className="text-[var(--secondary-red)] text-xl animate-pulse" />
+      The next race
+    </div>
+    <div className="text-lg font-semibold text-[var(--primary-red)] tracking-wide text-center">
+      Belgian Grand Prix
+    </div>
+    <div className="text-lg font-extrabold text-[var(--primary-white)] tracking-widest bg-gradient-to-r from-[var(--primary-red)] to-white/80 bg-clip-text">
+      28/07 - 15:00
+    </div>
+    <nav aria-label="Social networking" className={socialClass}>
+      {socialLinks.map(({ name, href, icon: Icon }) => (
+        <a
+          key={name}
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={name}
+          className="hover:text-[var(--primary-red)] transition-colors p-1"
+        >
+          <Icon className="text-2xl" />
+        </a>
+      ))}
+    </nav>
+  </div>
+);
+
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="relative bg-neutral-900 text-[var(--primary-white)] border-t border-[var(--primary-red)] text-[15px]">
+    <footer className="relative bg-neutral-900 backdrop-blur-md border-t border-[var(--primary-red)] text-[var(--primary-white)] text-[15px] shadow-lg">
       <div className="w-full h-[3px] scroll-bar absolute top-0 left-0 z-10" />
 
       <div className="relative z-0">
-        <div className="max-w-6xl mx-auto px-4 py-6 grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
-          <div className="flex flex-col gap-1 items-center md:items-start">
-            <div className="flex items-center gap-2 text-[var(--primary-white)]">
-              <Image
-                src="/logo.png"
-                alt="Logo P10"
-                width={360}
-                height={84}
-                className="object-contain h-12 w-auto"
-                priority
-              />
-              <Image
-                src="/logo1.png"
-                alt="Flags"
-                width={360}
-                height={84}
-                className="object-contain h-12 w-auto"
-                priority
-              />
-            </div>
-            <p className="text-xl text-[var(--primary-grey)]">
-              In each race, only one number counts... the 10ᵉ. Will you be
-              worthy of finding it?
-            </p>
-          </div>
-
-          <div className="flex justify-center gap-8 text-center">
-            {stats.map(({ icon, value, label }, idx) => (
-              <div key={idx}>
-                {icon}
-                <div className="text-xl font-semibold text-[var(--primary-white)]">
-                  {value}
-                </div>
-                <div className="text-lg text-[var(--primary-white)]">
-                  {label}
-                </div>
+        <div className="max-w-6xl mx-auto px-4 sm:px-12 py-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 items-center">
+            <div className="flex flex-col gap-4 items-center sm:items-start text-center sm:text-left">
+              <div className="flex items-center gap-3">
+                <Image
+                  src="/logo.png"
+                  alt="Logo P10"
+                  width={360}
+                  height={84}
+                  className={logoClass}
+                  priority
+                />
+                <Image
+                  src="/logo1.png"
+                  alt="Flags"
+                  width={360}
+                  height={84}
+                  className={logoClass}
+                  priority
+                />
               </div>
-            ))}
-          </div>
-
-          <div className="flex flex-col items-center md:items-end text-right gap-1">
-            <div className="flex items-center gap-2 text-[var(--primary-grey)] text-xl uppercase font-medium">
-              <GiCheckeredFlag className="text-[var(--secondary-red)] text-xl" />
-              The next race
+              <p className={ambianceClass}>
+                In each race, only one number counts... the 10ᵉ. <br />
+                Will you be worthy of finding it?
+              </p>
             </div>
-            <div className="text-xl font-bold text-[var(--primary-white)]">
-              28/07 - 15:00
+
+            <div className="flex flex-col gap-6 items-center sm:items-end text-center sm:text-right lg:hidden">
+              <nav className="flex flex-wrap sm:justify-end gap-x-6 gap-y-3 text-lg font-semibold tracking-wide uppercase text-[var(--primary-white)] mt-6">
+                {quickLinks.map(({ label, href }) => (
+                  <Link
+                    key={href}
+                    href={href}
+                    className="relative group transition whitespace-nowrap"
+                  >
+                    <span className="group-hover:text-[var(--primary-red)] group-hover:underline group-hover:underline-offset-4 group-hover:drop-shadow-[0_1px_4px_rgba(217,4,41,0.4)] transition">
+                      {label}
+                    </span>
+                    <span className="block h-[1px] w-0 bg-[var(--primary-red)] transition-all group-hover:w-full mt-1"></span>
+                  </Link>
+                ))}
+              </nav>
+              <NextRaceCard socialClass="flex items-center gap-4 text-lg font-semibold tracking-wide uppercase text-[var(--primary-white)] justify-center sm:justify-end mt-2" />
+            </div>
+
+            <div className="hidden lg:flex flex-col items-center justify-center">
+              <nav className="flex flex-wrap md:flex-nowrap justify-center gap-x-6 gap-y-3 text-lg font-semibold tracking-wide uppercase text-[var(--primary-white)]">
+                {quickLinks.map(({ label, href }) => (
+                  <Link
+                    key={href}
+                    href={href}
+                    className="relative group transition whitespace-nowrap"
+                  >
+                    <span className="group-hover:text-[var(--primary-red)] group-hover:underline group-hover:underline-offset-4 group-hover:drop-shadow-[0_1px_4px_rgba(217,4,41,0.4)] transition">
+                      {label}
+                    </span>
+                    <span className="block h-[1px] w-0 bg-[var(--primary-red)] transition-all group-hover:w-full mt-1"></span>
+                  </Link>
+                ))}
+              </nav>
+            </div>
+
+            <div className="hidden lg:flex flex-col items-end gap-2 text-right">
+              <NextRaceCard socialClass="flex items-center gap-4 text-lg font-semibold tracking-wide uppercase text-[var(--primary-white)] justify-end mt-2" />
             </div>
           </div>
         </div>
 
-        <div className="pt-1 mt-1 px-4">
-          <div className="flex flex-wrap justify-center items-center gap-x-8 gap-y-4">
-            <nav className="flex flex-wrap justify-center gap-x-5 gap-y-3 text-lg font-semibold tracking-wide uppercase text-[var(--primary-grey)]">
-              {quickLinks.map(({ label, href }) => (
-                <Link
-                  key={href}
-                  href={href}
-                  className="relative group transition"
-                >
-                  <span className="group-hover:text-[var(--primary-red)] transition">
-                    {label}
-                  </span>
-                  <span className="block h-[1px] w-0 bg-[var(--primary-red)] transition-all group-hover:w-full mt-1"></span>
-                </Link>
-              ))}
-            </nav>
-
-            <div className="h-6 w-px bg-[var(--primary-grey)]/30" />
-
-            <nav
-              aria-label="Social networking"
-              className="flex items-center gap-4 text-lg font-semibold tracking-wide uppercase text-[var(--primary-grey)]"
-            >
-              {socialLinks.map(({ name, href, icon: Icon }) => (
-                <a
-                  key={name}
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={name}
-                  className="hover:text-[var(--primary-red)] transition-colors p-1"
-                >
-                  <Icon className="text-2xl" />
-                </a>
-              ))}
-            </nav>
+        <div className="mt-2 pt-2 px-4">
+          <div className="max-w-6xl mx-auto border-t border-[var(--primary-grey)]/20 flex flex-col items-center gap-3 text-sm text-gray-300 pb-4 pt-4">
+            <p>© {currentYear} P10 app - Not affiliated with Formula 1</p>
           </div>
-        </div>
-
-        <div className="pt-4 mt-4 px-4 text-center text-sm text-[var(--primary-grey)] space-y-2">
-          <p>© {currentYear} P10 app - Not affiliated with Formula 1</p>
-          <Link
-            href="/privacyPolicy"
-            className="hover:text-[var(--secondary-red)] transition block mb-2"
-          >
-            Privacy policy
-          </Link>
         </div>
       </div>
     </footer>

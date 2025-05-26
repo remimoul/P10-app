@@ -3,7 +3,7 @@
 import { ChangeEvent, useState } from "react";
 import { Search, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { SearchInputProps } from "@/lib/types";
+import { SearchInputProps } from "@/lib/types/racing";
 
 export const SearchInput = ({ value, onChange }: SearchInputProps) => {
   const [isFocused, setIsFocused] = useState(false);
@@ -45,7 +45,7 @@ export const SearchInput = ({ value, onChange }: SearchInputProps) => {
             exit={{ opacity: 0, scale: 0.8 }}
             transition={{ duration: 0.2 }}
             onClick={handleClear}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500 transition"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--secondary-gray)] hover:text-[var(--secondary-red)] transition"
             aria-label="Clear search"
           >
             <X className="w-6 h-6" />
@@ -62,7 +62,7 @@ export const SearchInput = ({ value, onChange }: SearchInputProps) => {
         placeholder="Search for a circuit or country ..."
         className={`w-full pl-12 pr-10 py-2.5 text-lg font-medium rounded-3xl border
           transition-all duration-200 bg-white shadow-md
-          placeholder-gray-400 text-gray-800 focus:outline-none
+          placeholder-[var(--primary-blue)] text-[var(--secondary-grey)] focus:outline-none
           ${
             isActive || isFocused
               ? "border-[var(--primary-red)] ring-2 ring-[var(--primary-red)]/50"

@@ -1,21 +1,21 @@
 "use client";
 
 import { motion } from "framer-motion";
-import type { LeagueCardProps } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { RiTeamFill, RiArrowRightSLine } from "react-icons/ri";
+import { LeagueCardProps } from "@/lib/types/leagues";
 
 const LeagueCard = ({ league, index, isPublic }: LeagueCardProps) => {
   const buttonGradient = isPublic
     ? "from-[#FF1801] to-[#CC0000]"
-    : "from-[#00D2FF] to-[#0078FF]";
+    : "from-[#00D2FF] to-[#0050B3]";
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20, rotate: 0 }}
       whileInView={{ opacity: 1, y: 0, rotate: 0 }}
       transition={{ delay: index * 0.05, duration: 0.3 }}
-      className="relative overflow-hidden bg-gradient-to-br from-[#1c1e22] to-[#2a2f36] rounded-3xl p-4 sm:p-6 md:p-8 border border-gray-700 shadow-lg"
+      className="relative overflow-hidden bg-gradient-to-br from-[#1c1e22] to-[#2a2f36] rounded-3xl p-4 sm:p-6 md:p-8 border border-gray-700 shadow-lg mx-6 sm:mx-10 md:mx-0"
     >
       <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-6">
         <div className="flex items-center gap-4 sm:gap-6 flex-1">
@@ -29,9 +29,7 @@ const LeagueCard = ({ league, index, isPublic }: LeagueCardProps) => {
                 }
                 shadow-[0_0_16px_4px_rgba(255,24,1,0.25)]`}
             >
-              <span
-                className="text-3xl sm:text-4xl font-extrabold text-white drop-shadow-lg bg-clip-text bg-gradient-to-b from-white to-gray-300"
-              >
+              <span className="text-3xl sm:text-4xl font-extrabold text-white drop-shadow-lg bg-clip-text bg-gradient-to-b from-white to-gray-300">
                 {league.position}
               </span>
             </div>
@@ -87,14 +85,15 @@ const LeagueCard = ({ league, index, isPublic }: LeagueCardProps) => {
                 hover:shadow-[0_0_30px_-5px] ${
                   isPublic
                     ? "hover:shadow-red-500/50"
-                    : "hover:shadow-blue-500/50"
+                    : "hover:shadow-blue-400/60"
                 }
                 transition-all duration-300 overflow-hidden
                 border-2 ${
                   isPublic
                     ? "border-red-300/30 hover:border-red-300/60"
                     : "border-blue-300/30 hover:border-blue-300/60"
-                }`}
+                }
+                ${!isPublic ? "ring-1 ring-blue-400/30" : ""}`}
             >
               <motion.div
                 className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0"
@@ -156,6 +155,8 @@ const LeagueCard = ({ league, index, isPublic }: LeagueCardProps) => {
       )}
 
       <div className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-300 z-0" />
+
+      <div className="block md:hidden pb-4" />
     </motion.div>
   );
 };

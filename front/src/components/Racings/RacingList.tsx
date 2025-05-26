@@ -1,5 +1,5 @@
 import { RacingCard } from "./RacingCard";
-import { RacingListProps } from "@/lib/types";
+import { RacingListProps } from "@/lib/types/racing";
 
 export const RacingList = ({ grandPrixList, isPast }: RacingListProps) => {
   if (grandPrixList.length === 0) {

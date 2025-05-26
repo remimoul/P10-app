@@ -48,7 +48,7 @@ const ReadyToRace = () => {
 
   return (
     <div className="relative">
-      <div className="mt-10 sm:mt-20 bg-gradient-to-br from-[#1c1e22] to-[#2a2f36] backdrop-blur-lg p-4 sm:p-6 md:p-8 rounded-3xl border border-gray-700 relative overflow-hidden shadow-2xl">
+      <div className="mt-10 sm:mt-20 bg-gradient-to-br from-[#1c1e22] to-[#2a2f36] backdrop-blur-lg p-4 sm:p-6 md:p-8 rounded-3xl border border-gray-700 relative overflow-hidden shadow-2xl mx-6 sm:mx-10 md:mx-0">
         <div className="max-w-3xl mx-auto flex flex-col md:flex-row gap-6 md:gap-8 items-center justify-between relative z-10">
           <div className="space-y-3 sm:space-y-4 flex-1 text-center md:text-left">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white uppercase tracking-wider font-racing whitespace-nowrap">
@@ -67,7 +67,7 @@ const ReadyToRace = () => {
               <Button
                 onClick={() => setIsCreateModalOpen(true)}
                 className="w-full sm:w-auto h-14 sm:h-16 px-6 sm:px-8 text-base sm:text-lg font-bold text-white rounded-full shadow-2xl 
-                  bg-gradient-to-r from-[#FF1801] to-[#CC0000] 
+                  bg-gradient-to-r from-[#FF1801]/80 to-[#CC0000]/80 
                   hover:shadow-[0_0_30px_-5px] hover:shadow-red-500/50
                   transition-all duration-300 overflow-hidden
                   border-2 border-red-300/30 hover:border-red-300/60

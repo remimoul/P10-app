@@ -1,24 +1,62 @@
-# P10-app 🏎️
+# P10-app ��️
+
+<p align="center"><b>In each race, only one number counts... the 10ᵉ.</b></p>
+
+<p align="center">
+  <a href="https://www.docker.com/">
+    <img alt="Docker" src="https://img.shields.io/badge/docker-ready-blue?logo=docker">
+  </a>
+  <a href="https://www.typescriptlang.org/">
+    <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-5.x-blue?logo=typescript">
+  </a>
+  <a href="https://nextjs.org/">
+    <img alt="Next.js" src="https://img.shields.io/badge/Next.js-15+-black?logo=next.js">
+  </a>
+  <a href="https://tailwindcss.com/">
+    <img alt="Tailwind CSS" src="https://img.shields.io/badge/TailwindCSS-4.x-38bdf8?logo=tailwindcss&logoColor=white">
+  </a>
+</p>
 
 Formula 1 betting application that allows users to bet on race results and participate in private and public leagues.
 
+## 💡 Why this project?
+
+Most F1 betting apps focus on the podium. P10-app is unique: here, the real challenge is to predict who will finish 10th!  
+This twist makes every race unpredictable, fun, and gives everyone a chance to win—right until the last lap.
+
 ## 📑 Table of Contents
-- [✨ Features](#-features)
-- [🛠️ Technologies](#️-technologies)
-  - [Backend](#backend)
-  - [Frontend](#frontend)
-  - [DevOps](#devops)
-  - [Development Tools](#development-tools)
-- [🚀 Installation](#-installation)
-- [📝 Project Structure](#-project-structure)
-- [🙏 Acknowledgments](#-acknowledgments)
+- [P10-app ��️](#p10-app-️)
+  - [💡 Why this project?](#-why-this-project)
+  - [📑 Table of Contents](#-table-of-contents)
+  - [📸 Screenshots](#-screenshots)
+  - [✨ Features](#-features)
+  - [🛠️ Technologies](#️-technologies)
+    - [Backend](#backend)
+    - [Frontend](#frontend)
+    - [DevOps](#devops)
+    - [Development Tools](#development-tools)
+  - [🙏 Acknowledgments](#-acknowledgments)
+  - [🚀 Installation](#-installation)
+  - [📝 Project Structure](#-project-structure)
+
+## 📸 Screenshots
+
+![Home]()
+![Leagues]()
+![Racing]()
+![Racing]()
+![Results]()
 
 ## ✨ Features
 
-- 🏆 Bet on Grand Prix results
-- 👥 Create and join private & public leagues
-- 🏅 Compete with friends
-- 📱 Modern responsive interface
+| Feature                        | 
+|--------------------------------|
+| 🏆 Bet on Grand Prix results   | 
+| 👥 Private & public leagues    | 
+| 🏅 Live ranking                | 
+| 📱 Responsive UI               | 
+| 🏁 Official F1 data            | 
+| 🔒 Authentication              | 
 
 ## 🛠️ Technologies
 
@@ -51,6 +89,15 @@ Formula 1 betting application that allows users to bet on race results and parti
 - **Package Manager:** npm
 - **Environment:** Docker
 
+## 🙏 Acknowledgments
+
+- [F1 API](https://openf1.org/) for race data
+- [Ergast API](https://api.jolpi.ca/ergast/f1/) for official F1 schedule and results
+- [Clerk](https://clerk.com/) for authentication
+- [ShadCN](https://ui.shadcn.com/) for UI components
+- [Docker](https://www.docker.com/) for containerization
+- [SonarQube](https://www.sonarsource.com/) for code quality
+
 ## 🚀 Installation
 
 1. Clone the repository
@@ -73,8 +120,9 @@ docker compose up --build -d
 4. Access the application
 - Frontend: http://localhost:3000
 - Backend: http://localhost:4500
-- API Documentation: http://localhost:4500/api-docs
-- API GraphQl Documentation: http://localhost:4500/(à definir)
+- API Documentation: http://localhost:4500/api
+- API GraphQl Documentation: http://localhost:4500/graphql
+- app online : https://grineasy.com/
 
 ## 📝 Project Structure
 
@@ -88,17 +136,13 @@ P10-app/
 │   └── public/           # Static assets
 │
 ├── back/                 # GraphQL API
-│   ├── src/
-│   │   ├── resolvers/    # GraphQL resolvers
-│   │   ├── services/     # Business logic
-│   │   └── prisma/       # Schema and migrations
-│   └── tests/            # Unit and integration tests
-│
+│    ├── src/
+│      ├── resolvers/    # GraphQL resolvers
+│      ├── services/     # Business logic
+│      └── prisma/       # Schema and migrations
+│   
 └── docker/              # Docker configuration
 ```
 
-## 🙏 Acknowledgments
 
-- [F1 API](https://openf1.org/) for race data
-- [Clerk](https://clerk.com/) for authentication
-- [ShadCN](https://ui.shadcn.com/) for UI components
+

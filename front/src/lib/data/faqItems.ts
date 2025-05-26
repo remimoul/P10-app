@@ -1,4 +1,4 @@
-import { FAQItem } from "../types";
+import { FAQItem } from "@/lib/types/other";
 
 const FaqItems: FAQItem[] = [
   {

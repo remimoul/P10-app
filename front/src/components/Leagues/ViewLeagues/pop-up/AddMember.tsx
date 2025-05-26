@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { AddMemberProps } from "@/lib/types";
+import { AddMemberProps } from "@/lib/types/leagues";
 import toast from "react-hot-toast";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import AddMemberContent from "@/components/Leagues/ViewLeagues/pop-up/DialogContentAddMember";

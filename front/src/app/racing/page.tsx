@@ -7,9 +7,11 @@ import { Pagination } from "@/components/Racings/Pagination";
 import { SearchInput } from "@/components/Racings/SearchInput";
 import { SeasonFilter } from "@/components/Racings/SeasonFilter";
 import { f1Service } from "@/lib/services/f1Service";
+import { ergastService } from "@/lib/services/ergastService";
 import { GrandPrix } from "@/lib/types/racing";
+import { formatDate } from "@/lib/utils/dateAndTime";
 
-const ITEMS_PER_PAGE = 10;
+const ITEMS_PER_PAGE = 12;
 
 export default function Racing() {
   const [tab, setTab] = useState<"upcoming" | "past">("upcoming");
@@ -26,29 +28,111 @@ export default function Racing() {
         setLoading(true);
         setError(null);
 
-        const [sessions, meetings] = await Promise.all([
-          f1Service.getSessions(season || undefined),
-          f1Service.getMeetings(season || undefined),
-        ]);
+        if (tab === "upcoming") {
+          const ergastRaces = await ergastService.getRaces(season || undefined);
+          const currentDate = new Date();
 
-        const meetingsMap = new Map(meetings.map((m) => [m.meeting_key, m]));
+          const upcomingRaces = ergastRaces
+            .filter((race) => new Date(race.date) >= currentDate)
+            .map((race) => ({
+              id: race.round,
+              date: race.date,
+              time: "TBD",
+              season: race.season,
+              track: {
+                id: race.Circuit.circuitId,
+                trackName: race.Circuit.circuitName,
+                countryName: race.Circuit.Location.country,
+                location: `${race.Circuit.Location.locality}, ${race.Circuit.Location.country}`,
+              },
+              status: "Scheduled",
+              type: "Race",
+            }));
 
-        const grandPrixData = sessions
-          .filter((session) => {
-            const sessionDate = new Date(session.date_start);
-            return tab === "past"
-              ? sessionDate < new Date()
-              : sessionDate >= new Date();
-          })
-          .map((session) =>
-            f1Service.transformToGrandPrix(
-              session,
-              meetingsMap.get(session.meeting_key)!
+          setGrandPrixList(upcomingRaces);
+        } else {
+          const [sessions, meetings, ergastRaces] = await Promise.all([
+            f1Service.getSessions(season || undefined),
+            f1Service.getMeetings(season || undefined),
+            ergastService.getRaces(season || undefined),
+          ]);
+
+          const meetingsMap = new Map(meetings.map((m) => [m.meeting_key, m]));
+
+          const grandPrixData = sessions
+            .filter((session) => {
+              const sessionDate = new Date(session.date_start);
+              return sessionDate < new Date();
+            })
+            .map((session) =>
+              f1Service.transformToGrandPrix(
+                session,
+                meetingsMap.get(session.meeting_key)!
+              )
             )
-          )
-          .filter((gp) => gp !== null);
+            .filter((gp) => gp !== null);
 
-        setGrandPrixList(grandPrixData);
+          const enrichedGrandPrixData = await Promise.all(
+            grandPrixData.map(async (gp) => {
+              const ergastRace = ergastRaces.find(
+                (race) =>
+                  race.raceName.toLowerCase() ===
+                  gp.track.trackName.toLowerCase()
+              );
+
+              if (ergastRace) {
+                const results = await ergastService.getRaceResults(
+                  ergastRace.season,
+                  ergastRace.round
+                );
+
+                return {
+                  ...gp,
+                  ergastData: {
+                    round: ergastRace.round,
+                    raceName: ergastRace.raceName,
+                    date: formatDate(ergastRace.date),
+                    circuit: {
+                      name: ergastRace.Circuit.circuitName,
+                      location: ergastRace.Circuit.Location,
+                      length: ergastRace.circuitInfo?.length || "N/A",
+                      numberOfLaps:
+                        ergastRace.circuitInfo?.numberOfLaps || "N/A",
+                      lapRecord: ergastRace.circuitInfo?.lapRecord || {
+                        time: "N/A",
+                        driver: "N/A",
+                        year: "N/A",
+                      },
+                    },
+                    results: results?.results?.map((result) => ({
+                      position: result.position,
+                      driver: {
+                        name: `${result.Driver.givenName} ${result.Driver.familyName}`,
+                        number: result.Driver.permanentNumber,
+                        nationality: result.Driver.nationality,
+                      },
+                      constructor: result.Constructor.name,
+                      grid: result.grid,
+                      status: result.status,
+                      points: result.points,
+                      time: result.Time?.time,
+                      fastestLap: result.FastestLap
+                        ? {
+                            time: result.FastestLap.Time.time,
+                            rank: result.FastestLap.rank,
+                          }
+                        : undefined,
+                    })),
+                  },
+                };
+              }
+
+              return gp;
+            })
+          );
+
+          setGrandPrixList(enrichedGrandPrixData);
+        }
       } catch (err) {
         setError("Failed to fetch racing data");
         console.error(err);
@@ -76,18 +160,9 @@ export default function Racing() {
     return target.includes(search.toLowerCase());
   });
 
-  const filteredRaces =
-    tab === "past" && season
-      ? searchFiltered.filter(
-          (gp) => new Date(gp.date) < new Date() && gp.season === season
-        )
-      : tab === "past"
-      ? searchFiltered.filter((gp) => new Date(gp.date) < new Date())
-      : tab === "upcoming" && season
-      ? searchFiltered.filter(
-          (gp) => new Date(gp.date) >= new Date() && gp.season === season
-        )
-      : searchFiltered.filter((gp) => new Date(gp.date) >= new Date());
+  const filteredRaces = season
+    ? searchFiltered.filter((gp) => gp.season === season)
+    : searchFiltered;
 
   const totalPages = Math.ceil(filteredRaces.length / ITEMS_PER_PAGE);
   const paginatedRaces = filteredRaces.slice(
@@ -119,11 +194,14 @@ export default function Racing() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 relative overflow-hidden py-14 lg:py-16 sm:py-18">
+    <div className="min-h-screen bg-gray-50 relative overflow-hidden py-14 lg:py-14 sm:py-18">
       <main className="relative z-10 max-w-7xl mx-auto px-4 py-12 space-y-8">
-        <h1 className="text-5xl font-bold bg-gradient-to-r from-red-900 to-red-600 bg-clip-text text-transparent mb-4">
-          Racing
-        </h1>
+        <div>
+          <h1 className="text-5xl font-black text-transparent bg-clip-text bg-red-800">
+            RACING
+          </h1>
+          <div className="h-1 w-24 bg-gradient-to-r from-red-600 to-red-800 mt-2 rounded-full" />
+        </div>
 
         <RacingTabs activeTab={tab} onTabChange={handleTabChange} />
 

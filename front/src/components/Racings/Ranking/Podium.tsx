@@ -1,4 +1,4 @@
-import { RankedUser } from "@/lib/types";
+import { RankedUser } from "@/lib/types/leagues";
 
 interface PodiumProps {
   top3: RankedUser[];
