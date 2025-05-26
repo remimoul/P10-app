@@ -33,7 +33,7 @@ export const DriverComparison = ({
       ...(drivers[2] && { driver3: drivers[2].stats.points ?? 0 }),
     },
     {
-      name: "Victoires",
+      name: "Wins",
       driver1: drivers[0]?.stats.wins ?? 0,
       driver2: drivers[1]?.stats.wins ?? 0,
       ...(drivers[2] && { driver3: drivers[2].stats.wins ?? 0 }),
@@ -45,13 +45,13 @@ export const DriverComparison = ({
       ...(drivers[2] && { driver3: drivers[2].stats.podiums ?? 0 }),
     },
     {
-      name: "Tours rapides",
+      name: "Fastest laps",
       driver1: drivers[0]?.stats.fastestLaps ?? 0,
       driver2: drivers[1]?.stats.fastestLaps ?? 0,
       ...(drivers[2] && { driver3: drivers[2].stats.fastestLaps ?? 0 }),
     },
     {
-      name: "Position moyenne",
+      name: "Average position",
       driver1: Number(drivers[0]?.stats.averagePosition ?? 0).toFixed(1),
       driver2: Number(drivers[1]?.stats.averagePosition ?? 0).toFixed(1),
       ...(drivers[2] && {
@@ -64,17 +64,17 @@ export const DriverComparison = ({
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-xl shadow-lg p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold">Comparaison des pilotes</h2>
+          <h2 className="text-2xl font-bold">Driver Comparison</h2>
           <Button variant="outline" onClick={onClose}>
-            Fermer
+            Close
           </Button>
         </div>
 
         <div className="mb-6">
-          <label className="block text-sm font-medium mb-2">Saison</label>
+          <label className="block text-sm font-medium mb-2">Season</label>
           <Select value={season} onValueChange={setSeason}>
             <SelectTrigger>
-              <SelectValue placeholder="Sélectionner une saison" />
+              <SelectValue placeholder="Select a season" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="2024">2024</SelectItem>
@@ -94,18 +94,18 @@ export const DriverComparison = ({
               <Legend />
               <Bar
                 dataKey="driver1"
-                name={drivers[0]?.name ?? "Pilote 1"}
+                name={drivers[0]?.name ?? "Driver 1"}
                 fill="#ef4444"
               />
               <Bar
                 dataKey="driver2"
-                name={drivers[1]?.name ?? "Pilote 2"}
+                name={drivers[1]?.name ?? "Driver 2"}
                 fill="#3b82f6"
               />
               {drivers[2] && (
                 <Bar
                   dataKey="driver3"
-                  name={drivers[2].name ?? "Pilote 3"}
+                  name={drivers[2].name ?? "Driver 3"}
                   fill="#22c55e"
                 />
               )}
@@ -122,18 +122,16 @@ export const DriverComparison = ({
             <div key={driver.driverId} className="bg-gray-50 rounded-lg p-4">
               <h3 className="text-lg font-semibold mb-4">{driver.name}</h3>
               <div className="space-y-2">
-                <p>Écurie: {driver.team}</p>
+                <p>Team: {driver.team}</p>
                 <p>Points: {driver.stats.points ?? 0}</p>
-                <p>Victoires: {driver.stats.wins ?? 0}</p>
+                <p>Wins: {driver.stats.wins ?? 0}</p>
                 <p>Podiums: {driver.stats.podiums ?? 0}</p>
-                <p>Tours rapides: {driver.stats.fastestLaps ?? 0}</p>
+                <p>Fastest laps: {driver.stats.fastestLaps ?? 0}</p>
                 <p>
-                  Position moyenne:{" "}
-                  {Number(driver.stats.averagePosition ?? 0).toFixed(1)}
+                  Average position: {Number(driver.stats.averagePosition ?? 0).toFixed(1)}
                 </p>
                 <p>
-                  Performance écurie:{" "}
-                  {Number(driver.stats.teamPerformance ?? 0 * 100).toFixed(1)}%
+                  Team performance: {Number(driver.stats.teamPerformance ?? 0 * 100).toFixed(1)}%
                 </p>
               </div>
             </div>

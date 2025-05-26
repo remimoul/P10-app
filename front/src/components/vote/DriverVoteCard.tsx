@@ -44,7 +44,7 @@ export const DriverVoteCard = ({
           <p className="text-sm sm:text-base text-gray-600">{driver.team}</p>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-xs sm:text-sm text-gray-600">Comparer</span>
+          <span className="text-xs sm:text-sm text-gray-600">Compare</span>
           <Checkbox
             id={`compare-${driver.driverId}`}
             checked={isInComparison}
@@ -55,11 +55,11 @@ export const DriverVoteCard = ({
 
       <div className="space-y-2 sm:space-y-3 mb-4 sm:mb-6">
         <div className="flex justify-between items-center text-xs sm:text-base">
-          <span className="text-gray-600">Position moyenne</span>
+          <span className="text-gray-600">Average position</span>
           <span className="font-semibold">{driver.stats.averagePosition.toFixed(1)}</span>
         </div>
         <div className="flex justify-between items-center text-xs sm:text-base">
-          <span className="text-gray-600">Performance écurie</span>
+          <span className="text-gray-600">Team performance</span>
           <span className="font-semibold">{(driver.stats.teamPerformance * 100).toFixed(1)}%</span>
         </div>
         <div className="flex justify-between items-center text-xs sm:text-base">
@@ -67,7 +67,7 @@ export const DriverVoteCard = ({
           <span className="font-semibold">{driver.stats.points}</span>
         </div>
         <div className="flex justify-between items-center text-xs sm:text-base">
-          <span className="text-gray-600">Victoires</span>
+          <span className="text-gray-600">Wins</span>
           <span className="font-semibold">{driver.stats.wins}</span>
         </div>
       </div>
@@ -80,7 +80,7 @@ export const DriverVoteCard = ({
             className="w-full sm:w-auto bg-[var(--primary-red)] hover:bg-[var(--primary-red)]/90"
             disabled={timeLeft === 0}
           >
-            Annuler mon vote
+            Cancel my vote
           </Button>
         ) : (
           <Button
@@ -89,7 +89,7 @@ export const DriverVoteCard = ({
             className="w-full sm:w-auto hover:bg-[var(--primary-red)]/10"
             disabled={timeLeft === 0}
           >
-            Voter
+            Bet
           </Button>
         )}
         <Button
@@ -97,7 +97,7 @@ export const DriverVoteCard = ({
           onClick={() => setChartExpanded(!chartExpanded)}
           className="w-full sm:w-auto hover:bg-gray-100 flex items-center gap-2"
         >
-          <span className="text-sm">Statistiques</span>
+          <span className="text-sm">Statistics</span>
           {chartExpanded ? (
             <RiArrowUpSLine className="text-lg" />
           ) : (

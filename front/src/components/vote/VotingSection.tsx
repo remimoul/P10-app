@@ -60,7 +60,7 @@ export const VotingSection = ({
                 <RiUserAddLine className="text-2xl text-green-600" />
               </div>
               <div className="text-center sm:text-left">
-                <p className="text-base sm:text-lg font-semibold">Votre vote actuel</p>
+                <p className="text-base sm:text-lg font-semibold">Your current vote</p>
                 <p className="text-lg sm:text-xl font-bold break-words max-w-[120px] sm:max-w-none mx-auto sm:mx-0">
                   {
                     paginatedDrivers.find(
@@ -72,7 +72,7 @@ export const VotingSection = ({
             </div>
             {confirmedVote === userVote.driverId && (
               <span className="px-3 py-1 bg-green-200 rounded-full text-xs sm:text-sm font-medium mt-2 sm:mt-0">
-                Vote confirmé
+                Vote confirmed
               </span>
             )}
           </div>
@@ -83,7 +83,7 @@ export const VotingSection = ({
                 className="w-full sm:w-auto flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 sm:px-6 py-2 text-sm sm:text-base rounded-xl shadow-md hover:scale-[1.03] transition-all duration-200 focus:ring-2 focus:ring-green-400"
               >
                 <RiCheckLine className="text-lg sm:text-xl" />
-                <span>Confirmer le vote</span>
+                <span>Confirm vote</span>
               </Button>
             )}
             <Button
@@ -92,7 +92,7 @@ export const VotingSection = ({
               className="w-full sm:w-auto flex items-center justify-center gap-2 text-red-500 border-red-300 hover:text-white hover:bg-red-500 px-4 sm:px-6 py-2 text-sm sm:text-base rounded-xl shadow-md hover:scale-[1.03] transition-all duration-200 focus:ring-2 focus:ring-red-300"
             >
               <RiCloseLine className="text-lg sm:text-xl" />
-              <span>Annuler le vote</span>
+              <span>Cancel vote</span>
             </Button>
           </div>
         </motion.div>

@@ -100,7 +100,7 @@ const VotePage = () => {
 
   const handleOpenComparison = () => {
     if (comparisonDrivers.length < 2) {
-      toast.error("Veuillez sélectionner au moins 2 pilotes à comparer");
+      toast.error("Please select at least 2 drivers to compare");
       return;
     }
     setIsComparisonOpen(true);

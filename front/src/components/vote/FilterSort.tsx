@@ -42,11 +42,11 @@ export const FilterSort = ({ onFilterChange, teams }: FilterSortProps) => {
     <div className="space-y-4 mb-6">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
         <div className="w-full max-w-xs">
-          <label className="block text-sm font-medium mb-2">Rechercher</label>
+          <label className="block text-sm font-medium mb-2">Search</label>
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <Input
-              placeholder="Rechercher un pilote ..."
+              placeholder="Search for a driver ..."
               value={filters.search}
               onChange={(e) => handleFilterChange("search", e.target.value)}
               className="pl-10 w-full"
@@ -55,26 +55,26 @@ export const FilterSort = ({ onFilterChange, teams }: FilterSortProps) => {
           </div>
         </div>
         <div className="w-full max-w-xs">
-          <label className="block text-sm font-medium mb-2">Trier par</label>
+          <label className="block text-sm font-medium mb-2">Sort by</label>
           <Select
             value={filters.sortBy}
             onValueChange={(value) => handleFilterChange("sortBy", value)}
           >
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="Sélectionner un critère" />
+              <SelectValue placeholder="Select a criterion" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="averagePosition">Position moyenne</SelectItem>
+              <SelectItem value="averagePosition">Average position</SelectItem>
               <SelectItem value="points">Points</SelectItem>
-              <SelectItem value="wins">Victoires</SelectItem>
+              <SelectItem value="wins">Wins</SelectItem>
               <SelectItem value="teamPerformance">
-                Performance écurie
+                Team performance
               </SelectItem>
             </SelectContent>
           </Select>
         </div>
         <div className="w-full max-w-xs">
-          <label className="block text-sm font-medium mb-2">Ordre</label>
+          <label className="block text-sm font-medium mb-2">Order</label>
           <Select
             value={filters.sortOrder}
             onValueChange={(value: "asc" | "desc") =>
@@ -82,25 +82,25 @@ export const FilterSort = ({ onFilterChange, teams }: FilterSortProps) => {
             }
           >
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="Sélectionner l'ordre" />
+              <SelectValue placeholder="Select order" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="asc">Croissant</SelectItem>
-              <SelectItem value="desc">Décroissant</SelectItem>
+              <SelectItem value="asc">Ascending</SelectItem>
+              <SelectItem value="desc">Descending</SelectItem>
             </SelectContent>
           </Select>
         </div>
         <div className="w-full max-w-xs">
-          <label className="block text-sm font-medium mb-2">Écurie</label>
+          <label className="block text-sm font-medium mb-2">Team</label>
           <Select
             value={filters.teamFilter}
             onValueChange={(value) => handleFilterChange("teamFilter", value)}
           >
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="Sélectionner une écurie" />
+              <SelectValue placeholder="Select a team" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Toutes les écuries</SelectItem>
+              <SelectItem value="all">All teams</SelectItem>
               {teams && teams.map(team => (
                 <SelectItem key={team} value={team}>{team}</SelectItem>
               ))}

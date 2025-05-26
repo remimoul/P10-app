@@ -19,7 +19,7 @@ export const DriverStatsChart = ({ driver }: DriverStatsChartProps) => {
     <div className="space-y-6">
       <div className="h-64">
         <h3 className="text-lg font-semibold mb-2">
-          Positions dans les courses précédentes
+          Positions in previous races
         </h3>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={lineChartData}>

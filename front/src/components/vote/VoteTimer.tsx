@@ -17,19 +17,19 @@ const VoteTimer = ({
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-2">
           <span className="text-xl font-semibold text-[var(--primary-red)]">
-            Clôture des votes :
+            Voting closes:
           </span>
           <span className="text-xl font-bold text-gray-800">
             {voteDeadline
               ? new Date(voteDeadline.getTime() + 5 * 60000).toLocaleDateString(
-                  "fr-FR",
+                  "en-US",
                   {
                     day: "numeric",
                     month: "long",
                     year: "numeric",
                   }
                 )
-              : "Non définie"}
+              : "Not set"}
           </span>
         </div>
         <div className="flex flex-col xs:flex-row xs:items-center gap-2 xs:gap-3 bg-gradient-to-br from-white/80 to-white/30 px-4 py-2 xs:px-6 xs:py-3 rounded-full border border-[#D90429] whitespace-nowrap w-fit">

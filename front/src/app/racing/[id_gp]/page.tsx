@@ -40,12 +40,12 @@ export default function SelectLeaguePage({ params }: PageProps) {
     <div className="min-h-screen bg-gray-50 relative overflow-hidden py-14 lg:py-16 sm:py-18">
       <main className="relative z-10 max-w-7xl mx-auto px-4 py-12">
         <h1 className="text-3xl font-black text-center text-gray-900 mb-12">
-          Choisissez une ligue pour voir le classement
+          Choose a league to view the ranking
         </h1>
 
         {userLeagues.length > 0 ? (
           <LeagueSection
-            title="Mes Ligues"
+            title="My Leagues"
             leagues={userLeagues.map((league, index) => ({
               ...league,
               onClick: () => handleViewLeagueRanking(index),
@@ -54,7 +54,7 @@ export default function SelectLeaguePage({ params }: PageProps) {
           />
         ) : (
           <p className="text-center text-gray-500">
-            Vous n&apos;êtes membre d&apos;aucune ligue pour cette course.
+            You are not a member of any league for this race.
           </p>
         )}
       </main>
