@@ -15,7 +15,7 @@ services:
       - "3000:3000"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.frontend.rule=Host(`grineasy.com`)"
+      - "traefik.http.routers.frontend.rule=Host(`www.grineasy.com`)"
       - "traefik.http.routers.frontend.entrypoints=websecure"
       - "traefik.http.routers.frontend.tls.certresolver=myresolver"
     networks:
