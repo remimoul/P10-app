@@ -85,7 +85,7 @@ export const RaceInfo = ({ raceInfo }: RaceInfoProps) => {
       <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 to-transparent" />
       <div className="relative z-10">
         <h3 className="text-2xl sm:text-3xl font-black text-[var(--primary-red)] mb-4 sm:mb-8">
-          Informations course
+          Race Information
         </h3>
         <div className="space-y-4 sm:space-y-6">
           <div className="group relative p-3 sm:p-4 rounded-2xl bg-white/80 backdrop-blur-sm flex flex-col gap-1 hover:bg-white/90 transition-all duration-300 border border-transparent hover:border-red-500/20">
@@ -104,14 +104,14 @@ export const RaceInfo = ({ raceInfo }: RaceInfoProps) => {
                 Date: {formattedDate}
               </span>
               <span className="text-xs sm:text-sm text-gray-700">
-                Heure de départ: {formattedTime}
+                Start time: {formattedTime}
               </span>
             </div>
           </div>
           <div className="group relative p-3 sm:p-4 rounded-2xl bg-white/80 backdrop-blur-sm flex flex-col gap-1 hover:bg-white/90 transition-all duration-300 border border-transparent hover:border-red-500/20">
             <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-red-500/0 via-red-500/5 to-red-500/0 opacity-0 group-hover:opacity-100 transition-opacity" />
             <span className="text-lg sm:text-xl font-medium text-black group-hover:text-[var(--secondary-red)] transition-colors mb-1">
-              Conditions météo
+              Weather conditions
             </span>
             <div className="flex items-center gap-2">
               <RiSunLine className="text-yellow-500 text-lg sm:text-xl" />
@@ -121,7 +121,7 @@ export const RaceInfo = ({ raceInfo }: RaceInfoProps) => {
               </span>
             </div>
             <span className="text-xs sm:text-sm text-gray-700">
-              Humidité : {humidity || "-"}
+              Humidity: {humidity || "-"}
             </span>
           </div>
         </div>

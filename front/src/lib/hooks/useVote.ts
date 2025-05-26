@@ -1,39 +1,42 @@
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation"; // Removed unused import
 import { useUser } from "@clerk/nextjs";
 import { Vote } from "@/lib/types/vote";
 import toast from "react-hot-toast";
 
 export function useVote() {
-  const router = useRouter();
   const { user } = useUser();
   const [selectedDriver, setSelectedDriver] = useState<string | null>(null);
   const [confirmedVote, setConfirmedVote] = useState<string | null>(null);
   const [userVote, setUserVote] = useState<Vote | null>(null);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(3600);
+  const [timeLeft, setTimeLeft] = useState(0);
   const [voteDeadline, setVoteDeadline] = useState<Date | null>(null);
   const [totalParticipants] = useState(0);
   const [voteModified] = useState(false);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 0) return 0;
-        return prev - 1;
-      });
-    }, 1000);
+    const updateTimeLeft = () => {
+      if (voteDeadline) {
+        const diff = Math.floor((voteDeadline.getTime() - Date.now()) / 1000);
+        setTimeLeft(diff > 0 ? diff : 0);
+      } else {
+        setTimeLeft(0);
+      }
+    };
+    updateTimeLeft();
+    const interval = setInterval(updateTimeLeft, 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [voteDeadline]);
 
   const handleVote = async (driverId: string) => {
     if (!user) {
-      toast.error("Vous devez être connecté pour voter");
+      toast.error("You must be logged in to vote");
       return;
     }
 
     if (timeLeft === 0) {
-      toast.error("Le temps de vote est écoulé!");
+      toast.error("Voting time has expired!");
       return;
     }
 
@@ -45,26 +48,22 @@ export function useVote() {
         driverId,
         timestamp: Date.now(),
       });
-      toast.success("Vote enregistré avec succès!");
+      toast.success("Vote successfully registered!");
     } catch (err) {
-      toast.error("Erreur lors de l'enregistrement du vote");
+      toast.error("Error while registering the vote");
       console.error("Error submitting vote:", err);
     }
   };
 
   const handleConfirmVote = () => {
     if (!selectedDriver) {
-      toast.error("Veuillez d'abord sélectionner un pilote");
+      toast.error("Please select a driver first");
       return;
     }
     setConfirmedVote(selectedDriver);
     toast.success(
-      "Vote confirmé ! Vous pouvez toujours le modifier jusqu'à la fin du temps imparti."
+      "Vote confirmed! You can still modify it until the end of the allotted time."
     );
-
-    setTimeout(() => {
-      router.push("/leagues");
-    }, 1000);
   };
 
   const handleCancelVote = () => {
@@ -79,9 +78,9 @@ export function useVote() {
       setSelectedDriver(null);
       setUserVote(null);
       setShowCancelDialog(false);
-      toast.success("Vote annulé avec succès!");
+      toast.success("Vote successfully cancelled!");
     } catch (err) {
-      toast.error("Erreur lors de l'annulation du vote");
+      toast.error("Error while cancelling the vote");
       console.error("Error canceling vote:", err);
     }
   };

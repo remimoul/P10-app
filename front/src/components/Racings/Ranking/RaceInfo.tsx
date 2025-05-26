@@ -46,7 +46,7 @@ export default function RaceInfo({
           <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 border border-red-500/20">
             <h3 className="text-2xl font-semibold mb-3 flex items-center gap-2 text-[var(--primary-red)]">
               <GiTrophyCup className="text-yellow-500 w-8 h-8" />
-              Résultats
+              Results
             </h3>
             <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
               <div className="flex items-center gap-2">
@@ -55,7 +55,7 @@ export default function RaceInfo({
                 </span>
                 <div>
                   <p className="font-medium">{podium.first}</p>
-                  <p className="text-sm text-red-500/70">Vainqueur</p>
+                  <p className="text-sm text-red-500/70">Winner</p>
                 </div>
               </div>
               <div className="hidden sm:block w-px h-8 bg-red-500/20" />
@@ -65,7 +65,7 @@ export default function RaceInfo({
                 </span>
                 <div>
                   <p className="font-medium">{podium.ten}</p>
-                  <p className="text-sm text-red-500/70">Dixième</p>
+                  <p className="text-sm text-red-500/70">10th</p>
                 </div>
               </div>
             </div>

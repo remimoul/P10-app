@@ -21,7 +21,7 @@ const ParticipantsList = ({
             Participants
           </h2>
           <span className="text-lg text-[#2B2D42]">
-            {participants.length} players
+            {participants.length} members
           </span>
         </div>
       </div>

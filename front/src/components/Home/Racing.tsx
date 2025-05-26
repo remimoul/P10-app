@@ -5,7 +5,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { TimerOff } from "lucide-react";
 import { TbTargetArrow } from "react-icons/tb";
 import { useNextRace } from "@/lib/hooks/useNextRace";
 
@@ -81,7 +80,6 @@ const Racing = () => {
             </p>
 
             <div className="flex items-center mb-6">
-              <TimerOff className="text-red-600" size={40} />
               <div className="flex space-x-4 px-6 py-3 rounded-sm">
                 {hasTimeLeft ? (
                   Object.entries(timeLeft).map(([unit, value]) => (
@@ -137,13 +135,23 @@ const Racing = () => {
 
           <div className="md:w-1/2 relative">
             <motion.div
-              className="h-64 md:h-auto relative"
+              className="h-64 md:h-full relative"
               onHoverStart={() => setIsHovered(true)}
               onHoverEnd={() => setIsHovered(false)}
             >
               <Image
-                src="/circuit.jpeg"
-                alt="Circuit d'Albert Park"
+                src="/racing/2025-F1-Schedule.jpg"
+                alt="F1 schedule"
+                width={800}
+                height={600}
+                className="w-full h-full object-cover transform transition-transform duration-500 border-l border-gray-100"
+                style={{
+                  transform: isHovered ? "scale(1.03)" : "scale(1)",
+                }}
+              />
+              <Image
+                src="/racing/hq720.jpg"
+                alt="F1 schedule"
                 width={800}
                 height={600}
                 className="w-full h-full object-cover transform transition-transform duration-500 border-l border-gray-100"
