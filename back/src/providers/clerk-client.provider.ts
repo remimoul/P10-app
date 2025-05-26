@@ -17,9 +17,9 @@ export class ClerkClientProvider {
     return this.clerkClient;
   }
 
-  async verifyToken(token: string) {
+  async verifyToken(token: string, options?: any) {
     try {
-      return await this.clerkClient.verifyToken(token);
+      return await this.clerkClient.verifyToken(token, options);
     } catch (error) {
       throw new Error(`Token verification failed: ${error.message}`);
     }

@@ -36,6 +36,7 @@ export class UserService {
 
     return {
       id: dbUser.id as any,
+      username: dbUser.username,
       clerkId: clerkUser.id,
       email: createUserInput.email,
       password: '',
@@ -109,8 +110,9 @@ export class UserService {
 
     // Return the user from your database
     return {
-      id: dbUser.id as any,
+      id: dbUser.id,
       clerkId: dbUser.clerkId,
+      username: dbUser.username,
       email: dbUser.email,
       password: '',
       leagues: dbUser.UserLeague
