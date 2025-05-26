@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { RiUserAddLine, RiCheckLine, RiCloseLine } from "react-icons/ri";
 import { DriverStats } from "@/lib/types/drivers";
-import { Vote } from "@/lib/types/vote";
+import { Vote, FilterOptions } from "@/lib/types/vote";
 import { DriverVoteCard } from "./DriverVoteCard";
 import { Pagination } from "@/components/Racings/Pagination";
 import { FilterSort } from "./FilterSort";
@@ -22,7 +22,7 @@ interface VotingSectionProps {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
-  onFilterChange: (filters: Record<string, unknown>) => void;
+  onFilterChange: (filters: FilterOptions) => void;
   resetFilters: () => void;
   teams: string[];
 }

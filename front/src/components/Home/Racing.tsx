@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
@@ -27,7 +27,7 @@ const Racing = () => {
   const nextRace = useNextRace();
   const [isHovered, setIsHovered] = useState(false);
 
-  const calculateTimeLeft = () => {
+  const calculateTimeLeft = useCallback(() => {
     if (!nextRace.date) return { days: 0, hours: 0, minutes: 0, seconds: 0 };
     const difference = +new Date(nextRace.date) - +new Date();
     return {
@@ -36,14 +36,14 @@ const Racing = () => {
       minutes: Math.max(0, Math.floor((difference / 1000 / 60) % 60)),
       seconds: Math.max(0, Math.floor((difference / 1000) % 60)),
     };
-  };
+  }, [nextRace.date]);
 
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
 
   useEffect(() => {
     const timer = setInterval(() => setTimeLeft(calculateTimeLeft()), 1000);
     return () => clearInterval(timer);
-  }, [nextRace.date]);
+  }, [calculateTimeLeft]);
 
   const hasTimeLeft = Object.values(timeLeft).some((v) => v > 0);
 

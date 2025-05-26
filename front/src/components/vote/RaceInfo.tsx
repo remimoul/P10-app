@@ -2,18 +2,12 @@ import { motion } from "framer-motion";
 import { RiSunLine } from "react-icons/ri";
 import { formatDate } from "@/lib/utils/dateAndTime";
 import { f1Service } from "@/lib/services/f1Service";
-import { Position } from "@/lib/types/racing";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 
 interface F1Driver {
   driver_number: number;
   first_name: string;
   last_name: string;
-}
-
-interface DriverStats {
-  driverId: string;
-  name: string;
 }
 
 interface RaceInfoProps {
@@ -43,8 +37,6 @@ export const RaceInfo = ({ raceInfo }: RaceInfoProps) => {
     humidity,
   } = raceInfo;
 
-  const [driversStats, setDriversStats] = useState<DriverStats[]>([]);
-
   const formattedDate = date ? formatDate(date) : "-";
   const formattedTime = startTime ? startTime.slice(0, 5) : "-";
 
@@ -53,13 +45,9 @@ export const RaceInfo = ({ raceInfo }: RaceInfoProps) => {
       try {
         const sessions = await f1Service.getSessions("2024");
         const raceSession = sessions.find((s) => s.session_type === "Race");
-        let positions: Position[] = [];
         let f1Drivers: F1Driver[] = [];
 
         if (raceSession) {
-          positions = await f1Service.getPositions(
-            String(raceSession.session_key)
-          );
           f1Drivers = await f1Service.getDrivers(
             String(raceSession.session_key)
           );
@@ -69,34 +57,16 @@ export const RaceInfo = ({ raceInfo }: RaceInfoProps) => {
           );
 
           if (meeting) {
-            setDriversStats([
-              {
-                driverId: "1",
-                name: `${meeting.circuit_short_name} - ${meeting.location}`,
-              },
-            ]);
+            // Store meeting data if needed for future use
+            console.log(`${meeting.circuit_short_name} - ${meeting.location}`);
           }
         }
 
-        const driverIdToNumber: Record<string, number> = {};
+        // Process driver data if needed for future use
         f1Drivers.forEach((d) => {
           const fullName = `${d.first_name} ${d.last_name}`;
-          const ergastDriver = driversStats.find((ds) => ds.name === fullName);
-          if (ergastDriver) {
-            driverIdToNumber[ergastDriver.driverId] = d.driver_number;
-          }
+          console.log(`Driver: ${fullName}, Number: ${d.driver_number}`);
         });
-
-        const enrichedDrivers = driversStats.map((driver) => {
-          const driverNumber = driverIdToNumber[driver.driverId];
-          const pos = positions.find((p) => p.driver_number === driverNumber);
-          return {
-            ...driver,
-            racePosition: pos ? pos.position : null,
-          };
-        });
-
-        setDriversStats(enrichedDrivers);
       } catch (error) {
         console.error("Error fetching race data:", error);
       }
