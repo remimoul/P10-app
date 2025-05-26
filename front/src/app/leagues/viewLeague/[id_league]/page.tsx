@@ -55,15 +55,13 @@ const ViewLeague = () => {
   const [isExitLeagueModalOpen, setIsExitLeagueModalOpen] = useState(false);
   const [isEditLeagueNameModalOpen, setIsEditLeagueNameModalOpen] = useState(false);
 
-  const calculateTimeLeft = useCallback(() => {
+  const calculateTimeLeft = () => {
     if (!nextRace.date) return 0;
-    const raceDate = new Date(nextRace.date + (nextRace.time ? 'T' + nextRace.time + 'Z' : ''));
-    const deadline = new Date(raceDate);
-    deadline.setHours(deadline.getHours() - 2);
+    const raceDate = new Date(nextRace.date + (nextRace.time ? "T" + nextRace.time : ""));
     const now = new Date();
-    const diff = Math.max(0, Math.floor((deadline.getTime() - now.getTime()) / 1000));
+    const diff = Math.max(0, Math.floor((raceDate.getTime() - now.getTime()) / 1000));
     return diff;
-  }, [nextRace.date, nextRace.time]);
+  };
 
   useEffect(() => {
     if (leagueData && userLoaded && user) {
@@ -100,7 +98,7 @@ const ViewLeague = () => {
       setTimeLeft(calculateTimeLeft());
     }, 1000);
     return () => clearInterval(interval);
-  }, [calculateTimeLeft]);
+  }, [nextRace.date, nextRace.time]);
 
   const handleVote = () => {
     if (leagueId) {
@@ -108,7 +106,6 @@ const ViewLeague = () => {
     } else {
       toast.error("Aucune league sélectionnée !");
     }
-
   };
 
   const handleAddMembers = () => {
@@ -182,9 +179,7 @@ const ViewLeague = () => {
           <div className="bg-white/90 border border-red-200 rounded-2xl px-6 py-3 shadow text-center">
             <span className="text-lg font-semibold text-red-700">Next race : </span>
             <span className="text-lg font-semibold text-gray-900">{nextRace.name}</span>
-            {nextRace.date && (
-              <span className="ml-4 text-gray-600 text-sm">({nextRace.date})</span>
-            )}
+            {nextRace.date && <span className="ml-4 text-gray-600 text-sm">({nextRace.date})</span>}
           </div>
         </div>
       )}
