@@ -4,7 +4,7 @@ import Link from "next/link";
 import toast from "react-hot-toast";
 import { Participant } from "@/lib/types/leagues";
 import { GiRaceCar } from "react-icons/gi";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { RiLoader2Fill } from "react-icons/ri";
 import { useUser, useOrganization } from "@clerk/nextjs";
@@ -23,7 +23,7 @@ const ViewLeague = () => {
   const { user, isLoaded: userLoaded } = useUser();
   const { organization } = useOrganization();
   const router = useRouter();
-  const nextRace = useNextRace();
+  const { nextRace } = useNextRace();
   const [timeLeft, setTimeLeft] = useState(3600);
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [isAddMemberModalOpen, setIsAddMemberModalOpen] = useState(false);
@@ -31,13 +31,15 @@ const ViewLeague = () => {
   const [isEditLeagueNameModalOpen, setIsEditLeagueNameModalOpen] =
     useState(false);
 
-  const calculateTimeLeft = () => {
+  const calculateTimeLeft = useCallback(() => {
     if (!nextRace.date) return 0;
-    const raceDate = new Date(nextRace.date + (nextRace.time ? 'T' + nextRace.time : ''));
+    const raceDate = new Date(nextRace.date + (nextRace.time ? 'T' + nextRace.time + 'Z' : ''));
+    const deadline = new Date(raceDate);
+    deadline.setHours(deadline.getHours() - 2);
     const now = new Date();
-    const diff = Math.max(0, Math.floor((raceDate.getTime() - now.getTime()) / 1000));
+    const diff = Math.max(0, Math.floor((deadline.getTime() - now.getTime()) / 1000));
     return diff;
-  };
+  }, [nextRace.date, nextRace.time]);
 
   useEffect(() => {
     if (userLoaded && user) {
@@ -64,7 +66,7 @@ const ViewLeague = () => {
       setTimeLeft(calculateTimeLeft());
     }, 1000);
     return () => clearInterval(interval);
-  }, [nextRace.date, nextRace.time]);
+  }, [calculateTimeLeft]);
 
   const handleVote = () => {
     router.push('/leagues/viewLeague/vote')

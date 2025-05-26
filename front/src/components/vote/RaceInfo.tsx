@@ -44,21 +44,21 @@ export const RaceInfo = ({ raceInfo }: RaceInfoProps) => {
     const fetchRaceData = async () => {
       try {
         const sessions = await f1Service.getSessions("2024");
-        const raceSession = sessions.find((s) => s.session_type === "Race");
+        const raceSession = sessions.find((s) => s.type === "race");
         let f1Drivers: F1Driver[] = [];
 
         if (raceSession) {
-          f1Drivers = await f1Service.getDrivers(
-            String(raceSession.session_key)
-          );
+          const driversFromService = await f1Service.getDrivers(String(raceSession.id));
+          f1Drivers = driversFromService.map((d) => ({
+            driver_number: d.number,
+            first_name: d.name.split(' ')[0],
+            last_name: d.name.split(' ').slice(1).join(' '),
+          }));
           const meetings = await f1Service.getMeetings("2024");
-          const meeting = meetings.find(
-            (m) => String(m.meeting_key) === String(raceSession.meeting_key)
-          );
+          const meeting = meetings.find((m) => m.sessions.some((s) => s.id === raceSession.id));
 
           if (meeting) {
-            // Store meeting data if needed for future use
-            console.log(`${meeting.circuit_short_name} - ${meeting.location}`);
+            console.log(`${meeting.track.name} - ${meeting.track.city}, ${meeting.track.country}`);
           }
         }
 

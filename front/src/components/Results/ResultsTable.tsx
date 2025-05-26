@@ -1,10 +1,10 @@
-import { ViewMode, DriverTableData } from "@/lib/types/racing";
+import { DriverTableData } from "@/lib/types/racing";
 import { motion } from "framer-motion";
 import { FaTrophy, FaMedal } from "react-icons/fa";
 
 interface ResultsTableProps {
   drivers: DriverTableData[];
-  viewMode: ViewMode;
+  viewMode: 'race' | 'championship';
 }
 
 const ResultsTable = ({ drivers, viewMode }: ResultsTableProps) => {

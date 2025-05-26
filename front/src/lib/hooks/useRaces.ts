@@ -26,14 +26,14 @@ export const useRaces = (): UseRacesReturn => {
         setMeetings(meetingsData);
 
         const allSeasons = Array.from(
-          new Set(sessions.map((s) => s.year.toString()))
+          new Set(sessions.map((s) => new Date(s.startTime).getFullYear().toString()))
         )
           .sort()
           .reverse();
 
         const currentSeason = allSeasons[0] || "";
         setSelectedSeason(currentSeason);
-        setSelectedRace(sessions[0]?.session_key || null);
+        setSelectedRace(sessions[0] ? Number(sessions[0].id) : null);
 
         const ergastData = await ergastService.getLatestResults();
         setErgastRaces(ergastData);
@@ -59,20 +59,20 @@ export const useRaces = (): UseRacesReturn => {
   }, [selectedSeason]);
 
   const filteredRaces = races.filter(
-    (race: Session) => race.year.toString() === selectedSeason
+    (race: Session) => new Date(race.startTime).getFullYear().toString() === selectedSeason
   );
 
-  const meetingsMap = new Map(meetings.map((m: Meeting) => [m.meeting_key, m]));
+  const meetingsMap = new Map(meetings.map((m: Meeting) => [Number(m.id), m]));
 
   const uniqueDates = Array.from(
-    new Set(filteredRaces.map((session) => formatDate(session.date_start)))
+    new Set(filteredRaces.map((session) => formatDate(session.startTime)))
   );
 
   useEffect(() => {
     if (
-      !filteredRaces.some((race: Session) => race.session_key === selectedRace)
+      !filteredRaces.some((race: Session) => Number(race.id) === selectedRace)
     ) {
-      setSelectedRace(filteredRaces[0]?.session_key || null);
+      setSelectedRace(filteredRaces[0] ? Number(filteredRaces[0].id) : null);
     }
   }, [selectedSeason, filteredRaces, selectedRace]);
 

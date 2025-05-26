@@ -72,7 +72,7 @@ export const useDrivers = (
 
   const findFastestLap = (lapTimes: LapTime[]) => {
     return lapTimes.reduce((fastest, current) => {
-      if (!fastest || current.lap_time < fastest.lap_time) {
+      if (!fastest || current.time < fastest.time) {
         return current;
       }
       return fastest;
@@ -85,35 +85,35 @@ export const useDrivers = (
     hasFastestLap: boolean
   ) => {
     const points = isSprint
-      ? SPRINT_POINTS[position as keyof typeof SPRINT_POINTS] || 0
-      : RACE_POINTS[position as keyof typeof RACE_POINTS] || 0;
+      ? SPRINT_POINTS[position] || 0
+      : RACE_POINTS[position] || 0;
     return points + (hasFastestLap ? FASTEST_LAP_POINTS : 0);
   };
 
   const filteredDrivers: DriverTableData[] = drivers
     .filter(
       (driver: Driver) =>
-        !selectedCountry || driver.country_code === selectedCountry
+        !selectedCountry || driver.country === selectedCountry
     )
     .map((driver: Driver) => {
       const result = positions.find(
-        (pos: Position) => pos.driver_number === driver.driver_number
+        (pos: Position) => pos.driverId === driver.id
       );
       const driverGrid = grid.find(
-        (g: Grid) => g.driver_number === driver.driver_number
+        (g: Grid) => g.driverId === driver.id
       );
       const driverLaps = laps.filter(
-        (l: Lap) => l.driver_number === driver.driver_number
+        (l: Lap) => l.driverId === driver.id
       );
       const driverLapTimes = lapTimes.filter(
-        (lt: LapTime) => lt.driver_number === driver.driver_number
+        (lt: LapTime) => lt.driverId === driver.id
       );
       const driverStints = stints.filter(
-        (s: Stint) => s.driver_number === driver.driver_number
+        (s: Stint) => s.driverId === driver.id
       );
 
       const fastestLap = driverLapTimes.reduce((fastest, current) => {
-        if (!fastest || current.lap_time < fastest.lap_time) {
+        if (!fastest || current.time < fastest.time) {
           return current;
         }
         return fastest;
@@ -122,7 +122,7 @@ export const useDrivers = (
       const totalLaps = driverLaps.length;
       const lastStint = driverStints[driverStints.length - 1];
       const raceFastestLap = findFastestLap(lapTimes);
-      const hasFastestLap = fastestLap?.lap_time === raceFastestLap?.lap_time;
+      const hasFastestLap = fastestLap?.time === raceFastestLap?.time;
       const points = calculatePoints(
         result?.position || 0,
         isSprint,
@@ -135,37 +135,33 @@ export const useDrivers = (
           : 0;
 
       return {
-        id: driver.driver_number,
-        name: `${driver.first_name} ${driver.last_name}`,
-        team: driver.team_name,
+        id: Number(driver.id),
+        name: driver.name,
+        team: driver.team,
         points,
         position: result?.position ?? 0,
-        country: driver.country_code,
-        number: driver.driver_number,
-        fastestLap: fastestLap?.lap_time
-          ? formatLapTime(fastestLap.lap_time)
+        country: driver.country,
+        number: driver.number,
+        fastestLap: fastestLap?.time
+          ? formatLapTime(Number(fastestLap.time))
           : "",
         grid: driverGrid?.position ?? 0,
-        status: (result?.status as "Finished" | "DNF") || "DNF",
+        status: ((): "DNF" => "DNF")(),
         laps: totalLaps || 0,
-        time: result?.time || "",
+        time: "",
         gap: "",
         bestLap: 0,
         teamColor: "",
         previousPosition: driverGrid?.position ?? 0,
         positionChange,
-        car: driver.team_name,
+        car: driver.team,
         compound: lastStint?.compound || "",
       };
     })
-    .sort((a, b) => {
-      if (a.status === "Finished" && b.status !== "Finished") return -1;
-      if (a.status !== "Finished" && b.status === "Finished") return 1;
-      return (a.position ?? 99) - (b.position ?? 99);
-    });
+    .sort((a, b) => (a.position ?? 99) - (b.position ?? 99));
 
   return {
-    drivers,
+    drivers: Object.fromEntries(drivers.map(d => [d.id, d])),
     positions,
     laps,
     grid,

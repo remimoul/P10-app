@@ -167,25 +167,28 @@ export interface RaceResult {
 }
 
 export interface RacingCardProps {
-  meeting: Meeting;
-  onSelect: (meeting: Meeting) => void;
-}
-
-export interface RacingListProps {
-  meetings: Meeting[];
-  onSelectMeeting: (meeting: Meeting) => void;
+  grandPrix: GrandPrix;
   isPast: boolean;
 }
 
+export interface RacingListProps {
+  grandPrixList: GrandPrix[];
+  isPast: boolean;
+}
+
+export interface RacingTabsProps {
+  activeTab: "upcoming" | "past";
+  onTabChange: (tab: "upcoming" | "past") => void;
+}
+
 export interface RaceInfoProps {
-  meeting: Meeting;
-  onClose: () => void;
+  race: Race;
 }
 
 export interface ResultsTableProps {
   results: RaceResult[];
   drivers: { [key: string]: Driver };
-  viewMode: ViewMode;
+  viewMode: 'race' | 'championship';
 }
 
 export interface NoRacesMessageProps {

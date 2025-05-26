@@ -27,15 +27,15 @@ const Racing = () => {
   const [isHovered, setIsHovered] = useState(false);
 
   const calculateTimeLeft = useCallback(() => {
-    if (!nextRace.date) return { days: 0, hours: 0, minutes: 0, seconds: 0 };
-    const difference = +new Date(nextRace.date) - +new Date();
+    if (!nextRace.nextRace?.date) return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+    const difference = +new Date(nextRace.nextRace.date) - +new Date();
     return {
       days: Math.max(0, Math.floor(difference / (1000 * 60 * 60 * 24))),
       hours: Math.max(0, Math.floor((difference / (1000 * 60 * 60)) % 24)),
       minutes: Math.max(0, Math.floor((difference / 1000 / 60) % 60)),
       seconds: Math.max(0, Math.floor((difference / 1000) % 60)),
     };
-  }, [nextRace.date]);
+  }, [nextRace.nextRace?.date]);
 
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
 
@@ -68,7 +68,7 @@ const Racing = () => {
               className="text-4xl md:text-4xl font-bold text-gray-900 mb-6"
             >
               <span className="text-red-600 block mb-2">PREDICT THE 10TH</span>
-              {nextRace.name || "Loading..."}
+              {nextRace.nextRace?.name || "Loading..."}
             </motion.h2>
 
             <p className="text-gray-600 text-lg leading-relaxed mb-4">
