@@ -1,5 +1,19 @@
 import FaqItems from "@/lib/data/faqItems";
 
+//navbar
+export type AccountButtonProps = {
+  onClick: () => void;
+  className?: string;
+};
+
+//footer
+export interface NextRaceCardProps {
+  socialClass: string;
+  raceName?: string;
+  raceDate?: string;
+  raceTime?: string;
+}
+
 // faq page
 export interface FAQItem {
   question: string;

@@ -15,9 +15,9 @@ const LeagueCard = ({ league, index, isPublic }: LeagueCardProps) => {
       initial={{ opacity: 0, y: 20, rotate: 0 }}
       whileInView={{ opacity: 1, y: 0, rotate: 0 }}
       transition={{ delay: index * 0.05, duration: 0.3 }}
-      className="relative overflow-hidden bg-gradient-to-br from-[#1c1e22] to-[#2a2f36] rounded-3xl p-4 sm:p-6 md:p-8 border border-gray-700 shadow-lg mx-6 sm:mx-10 md:mx-0"
+      className="relative overflow-hidden bg-gradient-to-br from-[#1c1e22] to-[#2a2f36] rounded-3xl p-4 sm:p-6 md:p-8 border border-gray-700 shadow-lg mx-6 sm:mx-10 md:mx-16"
     >
-      <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-6">
+      <div className="relative z-10 flex flex-col items-center justify-between gap-4 sm:gap-6 md:items-center md:gap-8 md:flex-col">
         <div className="flex items-center gap-4 sm:gap-6 flex-1">
           <div className="relative">
             <div
@@ -27,9 +27,9 @@ const LeagueCard = ({ league, index, isPublic }: LeagueCardProps) => {
                     ? "from-red-900/80 to-red-700"
                     : "from-blue-900/80 to-blue-700"
                 }
-                shadow-[0_0_16px_4px_rgba(255,24,1,0.25)]`}
+                `}
             >
-              <span className="text-3xl sm:text-4xl font-extrabold text-white drop-shadow-lg bg-clip-text bg-gradient-to-b from-white to-gray-300">
+              <span className="text-3xl font-semibold text-white bg-clip-text bg-gradient-to-b from-white to-gray-300">
                 {league.position}
               </span>
             </div>
@@ -37,13 +37,13 @@ const LeagueCard = ({ league, index, isPublic }: LeagueCardProps) => {
           </div>
 
           <div>
-            <h3 className="text-xl sm:text-2xl font-extrabold text-white uppercase tracking-wider font-racing">
+            <h3 className="text-xl font-semibold text-white uppercase tracking-wider">
               {league.name}
             </h3>
-            <div className="flex flex-wrap gap-2 sm:gap-4 mt-2 text-base sm:text-lg">
+            <div className="flex flex-wrap gap-2 sm:gap-4 mt-2 text-xl sm:text-lg">
               <div className="flex items-center gap-1 sm:gap-2 text-gray-300">
                 <RiTeamFill
-                  className={`text-lg sm:text-xl ${
+                  className={`text-lg ${
                     isPublic ? "text-red-400" : "text-blue-400"
                   } drop-shadow-[0_0_4px_rgba(255,24,1,0.3)]`}
                 />
@@ -57,10 +57,10 @@ const LeagueCard = ({ league, index, isPublic }: LeagueCardProps) => {
 
         <div className="flex items-center gap-4 sm:gap-6 relative z-10">
           <div className="text-center">
-            <div className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+            <div className="text-2xl font-semibold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
               {league.points}
             </div>
-            <div className="text-lg sm:text-lg uppercase text-gray-400 tracking-widest">
+            <div className="text-lg uppercase text-gray-400 tracking-widest">
               Points
             </div>
           </div>
@@ -93,7 +93,8 @@ const LeagueCard = ({ league, index, isPublic }: LeagueCardProps) => {
                     ? "border-red-300/30 hover:border-red-300/60"
                     : "border-blue-300/30 hover:border-blue-300/60"
                 }
-                ${!isPublic ? "ring-1 ring-blue-400/30" : ""}`}
+                ${!isPublic ? "ring-1 ring-blue-400/30" : ""}
+                w-full`}
             >
               <motion.div
                 className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0"

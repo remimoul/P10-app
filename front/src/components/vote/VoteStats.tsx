@@ -67,9 +67,6 @@ export const VoteStats = ({
                       }
                     </span>
                   </div>
-                  <span className="text-lg font-bold text-[var(--primary-red)]">
-                    {driver.votes} votes
-                  </span>
                 </div>
               ))}
             </div>

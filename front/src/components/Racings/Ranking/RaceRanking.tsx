@@ -17,7 +17,7 @@ export default function RaceRanking({ participants }: RaceRankingProps) {
       <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 to-transparent" />
 
       <div className="relative z-10">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-4 mb-8">
           <div className="flex items-center gap-3">
             <GiTrophyCup className="w-14 h-14 text-[var(--primary-red)]" />
             <div className="flex flex-col">
@@ -29,9 +29,9 @@ export default function RaceRanking({ participants }: RaceRankingProps) {
               </span>
             </div>
           </div>
-          <div className="flex items-center gap-2 text-[var(--primary-red)]">
+          <div className="flex items-center gap-2 text-[var(--primary-red)] justify-center sm:justify-end w-full sm:w-auto">
             <span className="text-xl uppercase tracking-wider">
-              Participants
+              Participants :
             </span>
             <span className="text-xl font-bold">{participants.length}</span>
           </div>

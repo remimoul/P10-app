@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 
 export function useVote() {
   const router = useRouter();
-  const { user, isLoaded: userLoaded } = useUser();
+  const { user } = useUser();
   const [selectedDriver, setSelectedDriver] = useState<string | null>(null);
   const [confirmedVote, setConfirmedVote] = useState<string | null>(null);
   const [userVote, setUserVote] = useState<Vote | null>(null);
@@ -64,7 +64,7 @@ export function useVote() {
 
     setTimeout(() => {
       router.push("/leagues");
-    }, 2000);
+    }, 1000);
   };
 
   const handleCancelVote = () => {

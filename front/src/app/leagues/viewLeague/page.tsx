@@ -95,7 +95,7 @@ const ViewLeague = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-red-50 py-20 px-8">
+    <div className="min-h-screen bg-gradient-to-b from-white to-red-50 py-28 px-8">
       <Header
         league={{
           name: organization?.name || "Racing League",

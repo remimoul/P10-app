@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { UserCardProps } from "@/lib/types/leagues";
 import { Button } from "@/components/ui/button";
 import { GiCheckeredFlag } from "react-icons/gi";
-import { IoArrowForward } from "react-icons/io5";
+import { MdHowToVote } from "react-icons/md";
 import UserAvatar from "@/components/Leagues/ViewLeagues/UserAvatar";
 
 const UserCard = ({
@@ -89,7 +89,7 @@ const UserCard = ({
               bg-white border-2 border-[#D90429] text-[#D90429] shadow-md
               transition-all duration-200
               before:absolute before:inset-0 before:rounded-full before:bg-[radial-gradient(circle_at_60%_40%,rgba(217,4,41,0.18)_0%,transparent_70%)] before:opacity-0 before:pointer-events-none before:transition-opacity before:duration-200
-              hover:bg-gradient-to-br hover:from-[#D90429] hover:via-[#D90429]/80 hover:to-black hover:text-white hover:shadow-[0_4px_32px_rgba(217,4,41,0.25)] hover:border-[#D90429] hover:scale-105 hover:before:opacity-80
+              hover:scale-105 hover:shadow-[0_4px_24px_rgba(217,4,41,0.25)] hover:bg-gradient-to-br hover:from-[var(--primary-red)]/80 hover:to-[var(--primary-red)]/40 hover:text-white
               active:scale-95
               disabled:bg-gray-200 disabled:text-gray-400 disabled:border-gray-200 disabled:cursor-not-allowed
             `}
@@ -100,7 +100,11 @@ const UserCard = ({
                   <span>CANCEL VOTE</span>
                   <motion.div
                     animate={{ scale: [1, 1.08, 1] }}
-                    transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+                    transition={{
+                      duration: 1.2,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
                     className="flex items-center"
                   >
                     <GiCheckeredFlag className="text-2xl sm:text-2xl text-[#D90429]" />
@@ -111,10 +115,14 @@ const UserCard = ({
                   <span>VOTE</span>
                   <motion.div
                     animate={{ x: [0, 6, 0] }}
-                    transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+                    transition={{
+                      duration: 1.2,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
                     className="flex items-center"
                   >
-                    <IoArrowForward className="text-2xl sm:text-2xl text-[#D90429]" />
+                    <MdHowToVote className="text-2xl sm:text-2xl text-[#D90429] hover:text-white" />
                   </motion.div>
                 </>
               )}
