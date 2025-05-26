@@ -55,13 +55,15 @@ const ViewLeague = () => {
   const [isExitLeagueModalOpen, setIsExitLeagueModalOpen] = useState(false);
   const [isEditLeagueNameModalOpen, setIsEditLeagueNameModalOpen] = useState(false);
 
-  const calculateTimeLeft = () => {
+  const calculateTimeLeft = useCallback(() => {
     if (!nextRace.date) return 0;
-    const raceDate = new Date(nextRace.date + (nextRace.time ? 'T' + nextRace.time : ''));
+    const raceDate = new Date(nextRace.date + (nextRace.time ? 'T' + nextRace.time + 'Z' : ''));
+    const deadline = new Date(raceDate);
+    deadline.setHours(deadline.getHours() - 2);
     const now = new Date();
-    const diff = Math.max(0, Math.floor((raceDate.getTime() - now.getTime()) / 1000));
+    const diff = Math.max(0, Math.floor((deadline.getTime() - now.getTime()) / 1000));
     return diff;
-  };
+  }, [nextRace.date, nextRace.time]);
 
   useEffect(() => {
     if (leagueData && userLoaded && user) {
@@ -98,7 +100,7 @@ const ViewLeague = () => {
       setTimeLeft(calculateTimeLeft());
     }, 1000);
     return () => clearInterval(interval);
-  }, [nextRace.date, nextRace.time]);
+  }, [calculateTimeLeft]);
 
   const handleVote = () => {
     if (leagueId) {

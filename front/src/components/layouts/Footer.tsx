@@ -115,8 +115,8 @@ const Footer = () => {
                 ))}
               </nav>
               <NextRaceCard
-                name={nextRace.name}
-                date={nextRace.date}
+                name={nextRace.nextRace?.name}
+                date={nextRace.nextRace?.date}
               />
             </div>
 
@@ -139,8 +139,8 @@ const Footer = () => {
 
             <div className="hidden lg:flex flex-col items-end gap-2 text-right">
               <NextRaceCard
-                name={nextRace.name}
-                date={nextRace.date}
+                name={nextRace.nextRace?.name}
+                date={nextRace.nextRace?.date}
               />
             </div>
           </div>

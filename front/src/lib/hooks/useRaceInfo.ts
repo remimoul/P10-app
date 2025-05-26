@@ -24,22 +24,20 @@ export function useRaceInfo() {
         setError(null);
 
         const sessions = await f1Service.getSessions("2025");
-        const raceSession = sessions.find((s) => s.session_type === "Race");
+        const raceSession = sessions.find((s) => s.type === "race");
 
         if (raceSession) {
           const meetings = await f1Service.getMeetings("2025");
-          const meeting = meetings.find(
-            (m) => String(m.meeting_key) === String(raceSession.meeting_key)
-          );
+          const meeting = meetings.find((m) => m.sessions.some((s) => s.id === raceSession.id));
 
-          setVoteDeadline(new Date(raceSession.date_start));
+          setVoteDeadline(new Date(raceSession.startTime));
           setRaceInfo({
-            grandPrix: meeting?.circuit_short_name || "",
-            country: meeting?.country_code || "",
-            circuit: meeting?.circuit_short_name || "",
-            location: meeting?.location || "",
-            date: raceSession.date_start,
-            startTime: raceSession.date_start,
+            grandPrix: meeting?.track.name || "",
+            country: meeting?.track.country || "",
+            circuit: meeting?.track.name || "",
+            location: meeting?.track.city || "",
+            date: raceSession.startTime,
+            startTime: raceSession.startTime,
             weather: "",
             temperature: "",
             humidity: "",
