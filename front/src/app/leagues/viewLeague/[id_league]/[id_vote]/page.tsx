@@ -52,7 +52,6 @@ const VotePage = () => {
     drivers,
     loading: driversLoading,
     error: driversError,
-    filters,
     setFilters,
     resetFilters,
     currentPage,
@@ -66,7 +65,6 @@ const VotePage = () => {
     raceInfo,
     loading: raceInfoLoading,
     error: raceInfoError,
-    setVoteDeadline: setRaceVoteDeadline,
   } = useRaceInfo();
 
   useEffect(() => {
@@ -80,13 +78,17 @@ const VotePage = () => {
           { driverId: "norris", votes: 25 },
         ]);
 
-        // Sync deadline between hooks
-        if (voteDeadline) setRaceVoteDeadline(voteDeadline);
+        // Set initial vote deadline
+        if (!voteDeadline) {
+          const deadline = new Date();
+          deadline.setHours(deadline.getHours() + 24);
+          setVoteDeadline(deadline);
+        }
       } catch (err) {
         console.error("Error loading additional data:", err);
       }
     }
-  }, [userLoaded, voteDeadline, setRaceVoteDeadline]);
+  }, [userLoaded, voteDeadline, setVoteDeadline]);
 
   const handleComparisonSelect = (driverId: string) => {
     setComparisonDrivers((prev) => {
@@ -104,7 +106,6 @@ const VotePage = () => {
     setIsComparisonOpen(true);
   };
 
-  // State checks
   const loading = driversLoading || raceInfoLoading || !userLoaded;
   const error = driversError || raceInfoError;
 
@@ -116,15 +117,14 @@ const VotePage = () => {
     <VotePageLayout voteModified={voteModified}>
       <VotePageHeader />
 
-      <VoteTabs activeTab={tab} onTabChange={setTab} />
-
       <VoteTimer
         timeLeft={timeLeft}
         voteDeadline={voteDeadline}
         totalParticipants={totalParticipants}
       />
-
-      <div className="h-8" />
+      <div className="my-4 sm:my-6 md:my-8" />
+      <VoteTabs activeTab={tab} onTabChange={setTab} />
+      <div className="mb-4 sm:mb-6 md:mb-8" />
 
       <AnimatePresence mode="wait">
         <motion.div
@@ -137,8 +137,17 @@ const VotePage = () => {
           {tab === "Info" ? (
             <InfoSection
               drivers={drivers}
-              raceInfo={raceInfo}
-              voteDeadline={voteDeadline}
+              raceInfo={{
+                grandPrix: raceInfo.grandPrix || "",
+                country: raceInfo.country,
+                circuit: raceInfo.circuit,
+                location: raceInfo.location,
+                date: raceInfo.date,
+                startTime: raceInfo.startTime || "",
+                weather: raceInfo.weather,
+                temperature: raceInfo.temperature,
+                humidity: raceInfo.humidity,
+              }}
               totalVotes={totalVotes}
               totalParticipants={totalParticipants}
               topVotedDrivers={topVotedDrivers}
@@ -159,7 +168,6 @@ const VotePage = () => {
               currentPage={currentPage}
               totalPages={totalPages}
               onPageChange={setCurrentPage}
-              filters={filters}
               onFilterChange={setFilters}
               resetFilters={resetFilters}
               teams={uniqueTeams}

@@ -21,11 +21,11 @@ export const CancelVoteDialog = ({
 }: CancelVoteDialogProps) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px] bg-gray-50 rounded-3xl border border-gray-50 shadow-xl p-0 overflow-visible">
+      <DialogContent className="w-full max-w-xs sm:max-w-md md:max-w-xl bg-gray-50 rounded-2xl sm:rounded-3xl border border-gray-50 shadow-xl p-0 overflow-visible flex items-center justify-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="p-8 relative"
+          className="w-full flex flex-col items-center justify-center p-4 sm:p-8 md:p-10 relative"
         >
           <button
             onClick={() => onOpenChange(false)}
@@ -35,31 +35,31 @@ export const CancelVoteDialog = ({
           >
             <IoClose size={36} />
           </button>
-          <DialogHeader className="text-center">
-            <DialogTitle className="text-4xl font-extrabold bg-gradient-to-r from-[var(--primary-red)] to-gray-800 bg-clip-text text-transparent font-racing tracking-wider">
+          <DialogHeader className="w-full text-center flex flex-col items-center">
+            <DialogTitle className="w-full text-2xl sm:text-4xl font-extrabold bg-gradient-to-r from-[var(--primary-red)] to-gray-800 bg-clip-text text-transparent font-racing tracking-wider">
               Annuler le vote
             </DialogTitle>
           </DialogHeader>
-          <div className="mt-8 space-y-6">
-            <p className="text-2xl font-medium text-gray-600 text-center">
+          <div className="w-full mt-6 sm:mt-8 md:mt-10 space-y-4 sm:space-y-6 md:space-y-8 flex flex-col items-center">
+            <p className="w-full text-base sm:text-2xl font-medium text-gray-600 text-center">
               Êtes-vous sûr de vouloir annuler votre vote ?<br />
               <span className="text-red-500 font-semibold">
                 Cette action est irréversible.
               </span>
             </p>
-            <div className="flex justify-center gap-6 pt-4">
+            <div className="w-full flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-6 md:gap-8 pt-2 sm:pt-4 md:pt-6">
               <Button
                 type="button"
                 onClick={() => onOpenChange(false)}
                 variant="outline"
-                className="px-8 py-6 border border-gray-200/80 text-gray-600 hover:border-gray-300 hover:bg-gray-50/80 rounded-full text-xl transition-colors duration-200 shadow-sm hover:shadow-md"
+                className="w-full sm:w-56 md:w-64 px-4 sm:px-8 md:px-10 py-3 sm:py-6 md:py-7 border border-gray-200/80 text-gray-600 hover:border-gray-300 hover:bg-gray-50/80 rounded-full text-base sm:text-xl transition-colors duration-200 shadow-sm hover:shadow-md"
               >
                 Non, garder mon vote
               </Button>
               <Button
                 type="button"
                 onClick={onConfirm}
-                className="px-8 py-6 bg-gradient-to-r from-[var(--primary-red)] to-[#A60321] hover:from-gray-600 hover:to-gray-900 text-white rounded-full text-xl transition-colors duration-200 shadow-lg hover:shadow-xl relative overflow-hidden"
+                className="w-full sm:w-56 md:w-64 px-4 sm:px-8 md:px-10 py-3 sm:py-6 md:py-7 bg-gradient-to-r from-[var(--primary-red)] to-[#A60321] hover:from-gray-600 hover:to-gray-900 text-white rounded-full text-base sm:text-xl transition-colors duration-200 shadow-lg hover:shadow-xl relative overflow-hidden"
               >
                 Oui, annuler mon vote
               </Button>

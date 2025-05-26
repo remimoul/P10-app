@@ -13,7 +13,7 @@ const VoteTimer = ({
   totalParticipants,
 }: VoteTimerProps) => {
   return (
-    <div className="flex items-center justify-between mb-12">
+    <div className="flex flex-col xs:flex-row xs:items-center xs:justify-between mb-12 gap-2 xs:gap-0">
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-2">
           <span className="text-xl font-semibold text-[var(--primary-red)]">
@@ -44,7 +44,7 @@ const VoteTimer = ({
           </div>
         </div>
       </div>
-      <div className="text-2xl text-gray-700 font-semibold">
+      <div className="text-2xl text-gray-700 font-semibold xs:ml-8 xs:mt-0 mt-2 text-center xs:text-right">
         {totalParticipants} participants
       </div>
     </div>

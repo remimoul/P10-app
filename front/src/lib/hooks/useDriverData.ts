@@ -3,6 +3,7 @@ import { DriverStats } from "@/lib/types/drivers";
 import { FilterOptions } from "@/lib/types/vote";
 import { driverService } from "@/lib/services/driverService";
 import { f1Service } from "@/lib/services/f1Service";
+import { Driver, Position } from "@/lib/types/racing";
 
 export function useDriverData() {
   const [drivers, setDrivers] = useState<DriverStats[]>([]);
@@ -27,18 +28,14 @@ export function useDriverData() {
 
         const driversStats = await driverService.getAllDriversStats();
 
-        const sessions = await f1Service.getSessions("2024");
+        const sessions = await f1Service.getSessions("2025");
         const raceSession = sessions.find((s) => s.session_type === "Race");
-        let positions = [];
-        let f1Drivers = [];
+        let positions: Position[] = [];
+        let f1Drivers: Driver[] = [];
 
         if (raceSession) {
-          positions = await f1Service.getPositions(
-            String(raceSession.session_key)
-          );
-          f1Drivers = await f1Service.getDrivers(
-            String(raceSession.session_key)
-          );
+          positions = await f1Service.getPositions(String(raceSession.session_key));
+          f1Drivers = await f1Service.getDrivers(String(raceSession.session_key));
         }
 
         const driverIdToNumber: Record<string, number> = {};
