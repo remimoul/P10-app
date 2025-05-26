@@ -42,4 +42,30 @@ export class BetService {
             throw error;
         }
     }
+
+    async getBetByUserAndGrandPrix(
+        getBetByUserAndGrandPrixInput: { grandPrixId: UUID, userId: UUID }
+    ): Promise<Bet | null> {
+        const bet = await this.prisma.bet.findFirst({
+            where: {
+                grandPrixId: getBetByUserAndGrandPrixInput.grandPrixId,
+                userId: getBetByUserAndGrandPrixInput.userId,
+            },
+        });
+
+        if (!bet) {
+            return null;
+        }
+
+        return {
+            id: bet.id as UUID,
+            user: await this.userService.getUser({ clerkId: bet.userId }),
+            grandPrix: {
+                id: bet.grandPrixId as UUID,
+            },
+            pilot: {
+                id: bet.pilotP10Id as UUID,
+            },
+        };
+    }
 }

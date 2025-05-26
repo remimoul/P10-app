@@ -30,9 +30,15 @@ export class CreateBetInput {
     @Field(type => String)
     pilotId: UUID;
 
-    @Field(type => GrandPrix)
-    grandPrix: GrandPrix;
-
     @Field((type) => String)
     userId: UUID;
 };
+
+@InputType()
+export class GetBetByUserAndGrandPrixInput {
+    @Field(type => String)
+    grandPrixId: UUID;
+
+    @Field(type => String)
+    userId: UUID;
+}
