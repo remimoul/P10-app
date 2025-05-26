@@ -20,7 +20,7 @@ const Ranking = ({ participants }: { participants: Participant[] }) => (
         </div>
         <div className="flex items-center gap-2 text-[var(--primary-red)] justify-center sm:justify-end w-full sm:w-auto">
           <span className="text-xl uppercase tracking-wider">
-            Total Players
+            Total members :
           </span>
           <span className="text-xl font-bold">{participants.length}</span>
         </div>

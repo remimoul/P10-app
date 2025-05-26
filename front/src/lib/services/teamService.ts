@@ -4,7 +4,7 @@ import { ErgastResponse, ConstructorStanding, Race } from "../types/ergast";
 const ERGAST_API_BASE = "http://ergast.com/api/f1";
 
 export const teamService = {
-  async getCurrentConstructors(): Promise<Constructor[]> {
+  async _getCurrentConstructors(): Promise<Constructor[]> {
     try {
       const response = await fetch(`${ERGAST_API_BASE}/current/constructors.json`);
       const data: ErgastResponse<{ Constructors: Constructor[] }> = await response.json();
@@ -15,7 +15,7 @@ export const teamService = {
     }
   },
 
-  async getConstructorStandings(): Promise<ConstructorStanding[]> {
+  async _getConstructorStandings(): Promise<ConstructorStanding[]> {
     try {
       const response = await fetch(`${ERGAST_API_BASE}/current/constructorStandings.json`);
       const data: ErgastResponse<{ StandingsLists: { ConstructorStandings: ConstructorStanding[] }[] }> = await response.json();
@@ -26,7 +26,7 @@ export const teamService = {
     }
   },
 
-  async getConstructorResults(constructorId: string, limit: number = 5): Promise<number[]> {
+  async _getConstructorResults(constructorId: string, limit: number = 5): Promise<number[]> {
     try {
       const response = await fetch(
         `${ERGAST_API_BASE}/current/constructors/${constructorId}/results.json?limit=${limit}`
@@ -45,8 +45,8 @@ export const teamService = {
   async getTeamStats(constructorId: string): Promise<TeamStats> {
     try {
       const [standings, results] = await Promise.all([
-        this.getConstructorStandings(),
-        this.getConstructorResults(constructorId),
+        this._getConstructorStandings(),
+        this._getConstructorResults(constructorId),
       ]);
 
       const constructorStanding = standings.find(
@@ -80,7 +80,7 @@ export const teamService = {
 
   async getAllTeamsStats(): Promise<TeamStats[]> {
     try {
-      const constructors = await this.getCurrentConstructors();
+      const constructors = await this._getCurrentConstructors();
       const statsPromises = constructors.map((constructor) =>
         this.getTeamStats(constructor.constructorId)
       );

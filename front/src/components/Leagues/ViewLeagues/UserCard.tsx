@@ -94,10 +94,10 @@ const UserCard = ({
               disabled:bg-gray-200 disabled:text-gray-400 disabled:border-gray-200 disabled:cursor-not-allowed
             `}
           >
-            <span className="relative z-10 flex items-center justify-center gap-2 font-bold tracking-wider">
+            <span className="relative z-10 flex items-center justify-center gap-2 font-semibold tracking-wider">
               {safeParticipant.hasVoted ? (
                 <>
-                  <span>CANCEL VOTE</span>
+                  <span>CANCEL BET</span>
                   <motion.div
                     animate={{ scale: [1, 1.08, 1] }}
                     transition={{
@@ -112,7 +112,7 @@ const UserCard = ({
                 </>
               ) : (
                 <>
-                  <span>VOTE</span>
+                  <span>BET</span>
                   <motion.div
                     animate={{ x: [0, 6, 0] }}
                     transition={{

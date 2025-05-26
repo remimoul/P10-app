@@ -50,4 +50,14 @@ export interface TeamStats {
     averagePosition: number;
     reliability: number;
   };
-} 
+}
+
+export interface DriverVoteCardProps {
+  driver: DriverStats;
+  selectedDriver: string | null;
+  handleVote: (driverId: string) => void;
+  handleCancelVote: () => void;
+  timeLeft: number;
+  isInComparison: boolean;
+  onComparisonSelect: (driverId: string) => void;
+}

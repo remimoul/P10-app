@@ -55,6 +55,14 @@ const ViewLeague = () => {
   const [isExitLeagueModalOpen, setIsExitLeagueModalOpen] = useState(false);
   const [isEditLeagueNameModalOpen, setIsEditLeagueNameModalOpen] = useState(false);
 
+  const calculateTimeLeft = () => {
+    if (!nextRace.date) return 0;
+    const raceDate = new Date(nextRace.date + (nextRace.time ? 'T' + nextRace.time : ''));
+    const now = new Date();
+    const diff = Math.max(0, Math.floor((raceDate.getTime() - now.getTime()) / 1000));
+    return diff;
+  };
+
   useEffect(() => {
     if (leagueData && userLoaded && user) {
       // Transformer les membres de la league en participants
@@ -85,11 +93,12 @@ const ViewLeague = () => {
   }, [leagueData, userLoaded, user]);
 
   useEffect(() => {
+    setTimeLeft(calculateTimeLeft());
     const interval = setInterval(() => {
-      setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
+      setTimeLeft(calculateTimeLeft());
     }, 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [nextRace.date, nextRace.time]);
 
   const handleVote = () => {
     if (leagueId) {
@@ -97,6 +106,7 @@ const ViewLeague = () => {
     } else {
       toast.error("Aucune league sélectionnée !");
     }
+
   };
 
   const handleAddMembers = () => {
@@ -119,7 +129,7 @@ const ViewLeague = () => {
 
   const formatTime = (seconds: number) => {
     const days = Math.floor(seconds / 86400);
-    const hours = Math.floor(seconds / 3600);
+    const hours = Math.floor((seconds % 86400) / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
     const secs = seconds % 60;
     return `${days}d ${hours}h ${minutes}m ${secs}s`;
@@ -164,6 +174,18 @@ const ViewLeague = () => {
         handleLeaveLeague={handleLeaveLeague}
         handleEditLeagueName={handleEditLeagueName}
       />
+
+      {nextRace.name && (
+        <div className="flex justify-center items-center mb-6">
+          <div className="bg-white/90 border border-red-200 rounded-2xl px-6 py-3 shadow text-center">
+            <span className="text-lg font-semibold text-red-700">Next race : </span>
+            <span className="text-lg font-semibold text-gray-900">{nextRace.name}</span>
+            {nextRace.date && (
+              <span className="ml-4 text-gray-600 text-sm">({nextRace.date})</span>
+            )}
+          </div>
+        </div>
+      )}
 
       {participants.length === 1 && (
         <div className="bg-red-100 border border-red-300 text-red-700 p-4 rounded-xl text-center text-lg mb-6">

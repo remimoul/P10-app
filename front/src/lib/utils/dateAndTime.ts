@@ -27,12 +27,3 @@ export function formatRemainingTime(seconds: number): string {
 
   return `${days}d ${hours}h ${minutes}m ${secs}s`;
 }
-
-export function formatRaceTime(time?: string): string {
-  if (!time) return "--:--";
-  if (/^\d{2}:\d{2}$/.test(time)) return time;
-  if (/^\d{2}:\d{2}/.test(time)) return time.slice(0, 5);
-  if (/^\d{2}\.\d{2}$/.test(time)) return time.replace(".", ":");
-  if (/^\d{2}\.\d{2}/.test(time)) return time.replace(".", ":").slice(0, 5);
-  return time;
-}

@@ -13,7 +13,7 @@ export const VoteRules = () => {
       <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 to-transparent" />
       <div className="relative z-10">
         <h3 className="text-3xl font-black text-[var(--primary-red)] mb-8">
-          Règles du vote
+          Voting Rules
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="group relative p-8 rounded-2xl bg-gradient-to-br from-white to-red-50/50 backdrop-blur-sm hover:from-white hover:to-red-50 transition-all duration-300 border border-red-500/20 hover:border-red-500/40 hover:shadow-lg">
@@ -23,7 +23,7 @@ export const VoteRules = () => {
                 <RiUserAddLine className="text-3xl text-white" />
               </div>
               <h4 className="text-2xl font-bold text-gray-900 mb-6">
-                Comment voter ?
+                How to vote?
               </h4>
               <ul className="space-y-4 text-gray-700">
                 <li className="flex items-start gap-3">
@@ -32,7 +32,7 @@ export const VoteRules = () => {
                       1
                     </span>
                   </span>
-                  <span>Sélectionne le pilote que tu penses finir 10ème</span>
+                  <span>Select the driver you think will finish 10th</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="w-6 h-6 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0 mt-1">
@@ -40,7 +40,7 @@ export const VoteRules = () => {
                       2
                     </span>
                   </span>
-                  <span>Clique sur le bouton &quot;Voter&quot;</span>
+                  <span>Click the &quot;Bet&quot; button</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="w-6 h-6 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0 mt-1">
@@ -48,7 +48,7 @@ export const VoteRules = () => {
                       3
                     </span>
                   </span>
-                  <span>Tu peux modifier ton vote jusqu&apos;à la clôture</span>
+                  <span>You can change your vote until the deadline</span>
                 </li>
               </ul>
             </div>
@@ -61,14 +61,13 @@ export const VoteRules = () => {
                 <RiTimeLine className="text-3xl text-white" />
               </div>
               <h4 className="text-2xl font-bold text-gray-900 mb-6">
-                Clôture des votes
+                Voting Deadline
               </h4>
               <div className="flex flex-col items-center gap-4 text-gray-700">
                 <div className="flex items-center gap-3 bg-red-50/50 px-6 py-4 rounded-xl">
                   <RiTimeLine className="text-2xl text-[var(--primary-red)]" />
                   <p className="text-lg">
-                    Les votes sont clôturés 5 minutes avant le départ de la
-                    course
+                    Voting closes 5 minutes before the race starts
                   </p>
                 </div>
               </div>
@@ -82,7 +81,7 @@ export const VoteRules = () => {
                 <RiTrophyLine className="text-3xl text-white" />
               </div>
               <h4 className="text-2xl font-bold text-gray-900 mb-6">
-                Attribution des points
+                Points Allocation
               </h4>
               <ul className="space-y-4 text-gray-700">
                 <li className="flex items-start gap-3">
@@ -95,7 +94,7 @@ export const VoteRules = () => {
                     <span className="font-bold text-[var(--primary-red)]">
                       3 points
                     </span>
-                    <p>pour le bon pilote</p>
+                    <p>for the correct driver</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -108,7 +107,7 @@ export const VoteRules = () => {
                     <span className="font-bold text-[var(--primary-red)]">
                       1 point
                     </span>
-                    <p>si le pilote finit dans les 3 positions autour (8-12)</p>
+                    <p>if the driver finishes within 3 positions (8th-12th)</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
@@ -119,9 +118,9 @@ export const VoteRules = () => {
                   </span>
                   <div>
                     <span className="font-bold text-[var(--primary-red)]">
-                      0 point
+                      0 points
                     </span>
-                    <p>dans les autres cas</p>
+                    <p>in all other cases</p>
                   </div>
                 </li>
               </ul>
