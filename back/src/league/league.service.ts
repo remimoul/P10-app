@@ -172,7 +172,6 @@ export class LeagueService {
       throw new NotFoundException(`League with ID ${leagueId} not found`);
     }
 
-    // 3. Vérifier si le code d'accès est requis (league privée) et valide
     if (league.private) {
       if (!joinCode) {
         throw new BadRequestException(
@@ -185,7 +184,6 @@ export class LeagueService {
       }
     }
 
-    // 4. Vérifier si l'utilisateur est déjà membre de cette league
     const existingMembership = await this.prisma.userLeague.findFirst({
       where: {
         userId: userId,
@@ -197,7 +195,6 @@ export class LeagueService {
       throw new BadRequestException('You are already a member of this league');
     }
 
-    // 5. Ajouter l'utilisateur à la league
     try {
       await this.prisma.userLeague.create({
         data: {
@@ -207,7 +204,6 @@ export class LeagueService {
         },
       });
 
-      // 6. Récupérer la league mise à jour avec tous les membres
       const updatedLeague = await this.prisma.league.findUnique({
         where: { id: league.id },
         include: {
@@ -220,7 +216,6 @@ export class LeagueService {
         },
       });
 
-      // 7. Format de retour adapté au modèle League
       return {
         id: updatedLeague.id as any,
         name: updatedLeague.name,

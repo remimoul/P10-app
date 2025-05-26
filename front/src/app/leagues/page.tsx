@@ -41,7 +41,7 @@ export default function Leagues() {
       try {
         setLoading(true);
 
-        const response = await fetch("http://localhost:4500/leagues", {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/leagues`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",

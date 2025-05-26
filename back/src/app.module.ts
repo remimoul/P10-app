@@ -33,6 +33,7 @@ import { LeagueController } from './league/league.controller';
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       sortSchema: true,
       introspection: true,
+      context: ({ req }) => ({ req }),
     }),
     AvatarModule,
     BetModule,

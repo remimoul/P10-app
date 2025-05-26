@@ -8,22 +8,95 @@ import { RiTeamFill, RiArrowRightSLine } from "react-icons/ri";
 import { Button } from "@/components/ui/button";
 import { JoinLeague } from "@/components/Leagues/pop-up/JoinLeague";
 import { CreateLeague } from "@/components/Leagues/pop-up/CreateLeague";
+import { useAuth } from "@clerk/nextjs";
 
 const ReadyToRace = () => {
+  const { getToken } = useAuth();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
 
-  const handleCreateLeague = async () => {
-    // const handleCreateLeague = async (league: {
-    //   name: string;
-    //   isPrivate: boolean;
-    // }) => {
+  const handleCreateLeague = async (league: { name: string; isPrivate: boolean }) => {
     const toastId = toast.loading("Creation of the league ...");
     try {
-      // Simulation appel API
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      const token = await getToken();
+
+      // Décoder le token pour obtenir le sub (clerkId)
+      const decodeJWT = (token: string) => {
+        try {
+          const base64Url = token.split(".")[1];
+          const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+          const jsonPayload = decodeURIComponent(
+            atob(base64)
+              .split("")
+              .map(function (c) {
+                return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+              })
+              .join("")
+          );
+          return JSON.parse(jsonPayload);
+        } catch (error) {
+          console.error("Error decoding JWT:", error);
+          return null;
+        }
+      };
+
+      let decodedToken = null;
+      if (token) {
+        decodedToken = decodeJWT(token);
+      } else {
+        throw new Error("No authentication token found.");
+      }
+      const clerkId = decodedToken?.sub;
+
+      console.log("ClerkId from token:", clerkId);
+
+      const query = `
+        mutation CreateLeagueWithUserId($createLeagueInput: CreateLeagueInput!, $userId: String!) {
+          createLeagueWithUserId(createLeagueInput: $createLeagueInput, userId: $userId) {
+            id
+            name
+            private
+            joinCode
+          }
+        }
+      `;
+
+      const variables = {
+        createLeagueInput: {
+          name: league.name,
+          private: league.isPrivate,
+        },
+        userId: clerkId, // Utiliser le clerkId décodé
+      };
+
+      console.log("Sending GraphQL request:", { query, variables });
+
+      const response = await fetch("http://localhost:4500/graphql", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          query,
+          variables,
+        }),
+      });
+
+      const result = await response.json();
+      console.log("Response body:", result);
+
+      if (result.errors) {
+        console.error("GraphQL errors:", result.errors);
+        throw new Error(result.errors[0].message);
+      }
+
+      const createdLeague = result.data.createLeagueWithUserId;
       toast.success("League successfully created!", { id: toastId });
-    } catch {
+      setIsCreateModalOpen(false);
+      return createdLeague;
+    } catch (error) {
+      console.error("Error creating league:", error);
       toast.error("Error during creation", {
         id: toastId,
         duration: 5000,
@@ -60,10 +133,7 @@ const ReadyToRace = () => {
           </div>
 
           <div className="flex flex-col gap-4 w-full items-center lg:flex-row lg:gap-6 lg:items-center lg:justify-center">
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              className="relative w-full sm:w-auto"
-            >
+            <motion.div whileHover={{ scale: 1.05 }} className="relative w-full sm:w-auto">
               <Button
                 onClick={() => setIsCreateModalOpen(true)}
                 className="w-full lg:w-auto sm:w-auto h-14 sm:h-16 px-6 sm:px-8 text-base sm:text-lg font-bold text-white rounded-full shadow-2xl 
@@ -127,10 +197,7 @@ const ReadyToRace = () => {
               </Button>
             </motion.div>
 
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              className="relative w-full sm:w-auto"
-            >
+            <motion.div whileHover={{ scale: 1.05 }} className="relative w-full sm:w-auto">
               <Button
                 variant="outline"
                 onClick={() => setIsJoinModalOpen(true)}
@@ -207,11 +274,7 @@ const ReadyToRace = () => {
         onCreate={handleCreateLeague}
       />
 
-      <JoinLeague
-        isOpen={isJoinModalOpen}
-        onClose={() => setIsJoinModalOpen(false)}
-        onJoin={handleJoinLeague}
-      />
+      <JoinLeague isOpen={isJoinModalOpen} onClose={() => setIsJoinModalOpen(false)} onJoin={handleJoinLeague} />
     </div>
   );
 };

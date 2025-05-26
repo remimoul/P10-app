@@ -11,6 +11,8 @@ import {
 import { LeagueService } from './league.service';
 import { Public } from 'src/decorators/public.decorator';
 import { PrismaService } from 'src/prisma.service';
+import { UseGuards } from '@nestjs/common';
+import { ClerkAuthGuard } from '../auth/clerk-auth.guard';
 
 @Resolver(() => League)
 export class LeagueResolver {
@@ -20,13 +22,19 @@ export class LeagueResolver {
   ) {}
 
   @Public()
+  @UseGuards(ClerkAuthGuard)
   @Mutation(() => League)
   async createLeague(
     @Args('createLeagueInput') createLeagueInput: CreateLeagueInput,
     @Context() context: any,
   ): Promise<League> {
+    console.log('=== DEBUG CONTEXT ===');
+    console.log('context.req.user:', context.req?.user);
+    console.log('context.req.auth:', context.req?.auth);
+    console.log('=== END DEBUG ===');
+
     // Get the authenticated user from context
-    const clerkId = context.req.user?.clerkId || context.req.auth?.userId;
+    const clerkId = context.req?.user?.clerkId || context.req?.auth?.userId;
 
     if (!clerkId) {
       throw new Error('User authentication required to create a league');
@@ -50,19 +58,19 @@ export class LeagueResolver {
   @Mutation(() => League)
   async createLeagueWithUserId(
     @Args('createLeagueInput') createLeagueInput: CreateLeagueInput,
-    @Args('userId', { type: () => String }) userId: string,
+    @Args('userId', { type: () => String }) clerkId: string, // Renommé pour plus de clarté
   ): Promise<League> {
-    // Vérifier si l'utilisateur existe
+    // Vérifier si l'utilisateur existe par clerkId au lieu de id
     const user = await this.prisma.user.findUnique({
-      where: { id: userId },
+      where: { clerkId: clerkId }, // Utiliser clerkId au lieu de id
     });
 
     if (!user) {
-      throw new Error(`Utilisateur avec ID ${userId} non trouvé`);
+      throw new Error(`Utilisateur avec clerkId ${clerkId} non trouvé`);
     }
 
-    // Créer la ligue avec l'ID utilisateur fourni
-    return this.leagueService.createLeague(createLeagueInput, userId);
+    // Créer la ligue avec l'ID utilisateur de la base de données
+    return this.leagueService.createLeague(createLeagueInput, user.id);
   }
 
   @Public()
