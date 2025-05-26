@@ -7,6 +7,20 @@ type Avatar {
   url: String!
 }
 
+type Bet {
+  grandPrix: GrandPrix!
+  id: String!
+  pilot: Pilot!
+  points: Int
+  user: User!
+}
+
+input CreateBetInput {
+  grandPrixId: String!
+  pilotId: String!
+  userId: String!
+}
+
 input CreateLeagueInput {
   name: String!
   private: Boolean
@@ -20,10 +34,15 @@ input CreateUserInput {
   username: String!
 }
 
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
+type DeleteLeagueResponse {
+  message: String!
+  success: Boolean!
+}
+
+input GetBetByUserAndGrandPrixInput {
+  grandPrixId: String!
+  userId: String!
+}
 
 input GetLeagueInput {
   adminId: String
@@ -37,13 +56,8 @@ input GetUserInput {
 }
 
 type GrandPrix {
-  date: DateTime!
   id: String!
-  pilots: [Pilot!]!
   ranking: [GrandPrixRanking!]
-  season: String!
-  time: DateTime!
-  track: Track!
 }
 
 type GrandPrixRanking {
@@ -52,6 +66,12 @@ type GrandPrixRanking {
   isDNF: Boolean!
   pilot: Pilot!
   position: Int!
+}
+
+input JoinLeagueInput {
+  joinCode: String
+  leagueId: String!
+  userId: String
 }
 
 type League {
@@ -65,19 +85,19 @@ type League {
 }
 
 type Mutation {
+  createBet(createBetInput: CreateBetInput!): Bet!
   createLeague(createLeagueInput: CreateLeagueInput!): League!
   createLeagueWithUserId(createLeagueInput: CreateLeagueInput!, userId: String!): League!
   createPilotteam(pilotId: String!, teamId: String!, year: String!): PilotTeam!
   createUser(createUserInput: CreateUserInput!): User!
+  deleteLeague(leagueId: String!): DeleteLeagueResponse!
+  deleteLeagueWithUserId(leagueId: String!, userId: String!): DeleteLeagueResponse!
+  joinLeague(joinLeague: JoinLeagueInput!): League!
+  joinLeagueWithUserId(joinLeagueInput: JoinLeagueInput!, userId: String!): League!
 }
 
 type Pilot {
-  acronym: String!
-  currentTeam: Team!
   id: String!
-  name: String!
-  picture: String!
-  teamHistory: [PilotTeam!]!
 }
 
 type PilotTeam {
@@ -89,9 +109,11 @@ type PilotTeam {
 }
 
 type Query {
+  getAllLeagues: [League!]!
   getAvatar(id: String!): Avatar!
   getAvatars: [Avatar!]!
-  getLeague(getLeagueInput: GetLeagueInput!): League!
+  getBet(getBetByUserAndGrandPrixInput: GetBetByUserAndGrandPrixInput!): Bet!
+  getLeague(input: GetLeagueInput!): League!
   getPilotteams: [PilotTeam!]!
   user(getUserInput: GetUserInput!): User!
 }
@@ -105,18 +127,6 @@ type Team {
   logo: String!
   name: String!
   pilots: [PilotTeam!]
-}
-
-type Track {
-  country: String!
-  id: String!
-  name: String!
-
-  """The country's picture URL"""
-  pictureCountry: String!
-
-  """The track's picture URL"""
-  pictureTrack: String!
 }
 
 type User {
