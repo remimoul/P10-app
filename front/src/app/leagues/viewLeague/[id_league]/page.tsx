@@ -4,12 +4,11 @@ import Link from "next/link";
 import toast from "react-hot-toast";
 import { Participant } from "@/lib/types/leagues";
 import { GiRaceCar } from "react-icons/gi";
-import { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter, useParams } from "next/navigation";
 import { RiLoader2Fill } from "react-icons/ri";
-import { useUser, useOrganization } from "@clerk/nextjs";
-import { useNextRace } from "@/lib/hooks/useNextRace";
-
+import { useUser } from "@clerk/nextjs";
+import { useQuery, gql } from "@apollo/client";
 import { Button } from "@/components/ui/button";
 import Header from "@/components/Leagues/ViewLeagues/Header";
 import Ranking from "@/components/Leagues/ViewLeagues/Ranking";
@@ -19,17 +18,42 @@ import ExitLeague from "@/components/Leagues/ViewLeagues/pop-up/ExitLeague";
 import EditLeagueName from "@/components/Leagues/ViewLeagues/pop-up/EditLeagueName";
 import ParticipantsList from "@/components/Leagues/ViewLeagues/ParticipantsList";
 
+const GET_LEAGUE = gql`
+  query ExampleQuery($input: GetLeagueInput!) {
+    getLeague(input: $input) {
+      name
+      members {
+        username
+      }
+    }
+  }
+`;
+
 const ViewLeague = () => {
   const { user, isLoaded: userLoaded } = useUser();
-  const { organization } = useOrganization();
   const router = useRouter();
-  const { nextRace } = useNextRace();
+  const params = useParams();
+  const leagueId = params.id_league as string; // Récupération de l'ID depuis le slug
+
+  // GraphQL query
+  const {
+    data: leagueData,
+    loading: leagueLoading,
+    error: leagueError,
+  } = useQuery(GET_LEAGUE, {
+    variables: {
+      input: {
+        id: leagueId,
+      },
+    },
+    skip: !leagueId,
+  });
+
   const [timeLeft, setTimeLeft] = useState(3600);
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [isAddMemberModalOpen, setIsAddMemberModalOpen] = useState(false);
   const [isExitLeagueModalOpen, setIsExitLeagueModalOpen] = useState(false);
-  const [isEditLeagueNameModalOpen, setIsEditLeagueNameModalOpen] =
-    useState(false);
+  const [isEditLeagueNameModalOpen, setIsEditLeagueNameModalOpen] = useState(false);
 
   const calculateTimeLeft = useCallback(() => {
     if (!nextRace.date) return 0;
@@ -42,23 +66,33 @@ const ViewLeague = () => {
   }, [nextRace.date, nextRace.time]);
 
   useEffect(() => {
-    if (userLoaded && user) {
-      const displayName = user.username || "Racer";
-      setParticipants([
-        {
+    if (leagueData && userLoaded && user) {
+      // Transformer les membres de la league en participants
+      const leagueParticipants: Participant[] = leagueData.getLeague.members.map(
+        (member: { username: string }, index: number) => ({
+          id: `${index + 1}`,
+          name: member.username,
+          score: Math.floor(Math.random() * 300), // Score temporaire
+          hasVoted: false,
+          avatar: "", // Avatar par défaut
+        })
+      );
+
+      // Ajouter l'utilisateur actuel s'il n'est pas déjà dans la liste
+      const currentUserExists = leagueParticipants.some((p) => p.name === (user.username || "Racer"));
+      if (!currentUserExists) {
+        leagueParticipants.unshift({
           id: user.id,
-          name: displayName,
+          name: user.username || "Racer",
           score: 0,
           hasVoted: false,
           avatar: user.imageUrl,
-        },
-        { id: "2", name: "Max Verstappen", score: 245, hasVoted: false },
-        { id: "4", name: "Charles Leclerc", score: 150, hasVoted: false },
-        { id: "5", name: "Carlos Sainz", score: 120, hasVoted: false },
-        { id: "3", name: "Lewis Hamilton", score: 198, hasVoted: false },
-      ]);
+        });
+      }
+
+      setParticipants(leagueParticipants);
     }
-  }, [userLoaded, user]);
+  }, [leagueData, userLoaded, user]);
 
   useEffect(() => {
     setTimeLeft(calculateTimeLeft());
@@ -69,7 +103,12 @@ const ViewLeague = () => {
   }, [calculateTimeLeft]);
 
   const handleVote = () => {
-    router.push('/leagues/viewLeague/vote')
+    if (leagueId) {
+      router.push(`/leagues/viewLeague/${encodeURIComponent(leagueId)}/vote/1`);
+    } else {
+      toast.error("Aucune league sélectionnée !");
+    }
+
   };
 
   const handleAddMembers = () => {
@@ -98,11 +137,28 @@ const ViewLeague = () => {
     return `${days}d ${hours}h ${minutes}m ${secs}s`;
   };
 
-  if (!userLoaded) {
+  // Gestion des états de chargement et d'erreur
+  if (!userLoaded || leagueLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-white to-red-50 flex flex-col items-center justify-center">
         <RiLoader2Fill className="text-6xl text-red-500 animate-spin" />
-        <p className="mt-4 text-xl font-medium text-black">Loading ...</p>
+        <p className="mt-4 text-xl font-medium text-black">Loading league...</p>
+      </div>
+    );
+  }
+
+  if (leagueError) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-white to-red-50 flex flex-col items-center justify-center">
+        <p className="text-xl font-medium text-red-500">Error loading league: {leagueError.message}</p>
+      </div>
+    );
+  }
+
+  if (!leagueId) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-white to-red-50 flex flex-col items-center justify-center">
+        <p className="text-xl font-medium text-red-500">No league ID provided</p>
       </div>
     );
   }
@@ -111,7 +167,7 @@ const ViewLeague = () => {
     <div className="min-h-screen bg-gradient-to-b from-white to-red-50 py-24 px-8">
       <Header
         league={{
-          name: organization?.name || "Racing League",
+          name: leagueData?.getLeague?.name || "Racing League",
           type: "public",
         }}
         timeLeft={timeLeft}
@@ -145,11 +201,7 @@ const ViewLeague = () => {
             participant={participants.find((p) => p.id === user.id)}
             timeLeft={timeLeft}
             rank={
-              user
-                ? [...participants]
-                    .sort((a, b) => b.score - a.score)
-                    .findIndex((p) => p.id === user.id) + 1
-                : null
+              user ? [...participants].sort((a, b) => b.score - a.score).findIndex((p) => p.id === user.id) + 1 : null
             }
             handleVote={handleVote}
           />
@@ -179,9 +231,7 @@ const ViewLeague = () => {
           isOpen={isExitLeagueModalOpen}
           onClose={() => setIsExitLeagueModalOpen(false)}
           onConfirmExit={() => {
-            toast.success(
-              `Left ${organization?.name || "league"} successfully`
-            );
+            toast.success(`Left ${leagueData?.getLeague?.name || "league"} successfully`);
             setIsExitLeagueModalOpen(false);
           }}
         />
