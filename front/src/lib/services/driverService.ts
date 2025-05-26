@@ -4,7 +4,7 @@ import { ErgastResponse, DriverStandingResponse, Race } from "../types/ergast";
 const ERGAST_API_BASE = "http://ergast.com/api/f1";
 
 export const driverService = {
-  async getCurrentDrivers(): Promise<Driver[]> {
+  async _getCurrentDrivers(): Promise<Driver[]> {
     try {
       const response = await fetch(`${ERGAST_API_BASE}/current/drivers.json`);
       const data: ErgastResponse<{ Drivers: Driver[] }> = await response.json();
@@ -15,24 +15,37 @@ export const driverService = {
     }
   },
 
-  async getDriverStandings(): Promise<DriverStanding[]> {
+  async _getDriverStandings(): Promise<DriverStanding[]> {
     try {
-      const response = await fetch(`${ERGAST_API_BASE}/current/driverStandings.json`);
-      const data: ErgastResponse<{ StandingsLists: { DriverStandings: DriverStandingResponse[] }[] }> = await response.json();
-      return data.MRData.StandingsTable?.StandingsLists[0].DriverStandings ?? [];
+      const response = await fetch(
+        `${ERGAST_API_BASE}/current/driverStandings.json`
+      );
+      const data: ErgastResponse<{
+        StandingsLists: { DriverStandings: DriverStandingResponse[] }[];
+      }> = await response.json();
+      return (
+        data.MRData.StandingsTable?.StandingsLists[0].DriverStandings ?? []
+      );
     } catch (error) {
       console.error("Error fetching driver standings:", error);
       throw error;
     }
   },
 
-  async getDriverResults(driverId: string, limit: number = 5): Promise<number[]> {
+  async _getDriverResults(
+    driverId: string,
+    limit: number = 5
+  ): Promise<number[]> {
     try {
       const response = await fetch(
         `${ERGAST_API_BASE}/current/drivers/${driverId}/results.json?limit=${limit}`
       );
       const data: ErgastResponse<Race> = await response.json();
-      return data.MRData.RaceTable?.Races.map((race) => parseInt(race.Results[0].position)) ?? [];
+      return (
+        data.MRData.RaceTable?.Races.map((race) =>
+          parseInt(race.Results[0].position)
+        ) ?? []
+      );
     } catch (error) {
       console.error(`Error fetching results for driver ${driverId}:`, error);
       throw error;
@@ -42,8 +55,10 @@ export const driverService = {
   async getDriverStats(driverId: string): Promise<DriverStats> {
     try {
       const [standings, resultsData] = await Promise.all([
-        this.getDriverStandings(),
-        fetch(`${ERGAST_API_BASE}/current/drivers/${driverId}/results.json`).then(res => res.json())
+        this._getDriverStandings(),
+        fetch(
+          `${ERGAST_API_BASE}/current/drivers/${driverId}/results.json`
+        ).then((res) => res.json()),
       ]);
 
       const driverStanding = standings.find(
@@ -54,25 +69,27 @@ export const driverService = {
         throw new Error(`Driver ${driverId} not found in standings`);
       }
 
-      // Toutes les courses du pilote
       const races: Race[] = resultsData.MRData.RaceTable?.Races ?? [];
-      const previousRaces = races.map((race: Race) => parseInt(race.Results[0].position));
+      const previousRaces = races.map((race: Race) =>
+        parseInt(race.Results[0].position)
+      );
       const averagePosition = previousRaces.length
-        ? previousRaces.reduce((sum: number, pos: number) => sum + pos, 0) / previousRaces.length
+        ? previousRaces.reduce((sum: number, pos: number) => sum + pos, 0) /
+          previousRaces.length
         : 0;
 
-      // Podiums
-      const podiums = previousRaces.filter((pos: number) => pos >= 1 && pos <= 3).length;
-
-      // Fastest laps
-      const fastestLaps = races.filter((race: Race) =>
-        race.Results[0].FastestLap && race.Results[0].FastestLap.rank === "1"
+      const podiums = previousRaces.filter(
+        (pos: number) => pos >= 1 && pos <= 3
       ).length;
 
-      // Team performance (moyenne des points des pilotes de l'équipe)
+      const fastestLaps = races.filter(
+        (race: Race) =>
+          race.Results[0].FastestLap && race.Results[0].FastestLap.rank === "1"
+      ).length;
+
       const teamName = driverStanding.Constructors[0].name;
       const teamDrivers = standings.filter(
-        s => s.Constructors[0].name === teamName
+        (s) => s.Constructors[0].name === teamName
       );
       const teamPoints = teamDrivers.reduce(
         (sum, s) => sum + parseInt(s.points),
@@ -82,7 +99,7 @@ export const driverService = {
         ...standings.reduce((arr, s) => {
           const team = s.Constructors[0].name;
           const teamSum = standings
-            .filter(ss => ss.Constructors[0].name === team)
+            .filter((ss) => ss.Constructors[0].name === team)
             .reduce((sum, ss) => sum + parseInt(ss.points), 0);
           arr.push(teamSum);
           return arr;
@@ -112,12 +129,14 @@ export const driverService = {
 
   async getAllDriversStats(): Promise<DriverStats[]> {
     try {
-      const drivers = await this.getCurrentDrivers();
-      const statsPromises = drivers.map((driver) => this.getDriverStats(driver.driverId));
+      const drivers = await this._getCurrentDrivers();
+      const statsPromises = drivers.map((driver) =>
+        this.getDriverStats(driver.driverId)
+      );
       return Promise.all(statsPromises);
     } catch (error) {
       console.error("Error fetching all drivers stats:", error);
       throw error;
     }
   },
-}; 
+};

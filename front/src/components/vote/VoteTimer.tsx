@@ -39,7 +39,7 @@ const VoteTimer = ({
               {formatRemainingTime(timeLeft)}
             </span>
             <span className="text-xs xs:text-sm text-gray-600 font-mono">
-              LAP
+              LEFT
             </span>
           </div>
         </div>
