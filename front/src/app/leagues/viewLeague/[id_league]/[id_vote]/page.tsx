@@ -116,15 +116,14 @@ const VotePage = () => {
     <VotePageLayout voteModified={voteModified}>
       <VotePageHeader />
 
-      <VoteTabs activeTab={tab} onTabChange={setTab} />
-
       <VoteTimer
         timeLeft={timeLeft}
         voteDeadline={voteDeadline}
         totalParticipants={totalParticipants}
       />
-
-      <div className="h-8" />
+      <div className="my-4 sm:my-6 md:my-8" />
+      <VoteTabs activeTab={tab} onTabChange={setTab} />
+      <div className="mb-4 sm:mb-6 md:mb-8" />
 
       <AnimatePresence mode="wait">
         <motion.div
