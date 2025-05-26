@@ -139,7 +139,10 @@ type User {
   avatar: Avatar
   clerkId: String!
   email: String!
+  firstName: String
   id: String!
+  lastName: String
   leagues: [League!]
   password: String
+  username: String!
 }

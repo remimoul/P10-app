@@ -12,7 +12,15 @@ export class User {
   clerkId: string;
 
   @Field({ nullable: true })
-  @Field((type) => Avatar)
+  firstName?: string;
+
+  @Field({ nullable: true })
+  lastName?: string;
+
+  @Field((type) => String)
+  username: string;
+
+  @Field((type) => Avatar, { nullable: true })
   avatar?: Avatar;
 
   @Field((type) => String)
