@@ -159,9 +159,9 @@ const ViewLeague = () => {
 
   const handleVote = () => {
     if (leagueId) {
-      router.push(`/leagues/viewLeague/${encodeURIComponent(leagueId)}/vote/1`);
+      router.push(`/leagues/viewLeague/${leagueId}/1`);
     } else {
-      toast.error("Aucune league sélectionnée !");
+      toast.error("Unable to access vote page");
     }
   };
 
@@ -178,11 +178,11 @@ const ViewLeague = () => {
   };
 
   const handleSaveLeagueName = (newName: string) => {
-    toast.success(`League name updated to ${newName}`);
+    toast.success(`League name updated to: ${newName}`);
     setIsEditLeagueNameModalOpen(false);
   };
 
-  // Gestion des états de chargement et d'erreur
+  // Loading and error states
   if (!userLoaded || leagueLoading || nextRaceLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-white to-red-50 flex flex-col items-center justify-center">
@@ -198,6 +198,7 @@ const ViewLeague = () => {
         <p className="text-xl font-medium text-red-500">
           Error loading league: {leagueError?.message || nextRaceError}
         </p>
+        <p className="mt-2 text-gray-600">Please try again later or contact support if the issue persists.</p>
       </div>
     );
   }
@@ -206,8 +207,9 @@ const ViewLeague = () => {
     return (
       <div className="min-h-screen bg-gradient-to-b from-white to-red-50 flex flex-col items-center justify-center">
         <p className="text-xl font-medium text-red-500">
-          No league ID provided
+          Error: No league ID provided
         </p>
+        <p className="mt-2 text-gray-600">Please return to the leagues list and try again.</p>
       </div>
     );
   }

@@ -15,11 +15,9 @@ import { useNextRace } from "@/lib/hooks/useNextRace";
 import VotePageHeader from "@/components/vote/VotePageHeader";
 import VoteTimer from "@/components/vote/VoteTimer";
 import VotePageLayout from "@/components/vote/VotePageLayout";
-import {
-  Loading,
-  Error,
-  NotAuthenticated,
-} from "@/components/vote/LoadingStates";
+import { useParams, useRouter } from "next/navigation";
+import { RiLoader2Fill } from "react-icons/ri";
+import { useQuery, gql } from "@apollo/client";
 
 interface RaceInfo {
   grandPrix: string;
@@ -30,8 +28,18 @@ interface RaceInfo {
   startTime: string;
 }
 
+const GET_LEAGUE = gql`
+  query ExampleQuery($input: GetLeagueInput!) {
+    getLeague(input: $input) {
+      name
+    }
+  }
+`;
+
 const VotePage = () => {
-  const { user, isLoaded: userLoaded } = useUser();
+  const { id_league } = useParams();
+  const router = useRouter();
+  const { isLoaded: userLoaded } = useUser();
   const [tab, setTab] = useState<"Info" | "Vote">("Info");
   const [isComparisonOpen, setIsComparisonOpen] = useState(false);
   const [comparisonDrivers, setComparisonDrivers] = useState<string[]>([]);
@@ -41,7 +49,11 @@ const VotePage = () => {
   >([]);
   const [nextRaceInfo, setNextRaceInfo] = useState<RaceInfo | null>(null);
 
-  const { nextRace, loading: nextRaceLoading, error: nextRaceError } = useNextRace();
+  const {
+    nextRace,
+    loading: nextRaceLoading,
+    error: nextRaceError,
+  } = useNextRace();
 
   const {
     selectedDriver,
@@ -52,7 +64,6 @@ const VotePage = () => {
     timeLeft,
     voteDeadline,
     setVoteDeadline,
-    totalParticipants,
     voteModified,
     handleVote,
     handleConfirmVote,
@@ -73,6 +84,16 @@ const VotePage = () => {
     uniqueTeams,
   } = useDriverData();
 
+  // Fetch league name
+  const {
+    data: leagueData,
+    loading: leagueLoading,
+    error: leagueError,
+  } = useQuery(GET_LEAGUE, {
+    variables: { input: { id: id_league } },
+    skip: !id_league,
+  });
+
   useEffect(() => {
     if (nextRace.date && nextRace.time) {
       const raceDateTime = new Date(`${nextRace.date}T${nextRace.time}`);
@@ -84,7 +105,9 @@ const VotePage = () => {
         grandPrix: nextRace.name || "",
         country: nextRace.circuit?.location.country || "",
         circuit: nextRace.circuit?.name || "",
-        location: `${nextRace.circuit?.location.locality || ""}, ${nextRace.circuit?.location.country || ""}`,
+        location: `${nextRace.circuit?.location.locality || ""}, ${
+          nextRace.circuit?.location.country || ""
+        }`,
         date: nextRace.date,
         startTime: nextRace.time,
       });
@@ -123,16 +146,40 @@ const VotePage = () => {
     setIsComparisonOpen(true);
   };
 
-  const loading = driversLoading || !userLoaded || nextRaceLoading;
-  const error = driversError || nextRaceError;
+  const onConfirmVote = async () => {
+    await handleConfirmVote();
+    router.push(`/leagues/viewLeague/${id_league}`);
+  };
 
-  if (loading) return <Loading />;
-  if (error) return <Error message={error} />;
-  if (!user) return <NotAuthenticated />;
+  if (!userLoaded || driversLoading || nextRaceLoading || leagueLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-white to-red-50 flex flex-col items-center justify-center">
+        <RiLoader2Fill className="text-6xl text-red-500 animate-spin" />
+        <p className="mt-4 text-xl font-medium text-black">Loading...</p>
+      </div>
+    );
+  }
+
+  if (driversError || nextRaceError || leagueError) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-white to-red-50 flex flex-col items-center justify-center">
+        <p className="text-xl font-medium text-red-500">
+          Error loading data:{" "}
+          {driversError || nextRaceError || leagueError?.message}
+        </p>
+        <p className="mt-2 text-gray-600">
+          Please try again later or contact support if the issue persists.
+        </p>
+      </div>
+    );
+  }
+
+  const leagueName = leagueData?.getLeague?.name || `League #${id_league}`;
+  const totalParticipants = leagueData?.getLeague?.members?.length ?? 0;
 
   return (
     <VotePageLayout voteModified={voteModified}>
-      <VotePageHeader />
+      <VotePageHeader leagueName={leagueName} />
 
       <VoteTimer
         timeLeft={timeLeft}
@@ -154,17 +201,16 @@ const VotePage = () => {
           {tab === "Info" ? (
             <InfoSection
               drivers={drivers}
-              raceInfo={nextRaceInfo || {
-                grandPrix: "",
-                country: "",
-                circuit: "",
-                location: "",
-                date: "",
-                startTime: "",
-                weather: "",
-                temperature: "",
-                humidity: ""
-              }}
+              raceInfo={
+                nextRaceInfo || {
+                  grandPrix: "",
+                  country: "",
+                  circuit: "",
+                  location: "",
+                  date: "",
+                  startTime: "",
+                }
+              }
               totalVotes={totalVotes}
               totalParticipants={totalParticipants}
               topVotedDrivers={topVotedDrivers}
@@ -173,7 +219,7 @@ const VotePage = () => {
             <VotingSection
               userVote={userVote}
               confirmedVote={confirmedVote}
-              handleConfirmVote={handleConfirmVote}
+              handleConfirmVote={onConfirmVote}
               handleCancelVote={handleCancelVote}
               handleVote={handleVote}
               selectedDriver={selectedDriver}
