@@ -2,13 +2,13 @@ import { RaceInfoProps } from "@/lib/types/racing";
 import { motion } from "framer-motion";
 import {
   FaRuler,
-  FaCalendar,
   FaTachometerAlt,
   FaStopwatch,
   FaUserTie,
-  FaMapMarkerAlt,
   FaExternalLinkAlt,
 } from "react-icons/fa";
+import { TbWorldPin } from "react-icons/tb";
+import { HiCalendarDateRange } from "react-icons/hi2";
 
 const RaceInfo = ({ race }: RaceInfoProps) => {
   return (
@@ -36,8 +36,8 @@ const RaceInfo = ({ race }: RaceInfoProps) => {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,_rgba(255,0,0,0.05)_0%,_transparent_100%)] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
       <div className="relative z-10">
-        <div className="flex items-center justify-between mb-12">
-          <h2 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-800 group-hover:from-red-700 group-hover:to-red-900 transition-colors duration-300 group-hover:scale-105 transform">
+        <div className="flex items-center justify-between mb-8">
+          <h2 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[var(--secondary-red)] to-red-800 group-hover:from-red-700 group-hover:to-red-900 transition-colors duration-300 group-hover:scale-105 transform">
             {race.ergastData?.raceName || race.name}
           </h2>
           <div className="flex items-center gap-3 group-hover:scale-105 transform transition-transform duration-300">
@@ -46,87 +46,98 @@ const RaceInfo = ({ race }: RaceInfoProps) => {
             </span>
           </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-          <div className="space-y-8">
+
+        <div className="flex flex-wrap gap-4">
+          <div className="flex items-center group/item hover:bg-red-50/50 p-4 rounded-3xl transition-all duration-300">
+            <div className="w-40 text-gray-500 font-medium flex items-center text-lg">
+              <TbWorldPin className="mr-4 text-red-500 group-hover/item:text-[var(--secondary-red)] transition-colors duration-300 text-2xl" />
+              Circuit:
+            </div>
+            <div className="text-gray-900 font-medium text-lg group-hover/item:text-[var(--secondary-red)] transition-colors duration-300">
+              {race.circuit}
+              {race.ergastData?.circuitUrl && (
+                <a
+                  href={race.ergastData.circuitUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="ml-2 text-red-500 hover:text-[var(--secondary-red)] transition-colors duration-300"
+                >
+                  <FaExternalLinkAlt className="inline-block" />
+                </a>
+              )}
+            </div>
+          </div>
+
+          <div className="flex items-center group/item hover:bg-red-50/50 p-4 rounded-3xl transition-all duration-300">
+            <div className="w-40 text-gray-500 font-medium flex items-center text-lg">
+              <HiCalendarDateRange className="mr-4 text-red-500 group-hover/item:text-[var(--secondary-red)] transition-colors duration-300 text-2xl" />
+              Date:
+            </div>
+            <div className="text-gray-900 font-medium text-lg group-hover/item:text-[var(--secondary-red)] transition-colors duration-300">
+              {race.date}
+            </div>
+          </div>
+
+          {race.ergastData?.location && (
             <div className="flex items-center group/item hover:bg-red-50/50 p-4 rounded-3xl transition-all duration-300">
-              <div className="w-48 text-gray-500 font-medium flex items-center text-lg">
-                <FaRuler className="mr-4 text-red-500 group-hover/item:text-red-600 transition-colors duration-300 text-xl" />
-                Circuit:
+              <div className="w-40 text-gray-500 font-medium flex items-center text-lg">
+                <TbWorldPin className="mr-4 text-red-500 group-hover/item:text-[var(--secondary-red)] transition-colors duration-300 text-xl" />
+                Location:
               </div>
-              <div className="text-gray-900 font-medium text-lg group-hover/item:text-red-600 transition-colors duration-300">
-                {race.circuit}
-                {race.ergastData?.circuitUrl && (
-                  <a
-                    href={race.ergastData.circuitUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="ml-2 text-red-500 hover:text-red-600 transition-colors duration-300"
-                  >
-                    <FaExternalLinkAlt className="inline-block" />
-                  </a>
-                )}
+              <div className="text-gray-900 font-medium text-lg group-hover/item:text-[var(--secondary-red)] transition-colors duration-300">
+                {race.ergastData.location.locality},{" "}
+                {race.ergastData.location.country}
               </div>
             </div>
+          )}
+
+          {race.length && (
             <div className="flex items-center group/item hover:bg-red-50/50 p-4 rounded-3xl transition-all duration-300">
-              <div className="w-48 text-gray-500 font-medium flex items-center text-lg">
-                <FaCalendar className="mr-4 text-red-500 group-hover/item:text-red-600 transition-colors duration-300 text-xl" />
-                Date:
-              </div>
-              <div className="text-gray-900 font-medium text-lg group-hover/item:text-red-600 transition-colors duration-300">
-                {race.date}
-              </div>
-            </div>
-            {race.ergastData?.location && (
-              <div className="flex items-center group/item hover:bg-red-50/50 p-4 rounded-3xl transition-all duration-300">
-                <div className="w-48 text-gray-500 font-medium flex items-center text-lg">
-                  <FaMapMarkerAlt className="mr-4 text-red-500 group-hover/item:text-red-600 transition-colors duration-300 text-xl" />
-                  Location:
-                </div>
-                <div className="text-gray-900 font-medium text-lg group-hover/item:text-red-600 transition-colors duration-300">
-                  {race.ergastData.location.locality},{" "}
-                  {race.ergastData.location.country}
-                </div>
-              </div>
-            )}
-            <div className="flex items-center group/item hover:bg-red-50/50 p-4 rounded-3xl transition-all duration-300">
-              <div className="w-48 text-gray-500 font-medium flex items-center text-lg">
-                <FaRuler className="mr-4 text-red-500 group-hover/item:text-red-600 transition-colors duration-300 text-xl" />
+              <div className="w-40 text-gray-500 font-medium flex items-center text-lg">
+                <FaRuler className="mr-4 text-red-500 group-hover/item:text-[var(--secondary-red)] transition-colors duration-300 text-xl" />
                 Length:
               </div>
-              <div className="text-gray-900 font-medium text-lg group-hover/item:text-red-600 transition-colors duration-300">
+              <div className="text-gray-900 font-medium text-lg group-hover/item:text-[var(--secondary-red)] transition-colors duration-300">
                 {race.length}
               </div>
             </div>
-          </div>
-          <div className="space-y-8">
+          )}
+
+          {race.laps && (
             <div className="flex items-center group/item hover:bg-red-50/50 p-4 rounded-3xl transition-all duration-300">
-              <div className="w-48 text-gray-500 font-medium flex items-center text-lg">
-                <FaTachometerAlt className="mr-4 text-red-500 group-hover/item:text-red-600 transition-colors duration-300 text-xl" />
+              <div className="w-40 text-gray-500 font-medium flex items-center text-lg">
+                <FaTachometerAlt className="mr-4 text-red-500 group-hover/item:text-[var(--secondary-red)] transition-colors duration-300 text-xl" />
                 Laps:
               </div>
-              <div className="text-gray-900 font-medium text-lg group-hover/item:text-red-600 transition-colors duration-300">
+              <div className="text-gray-900 font-medium text-lg group-hover/item:text-[var(--secondary-red)] transition-colors duration-300">
                 {race.laps}
               </div>
             </div>
+          )}
+
+          {race.lapRecord && (
             <div className="flex items-center group/item hover:bg-red-50/50 p-4 rounded-3xl transition-all duration-300">
-              <div className="w-48 text-gray-500 font-medium flex items-center text-lg">
-                <FaStopwatch className="mr-4 text-red-500 group-hover/item:text-red-600 transition-colors duration-300 text-xl" />
+              <div className="w-40 text-gray-500 font-medium flex items-center text-lg">
+                <FaStopwatch className="mr-4 text-red-500 group-hover/item:text-[var(--secondary-red)] transition-colors duration-300 text-xl" />
                 Lap Record:
               </div>
-              <div className="text-gray-900 font-medium text-lg group-hover/item:text-red-600 transition-colors duration-300">
+              <div className="text-gray-900 font-medium text-lg group-hover/item:text-[var(--secondary-red)] transition-colors duration-300">
                 {race.lapRecord}
               </div>
             </div>
+          )}
+
+          {race.recordHolder && race.recordYear && (
             <div className="flex items-center group/item hover:bg-red-50/50 p-4 rounded-3xl transition-all duration-300">
-              <div className="w-48 text-gray-500 font-medium flex items-center text-lg">
-                <FaUserTie className="mr-4 text-red-500 group-hover/item:text-red-600 transition-colors duration-300 text-xl" />
+              <div className="w-40 text-gray-500 font-medium flex items-center text-lg">
+                <FaUserTie className="mr-4 text-red-500 group-hover/item:text-[var(--secondary-red)] transition-colors duration-300 text-xl" />
                 Record Holder:
               </div>
-              <div className="text-gray-900 font-medium text-lg group-hover/item:text-red-600 transition-colors duration-300">
+              <div className="text-gray-900 font-medium text-lg group-hover/item:text-[var(--secondary-red)] transition-colors duration-300">
                 {race.recordHolder} ({race.recordYear})
               </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </motion.div>
