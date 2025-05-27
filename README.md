@@ -41,11 +41,10 @@ This twist makes every race unpredictable, fun, and gives everyone a chance to w
 
 ## 📸 Screenshots
 
-![Home]()
-![Leagues]()
-![Racing]()
-![Racing]()
-![Results]()
+![image](https://github.com/user-attachments/assets/f87ae04f-901f-4ad0-9104-7815f9f59533)
+![image](https://github.com/user-attachments/assets/287b92d5-8f0d-4f9d-abf3-c77e64e78259)
+![image](https://github.com/user-attachments/assets/1a739cfd-a637-45f9-889d-242b78abe3b0)
+![image](https://github.com/user-attachments/assets/3e9d486e-14d9-4a62-bbb4-10ab1776670e)
 
 ## ✨ Features
 
@@ -122,7 +121,8 @@ docker compose up --build -d
 - Backend: http://localhost:4500
 - API Documentation: http://localhost:4500/api
 - API GraphQl Documentation: http://localhost:4500/graphql
-- app online : https://grineasy.com/
+- frontend online : https://www.grineasy.com/
+- backend online : https://grineasy.online/
 
 ## 📝 Project Structure
 
