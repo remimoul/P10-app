@@ -88,10 +88,10 @@ export const RacingCard = ({ grandPrix, isPast }: RacingCardProps) => {
 
         <div className="flex-1 flex flex-col justify-center">
           <span className="text-lg font-bold text-white leading-tight mb-0.5">
-            {grandPrix.ergastData?.raceName || grandPrix.track.countryName}
+            {grandPrix.ergastData?.raceName || grandPrix.track.country}
           </span>
           <span className="text-lg text-[var(--primary-white)] leading-tight">
-            {grandPrix.ergastData?.circuit?.name || grandPrix.track.trackName}
+            {grandPrix.ergastData?.circuit?.name || grandPrix.track.name}
           </span>
           {grandPrix.ergastData?.circuit?.location?.locality &&
             grandPrix.ergastData?.circuit?.location?.country && (

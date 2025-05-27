@@ -74,7 +74,7 @@ const Header = ({
           >
             <span className="relative z-10 flex items-center gap-2">
               <TiUserAdd className="text-2xl" />
-              Add Members
+              Add Member
             </span>
           </Button>
 

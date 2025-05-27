@@ -34,10 +34,7 @@ const ViewLeague = () => {
   const { user, isLoaded: userLoaded } = useUser();
   const router = useRouter();
   const params = useParams();
-  const leagueId = params.id_league as string;
-
-  // Utiliser le hook useNextRace
-  const { nextRace, loading: nextRaceLoading, error: nextRaceError } = useNextRace();
+  const leagueId = params.id_league as string; // Récupération de l'ID depuis le slug
 
   // GraphQL query
   const {
@@ -59,18 +56,15 @@ const ViewLeague = () => {
   const [isExitLeagueModalOpen, setIsExitLeagueModalOpen] = useState(false);
   const [isEditLeagueNameModalOpen, setIsEditLeagueNameModalOpen] = useState(false);
 
-  const calculateTimeLeft = () => {
+  const calculateTimeLeft = useCallback(() => {
     if (!nextRace.date) return 0;
-
-    // Créer la date de la course en combinant date et heure
-    const raceDateTimeString = nextRace.date + (nextRace.time ? `T${nextRace.time}` : "T00:00:00");
-    const raceDate = new Date(raceDateTimeString);
+    const raceDate = new Date(nextRace.date + (nextRace.time ? 'T' + nextRace.time + 'Z' : ''));
+    const deadline = new Date(raceDate);
+    deadline.setHours(deadline.getHours() - 2);
     const now = new Date();
-
-    // Calculer la différence en secondes
-    const diff = Math.max(0, Math.floor((raceDate.getTime() - now.getTime()) / 1000));
+    const diff = Math.max(0, Math.floor((deadline.getTime() - now.getTime()) / 1000));
     return diff;
-  };
+  }, [nextRace.date, nextRace.time]);
 
   useEffect(() => {
     if (leagueData && userLoaded && user) {
@@ -103,14 +97,12 @@ const ViewLeague = () => {
 
   // Mettre à jour le timer basé sur la prochaine course
   useEffect(() => {
-    if (nextRace.date) {
+    setTimeLeft(calculateTimeLeft());
+    const interval = setInterval(() => {
       setTimeLeft(calculateTimeLeft());
-      const interval = setInterval(() => {
-        setTimeLeft(calculateTimeLeft());
-      }, 1000);
-      return () => clearInterval(interval);
-    }
-  }, [nextRace.date, nextRace.time, calculateTimeLeft]);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [calculateTimeLeft]);
 
   const handleVote = () => {
     if (leagueId) {
@@ -118,6 +110,7 @@ const ViewLeague = () => {
     } else {
       toast.error("Aucune league sélectionnée !");
     }
+
   };
 
   const handleAddMembers = () => {
@@ -143,25 +136,6 @@ const ViewLeague = () => {
     const minutes = Math.floor((seconds % 3600) / 60);
     const secs = seconds % 60;
     return `${days}d ${hours}h ${minutes}m ${secs}s`;
-  };
-
-  // Formater la date de la course pour l'affichage
-  const formatRaceDate = (date: string) => {
-    const raceDate = new Date(date);
-    return raceDate.toLocaleDateString("fr-FR", {
-      weekday: "long",
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  };
-
-  const formatRaceTime = (time: string) => {
-    if (!time) return "";
-    return new Date(`2000-01-01T${time}`).toLocaleTimeString("fr-FR", {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
   };
 
   // Gestion des états de chargement et d'erreur
@@ -204,58 +178,14 @@ const ViewLeague = () => {
         handleEditLeagueName={handleEditLeagueName}
       />
 
-      {/* Affichage de la prochaine course avec les vraies données */}
       {nextRace.name && (
         <div className="flex justify-center items-center mb-6">
-          <div className="bg-white/90 border border-red-200 rounded-2xl px-6 py-4 shadow-lg text-center max-w-2xl">
-            <div className="space-y-2">
-              <div>
-                <span className="text-lg font-semibold text-red-700">Prochaine course : </span>
-                <span className="text-lg font-bold text-gray-900">{nextRace.name}</span>
-              </div>
-
-              {nextRace.circuit && (
-                <div className="text-sm text-gray-600">
-                  <span className="font-medium">{nextRace.circuit.name}</span>
-                  <span className="mx-2">•</span>
-                  <span>
-                    {nextRace.circuit.location.locality}, {nextRace.circuit.location.country}
-                  </span>
-                </div>
-              )}
-
-              {nextRace.date && (
-                <div className="text-sm text-gray-700">
-                  <span className="font-medium">{formatRaceDate(nextRace.date)}</span>
-                  {nextRace.time && (
-                    <>
-                      <span className="mx-2">•</span>
-                      <span>{formatRaceTime(nextRace.time)}</span>
-                    </>
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Affichage en cas d'erreur de chargement de la course */}
-      {nextRaceError && !nextRaceLoading && (
-        <div className="flex justify-center items-center mb-6">
-          <div className="bg-yellow-50 border border-yellow-200 rounded-2xl px-6 py-3 shadow text-center">
-            <span className="text-sm text-yellow-700">
-              Impossible de charger les informations de la prochaine course
-            </span>
-          </div>
-        </div>
-      )}
-
-      {/* Indicateur de chargement pour la prochaine course */}
-      {nextRaceLoading && (
-        <div className="flex justify-center items-center mb-6">
-          <div className="bg-white/90 border border-gray-200 rounded-2xl px-6 py-3 shadow text-center">
-            <span className="text-sm text-gray-600">Chargement des informations de course...</span>
+          <div className="bg-white/90 border border-red-200 rounded-2xl px-6 py-3 shadow text-center">
+            <span className="text-lg font-semibold text-red-700">Next race : </span>
+            <span className="text-lg font-semibold text-gray-900">{nextRace.name}</span>
+            {nextRace.date && (
+              <span className="ml-4 text-gray-600 text-sm">({nextRace.date})</span>
+            )}
           </div>
         </div>
       )}

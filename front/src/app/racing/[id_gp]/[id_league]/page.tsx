@@ -29,7 +29,7 @@ export default function LeagueRankingPage() {
             {mockRanking.leagueName}
           </h1>
           <h2 className="text-xl text-center text-gray-500 mb-6">
-            Grand Prix de {mockRanking.grandPrixName}
+            {mockRanking.grandPrixName} Grand Prix
           </h2>
 
           <Podium top3={top3} />

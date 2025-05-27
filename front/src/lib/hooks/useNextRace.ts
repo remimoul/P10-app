@@ -33,9 +33,9 @@ export function useNextRace() {
               name: race.Circuit.circuitName,
               location: {
                 locality: race.Circuit.Location.locality,
-                country: race.Circuit.Location.country,
-              },
-            },
+                country: race.Circuit.Location.country
+              }
+            }
           });
         }
       } catch (err) {
@@ -49,4 +49,4 @@ export function useNextRace() {
   }, []);
 
   return { nextRace, loading, error };
-}
+} 

@@ -5,7 +5,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { TimerOff } from "lucide-react";
 import { TbTargetArrow } from "react-icons/tb";
 import { useNextRace } from "@/lib/hooks/useNextRace";
 
@@ -28,15 +27,15 @@ const Racing = () => {
   const [isHovered, setIsHovered] = useState(false);
 
   const calculateTimeLeft = useCallback(() => {
-    if (!nextRace.date) return { days: 0, hours: 0, minutes: 0, seconds: 0 };
-    const difference = +new Date(nextRace.date) - +new Date();
+    if (!nextRace.nextRace?.date) return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+    const difference = +new Date(nextRace.nextRace.date) - +new Date();
     return {
       days: Math.max(0, Math.floor(difference / (1000 * 60 * 60 * 24))),
       hours: Math.max(0, Math.floor((difference / (1000 * 60 * 60)) % 24)),
       minutes: Math.max(0, Math.floor((difference / 1000 / 60) % 60)),
       seconds: Math.max(0, Math.floor((difference / 1000) % 60)),
     };
-  }, [nextRace.date]);
+  }, [nextRace.nextRace?.date]);
 
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
 
@@ -69,7 +68,7 @@ const Racing = () => {
               className="text-4xl md:text-4xl font-bold text-gray-900 mb-6"
             >
               <span className="text-red-600 block mb-2">PREDICT THE 10TH</span>
-              {nextRace.name || "Loading..."}
+              {nextRace.nextRace?.name || "Loading..."}
             </motion.h2>
 
             <p className="text-gray-600 text-lg leading-relaxed mb-4">
@@ -81,7 +80,6 @@ const Racing = () => {
             </p>
 
             <div className="flex items-center mb-6">
-              <TimerOff className="text-red-600" size={40} />
               <div className="flex space-x-4 px-6 py-3 rounded-sm">
                 {hasTimeLeft ? (
                   Object.entries(timeLeft).map(([unit, value]) => (
@@ -137,13 +135,24 @@ const Racing = () => {
 
           <div className="md:w-1/2 relative">
             <motion.div
-              className="h-64 md:h-auto relative"
+              className="h-64 md:h-full relative"
               onHoverStart={() => setIsHovered(true)}
               onHoverEnd={() => setIsHovered(false)}
             >
               <Image
-                src="/circuit.jpeg"
-                alt="Circuit d'Albert Park"
+                src="/racing/2025-F1.png"
+
+                alt="F1 schedule"
+                width={800}
+                height={600}
+                className="w-full h-full object-cover transform transition-transform duration-500 border-l border-gray-100"
+                style={{
+                  transform: isHovered ? "scale(1.03)" : "scale(1)",
+                }}
+              />
+              <Image
+                src="/racing/hq720.jpg"
+                alt="F1 schedule"
                 width={800}
                 height={600}
                 className="w-full h-full object-cover transform transition-transform duration-500 border-l border-gray-100"
