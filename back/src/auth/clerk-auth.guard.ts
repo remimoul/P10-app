@@ -48,13 +48,11 @@ export class ClerkAuthGuard implements CanActivate {
     try {
       // Valider le token Clerk
       const decodedToken = await this.validateClerkToken(token);
-
-      // Attacher les informations utilisateur au contexte
       req.user = {
         id: decodedToken.sub,
         clerkId: decodedToken.sub,
         email: decodedToken.email,
-        userId: decodedToken.sub, // Ajouter userId aussi
+        userId: decodedToken.sub,
       };
 
       req.auth = {

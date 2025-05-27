@@ -3,7 +3,6 @@ import { Injectable, Inject, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-custom';
-import { UserService } from 'src/user/user.service';
 import { Request } from 'express';
 
 @Injectable()

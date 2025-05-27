@@ -147,11 +147,6 @@ export interface Race {
   country: string;
   date: string;
   circuit: string;
-  laps?: number;
-  length?: string;
-  lapRecord?: string;
-  recordHolder?: string;
-  recordYear?: string;
   season: string;
   ergastData?: ErgastRaceData;
 }
@@ -197,7 +192,7 @@ export interface RaceInfoProps {
 export interface ResultsTableProps {
   results: RaceResult[];
   drivers: { [key: string]: Driver };
-  viewMode: 'race' | 'championship';
+  viewMode: "race" | "championship";
 }
 
 // page results
@@ -207,15 +202,6 @@ export interface Race {
   country: string;
   date: string;
   circuit: string;
-  laps?: number;
-  length?: string;
-  lapRecord?: string;
-  recordHolder?: string;
-  recordYear?: string;
-
-export interface NoRacesMessageProps {
-  message: string;
-  season: string;
 }
 
 export interface UseRacesReturn {
@@ -238,7 +224,6 @@ export interface UseDriversReturn {
   positions: Position[];
   laps: Lap[];
   grid: Grid[];
-  lapTimes: LapTime[];
   stints: Stint[];
   loading: boolean;
   filteredDrivers: DriverTableData[];
