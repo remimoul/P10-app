@@ -8,31 +8,110 @@ import { RiTeamFill, RiArrowRightSLine } from "react-icons/ri";
 import { Button } from "@/components/ui/button";
 import { JoinLeague } from "@/components/Leagues/pop-up/JoinLeague";
 import { CreateLeague } from "@/components/Leagues/pop-up/CreateLeague";
+import { useAuth } from "@clerk/nextjs";
+import { useMutation, gql } from "@apollo/client";
+
+const CREATE_LEAGUE = gql`
+  mutation CreateLeague($createLeagueInput: CreateLeagueInput!) {
+    createLeague(createLeagueInput: $createLeagueInput) {
+      id
+      name
+      private
+      joinCode
+      admin {
+        id
+        username
+        firstName
+        lastName
+        email
+      }
+      members {
+        id
+        username
+        firstName
+        lastName
+        email
+      }
+    }
+  }
+`;
 
 const ReadyToRace = () => {
+  const { getToken } = useAuth();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
 
-  const handleCreateLeague = async () => {
-    // const handleCreateLeague = async (league: {
-    //   name: string;
-    //   isPrivate: boolean;
-    // }) => {
-    const toastId = toast.loading("Creation of the league ...");
+  // Mutation Apollo pour créer une league avec authentification
+  const [createLeagueMutation, { loading: createLoading }] = useMutation(CREATE_LEAGUE, {
+    onCompleted: (data) => {
+      toast.success(`League "${data.createLeague.name}" successfully created!`);
+      setIsCreateModalOpen(false);
+      // Optionnel : rediriger vers la nouvelle league
+      //router.push(`/leagues/viewLeague/${data.createLeague.id}`);
+    },
+    onError: (error) => {
+      console.error("GraphQL error:", error);
+      toast.error(`Error during creation: ${error.message}`);
+    },
+  });
+
+  const handleCreateLeague = async (league: { name: string; isPrivate: boolean }) => {
     try {
-      // Simulation appel API
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      toast.success("League successfully created!", { id: toastId });
-    } catch {
-      toast.error("Error during creation", {
-        id: toastId,
-        duration: 5000,
+      const token = await getToken();
+
+      if (!token) {
+        console.log("No token found 🔥");
+
+        return;
+      }
+
+      // Décoder le token pour obtenir le clerkId
+      const decodeJWT = (token: string) => {
+        try {
+          const base64Url = token.split(".")[1];
+          const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+          const jsonPayload = decodeURIComponent(
+            atob(base64)
+              .split("")
+              .map(function (c) {
+                return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+              })
+              .join("")
+          );
+          return JSON.parse(jsonPayload);
+        } catch (error) {
+          console.error("Error decoding JWT:", error);
+          return null;
+        }
+      };
+
+      const decodedToken = decodeJWT(token);
+      const clerkId = decodedToken?.sub;
+
+      if (!clerkId) {
+        throw new Error("Unable to get user ID from token");
+      }
+
+      await createLeagueMutation({
+        variables: {
+          createLeagueInput: {
+            name: league.name,
+            private: league.isPrivate,
+          },
+        },
+        context: {
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+        },
       });
+    } catch (error) {
+      console.error("Error creating league:", error);
+      toast.error("Error during creation");
     }
   };
 
   const handleJoinLeague = async () => {
-    // const handleJoinLeague = async (joinCode: string) => {
     const toastId = toast.loading("Joining the league ...");
     try {
       // Simulation appel API
@@ -45,6 +124,8 @@ const ReadyToRace = () => {
       });
     }
   };
+
+  const isLoading = createLoading;
 
   return (
     <div className="relative">
@@ -60,18 +141,17 @@ const ReadyToRace = () => {
           </div>
 
           <div className="flex flex-col gap-4 w-full items-center lg:flex-row lg:gap-6 lg:items-center lg:justify-center">
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              className="relative w-full sm:w-auto"
-            >
+            <motion.div whileHover={{ scale: 1.05 }} className="relative w-full sm:w-auto">
               <Button
                 onClick={() => setIsCreateModalOpen(true)}
+                disabled={isLoading}
                 className="w-full lg:w-auto sm:w-auto h-14 sm:h-16 px-6 sm:px-8 text-base sm:text-lg font-bold text-white rounded-full shadow-2xl 
                   bg-gradient-to-r from-[#FF1801]/80 to-[#CC0000]/80 
                   hover:shadow-[0_0_30px_-5px] hover:shadow-red-500/50
                   transition-all duration-300 overflow-hidden
                   border-2 border-red-300/30 hover:border-red-300/60
-                  group relative"
+                  group relative
+                  disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <motion.div
                   className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0"
@@ -89,10 +169,11 @@ const ReadyToRace = () => {
                   transition={{ type: "spring", stiffness: 300 }}
                 >
                   <GiTrophyCup className="text-2xl sm:text-2xl group-hover:rotate-12 transition-transform" />
-                  Create League
+                  {isLoading ? "Creating..." : "Create League"}
                   <RiArrowRightSLine className="ml-2 inline-block text-2xl sm:text-2xl" />
                 </motion.span>
 
+                {/* Animation des particules - gardée identique */}
                 <motion.div
                   className="absolute inset-0 pointer-events-none"
                   initial={{ opacity: 0 }}
@@ -127,10 +208,7 @@ const ReadyToRace = () => {
               </Button>
             </motion.div>
 
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              className="relative w-full sm:w-auto"
-            >
+            <motion.div whileHover={{ scale: 1.05 }} className="relative w-full sm:w-auto">
               <Button
                 variant="outline"
                 onClick={() => setIsJoinModalOpen(true)}
@@ -161,6 +239,7 @@ const ReadyToRace = () => {
                   <RiArrowRightSLine className="ml-2 inline-block text-lg sm:text-xl" />
                 </motion.span>
 
+                {/* Animation des particules - gardée identique */}
                 <motion.div
                   className="absolute inset-0 pointer-events-none"
                   initial={{ opacity: 0 }}
@@ -207,11 +286,7 @@ const ReadyToRace = () => {
         onCreate={handleCreateLeague}
       />
 
-      <JoinLeague
-        isOpen={isJoinModalOpen}
-        onClose={() => setIsJoinModalOpen(false)}
-        onJoin={handleJoinLeague}
-      />
+      <JoinLeague isOpen={isJoinModalOpen} onClose={() => setIsJoinModalOpen(false)} onJoin={handleJoinLeague} />
     </div>
   );
 };

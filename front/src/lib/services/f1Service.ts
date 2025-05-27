@@ -55,20 +55,15 @@ export const f1Service = {
   },
 
   transformToGrandPrix(session: Session, meeting: Meeting): GrandPrix {
-    const date = new Date(session.date_start);
+    const date = new Date(session.startTime);
     return {
-      id: session.session_key.toString(),
+      id: session.id.toString(),
       date: date.toISOString().split('T')[0],
       time: date.toTimeString().split(' ')[0],
-      season: session.year.toString(),
-      track: {
-        id: meeting.meeting_key.toString(),
-        trackName: meeting.circuit_short_name,
-        countryName: meeting.country_code,
-        location: meeting.location,
-      },
-      status: session.session_status,
-      type: session.session_type,
+      season: date.getFullYear().toString(),
+      track: meeting.track,
+      status: session.status,
+      type: session.type,
     };
   }
 }; 

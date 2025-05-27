@@ -5,7 +5,6 @@ import Image from "next/image";
 import { memo } from "react";
 import { FaXTwitter } from "react-icons/fa6";
 import { FiInstagram, FiFacebook, FiYoutube } from "react-icons/fi";
-import { formatRaceTime } from "@/lib/utils/dateAndTime";
 import { useNextRace, NextRace } from "@/lib/hooks/useNextRace";
 
 const quickLinks = [
@@ -42,8 +41,7 @@ const ambianceClass =
 const NextRaceCard = memo(function NextRaceCard({
   name,
   date,
-  time,
-}: NextRace) {
+}: Omit<NextRace, "time">) {
   return (
     <div className="max-w-xs max-h-xs mx-auto bg-white/10 backdrop-blur rounded-2xl border border-white/10 shadow p-1 flex flex-col items-center gap-2 lg:max-w-xs">
       <div className="flex items-center gap-2 text-lg text-[var(--primary-white)] uppercase font-semibold tracking-wider">
@@ -53,9 +51,12 @@ const NextRaceCard = memo(function NextRaceCard({
         {name || "Loading..."}
       </div>
       <div className="text-sm font-semibold text-[var(--primary-white)] tracking-widest text-center">
-        {date && time ? `${date} - ${formatRaceTime(time)}` : "--/-- --:--"}
+        {date || "--/--"}
       </div>
-      <nav aria-label="Social networking" className="flex items-center gap-3 mt-1">
+      <nav
+        aria-label="Social networking"
+        className="flex items-center gap-3 mt-1"
+      >
         {socialLinks.map(({ name, href, icon: Icon }) => (
           <a
             key={name}
@@ -75,7 +76,7 @@ const NextRaceCard = memo(function NextRaceCard({
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
-  const nextRace = useNextRace();
+  const { nextRace } = useNextRace();
 
   return (
     <footer className="relative bg-neutral-900 backdrop-blur-md border-t border-[var(--primary-red)] text-[var(--primary-white)] text-[15px] shadow-lg">
@@ -116,11 +117,7 @@ const Footer = () => {
                   </Link>
                 ))}
               </nav>
-              <NextRaceCard
-                name={nextRace.name}
-                date={nextRace.date}
-                time={nextRace.time}
-              />
+              <NextRaceCard name={nextRace?.name} date={nextRace?.date} />
             </div>
 
             <div className="hidden lg:flex flex-col items-center justify-center">
@@ -141,11 +138,8 @@ const Footer = () => {
             </div>
 
             <div className="hidden lg:flex flex-col items-end gap-2 text-right">
-              <NextRaceCard
-                name={nextRace.name}
-                date={nextRace.date}
-                time={nextRace.time}
-              />
+              <NextRaceCard name={nextRace?.name} date={nextRace?.date} />
+
             </div>
           </div>
         </div>

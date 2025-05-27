@@ -1,13 +1,27 @@
+import { Injectable } from '@nestjs/common';
 import { createClerkClient } from '@clerk/backend';
 import { ConfigService } from '@nestjs/config';
 
-export const ClerkClientProvider = {
-  provide: 'ClerkClient',
-  useFactory: (configService: ConfigService) => {
-    return createClerkClient({
-      publishableKey: configService.get('CLERK_PUBLISHABLE_KEY'),
-      secretKey: configService.get('CLERK_SECRET_KEY'),
+@Injectable()
+export class ClerkClientProvider {
+  private clerkClient: any;
+
+  constructor(private configService: ConfigService) {
+    this.clerkClient = createClerkClient({
+      publishableKey: this.configService.get('CLERK_PUBLISHABLE_KEY'),
+      secretKey: this.configService.get('CLERK_SECRET_KEY'),
     });
-  },
-  inject: [ConfigService],
-};
+  }
+
+  getClient() {
+    return this.clerkClient;
+  }
+
+  async verifyToken(token: string, options?: any) {
+    try {
+      return await this.clerkClient.verifyToken(token, options);
+    } catch (error) {
+      throw new Error(`Token verification failed: ${error.message}`);
+    }
+  }
+}

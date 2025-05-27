@@ -29,27 +29,25 @@ export function useDriverData() {
         const driversStats = await driverService.getAllDriversStats();
 
         const sessions = await f1Service.getSessions("2025");
-        const raceSession = sessions.find((s) => s.session_type === "Race");
+        const raceSession = sessions.find((s) => s.type === "race");
         let positions: Position[] = [];
         let f1Drivers: Driver[] = [];
 
         if (raceSession) {
-          positions = await f1Service.getPositions(String(raceSession.session_key));
-          f1Drivers = await f1Service.getDrivers(String(raceSession.session_key));
+          positions = await f1Service.getPositions(String(raceSession.id));
+          f1Drivers = await f1Service.getDrivers(String(raceSession.id));
         }
 
         const driverIdToNumber: Record<string, number> = {};
         f1Drivers.forEach((d) => {
-          const fullName = `${d.first_name} ${d.last_name}`;
-          const ergastDriver = driversStats.find((ds) => ds.name === fullName);
+          const ergastDriver = driversStats.find((ds) => ds.name === d.name);
           if (ergastDriver) {
-            driverIdToNumber[ergastDriver.driverId] = d.driver_number;
+            driverIdToNumber[ergastDriver.driverId] = d.number;
           }
         });
 
         const enrichedDrivers = driversStats.map((driver) => {
-          const driverNumber = driverIdToNumber[driver.driverId];
-          const pos = positions.find((p) => p.driver_number === driverNumber);
+          const pos = positions.find((p) => p.driverId === driver.driverId);
           return {
             ...driver,
             racePosition: pos ? pos.position : null,

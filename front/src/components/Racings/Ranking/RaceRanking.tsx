@@ -22,10 +22,10 @@ export default function RaceRanking({ participants }: RaceRankingProps) {
             <GiTrophyCup className="w-14 h-14 text-[var(--primary-red)]" />
             <div className="flex flex-col">
               <h2 className="text-3xl font-black text-[var(--primary-red)]">
-                Classement des participants
+                Participants Ranking
               </h2>
               <span className="text-lg text-red-500/70">
-                Grand Prix de Monaco
+                Monaco Grand Prix
               </span>
             </div>
           </div>

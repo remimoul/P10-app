@@ -11,18 +11,35 @@ import { VotingSection } from "@/components/vote/VotingSection";
 import { InfoSection } from "@/components/vote/InfoSection";
 import { useVote } from "@/lib/hooks/useVote";
 import { useDriverData } from "@/lib/hooks/useDriverData";
-import { useRaceInfo } from "@/lib/hooks/useRaceInfo";
+import { useNextRace } from "@/lib/hooks/useNextRace";
 import VotePageHeader from "@/components/vote/VotePageHeader";
 import VoteTimer from "@/components/vote/VoteTimer";
 import VotePageLayout from "@/components/vote/VotePageLayout";
-import {
-  Loading,
-  Error,
-  NotAuthenticated,
-} from "@/components/vote/LoadingStates";
+import { useParams, useRouter } from "next/navigation";
+import { useQuery, gql } from "@apollo/client";
+import LoadingScreen from "@/components/common/LoadingScreen";
+
+interface RaceInfo {
+  grandPrix: string;
+  country: string;
+  circuit: string;
+  location: string;
+  date: string;
+  startTime: string;
+}
+
+const GET_LEAGUE = gql`
+  query ExampleQuery($input: GetLeagueInput!) {
+    getLeague(input: $input) {
+      name
+    }
+  }
+`;
 
 const VotePage = () => {
-  const { user, isLoaded: userLoaded } = useUser();
+  const { id_league } = useParams();
+  const router = useRouter();
+  const { isLoaded: userLoaded } = useUser();
   const [tab, setTab] = useState<"Info" | "Vote">("Info");
   const [isComparisonOpen, setIsComparisonOpen] = useState(false);
   const [comparisonDrivers, setComparisonDrivers] = useState<string[]>([]);
@@ -30,6 +47,13 @@ const VotePage = () => {
   const [topVotedDrivers, setTopVotedDrivers] = useState<
     { driverId: string; votes: number }[]
   >([]);
+  const [nextRaceInfo, setNextRaceInfo] = useState<RaceInfo | null>(null);
+
+  const {
+    nextRace,
+    loading: nextRaceLoading,
+    error: nextRaceError,
+  } = useNextRace();
 
   const {
     selectedDriver,
@@ -40,7 +64,6 @@ const VotePage = () => {
     timeLeft,
     voteDeadline,
     setVoteDeadline,
-    totalParticipants,
     voteModified,
     handleVote,
     handleConfirmVote,
@@ -61,11 +84,35 @@ const VotePage = () => {
     uniqueTeams,
   } = useDriverData();
 
+  // Fetch league name
   const {
-    raceInfo,
-    loading: raceInfoLoading,
-    error: raceInfoError,
-  } = useRaceInfo();
+    data: leagueData,
+    loading: leagueLoading,
+    error: leagueError,
+  } = useQuery(GET_LEAGUE, {
+    variables: { input: { id: id_league } },
+    skip: !id_league,
+  });
+
+  useEffect(() => {
+    if (nextRace.date && nextRace.time) {
+      const raceDateTime = new Date(`${nextRace.date}T${nextRace.time}`);
+      const deadline = new Date(raceDateTime);
+      deadline.setHours(deadline.getHours() - 2);
+      setVoteDeadline(deadline);
+
+      setNextRaceInfo({
+        grandPrix: nextRace.name || "",
+        country: nextRace.circuit?.location.country || "",
+        circuit: nextRace.circuit?.name || "",
+        location: `${nextRace.circuit?.location.locality || ""}, ${
+          nextRace.circuit?.location.country || ""
+        }`,
+        date: nextRace.date,
+        startTime: nextRace.time,
+      });
+    }
+  }, [nextRace, setVoteDeadline]);
 
   useEffect(() => {
     if (userLoaded) {
@@ -77,18 +124,11 @@ const VotePage = () => {
           { driverId: "alonso", votes: 30 },
           { driverId: "norris", votes: 25 },
         ]);
-
-        // Set initial vote deadline
-        if (!voteDeadline) {
-          const deadline = new Date();
-          deadline.setHours(deadline.getHours() + 24);
-          setVoteDeadline(deadline);
-        }
       } catch (err) {
         console.error("Error loading additional data:", err);
       }
     }
-  }, [userLoaded, voteDeadline, setVoteDeadline]);
+  }, [userLoaded]);
 
   const handleComparisonSelect = (driverId: string) => {
     setComparisonDrivers((prev) => {
@@ -100,22 +140,41 @@ const VotePage = () => {
 
   const handleOpenComparison = () => {
     if (comparisonDrivers.length < 2) {
-      toast.error("Veuillez sélectionner au moins 2 pilotes à comparer");
+      toast.error("Please select at least 2 drivers to compare");
       return;
     }
     setIsComparisonOpen(true);
   };
 
-  const loading = driversLoading || raceInfoLoading || !userLoaded;
-  const error = driversError || raceInfoError;
+  const onConfirmVote = async () => {
+    await handleConfirmVote();
+    router.push(`/leagues/viewLeague/${id_league}`);
+  };
 
-  if (loading) return <Loading />;
-  if (error) return <Error message={error} />;
-  if (!user) return <NotAuthenticated />;
+  if (!userLoaded || driversLoading || nextRaceLoading || leagueLoading) {
+    return <LoadingScreen message="Loading vote page..." />;
+  }
+
+  if (driversError || nextRaceError || leagueError) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-white to-red-50 flex flex-col items-center justify-center">
+        <p className="text-xl font-medium text-red-500">
+          Error loading data:{" "}
+          {driversError || nextRaceError || leagueError?.message}
+        </p>
+        <p className="mt-2 text-gray-600">
+          Please try again later or contact support if the issue persists.
+        </p>
+      </div>
+    );
+  }
+
+  const leagueName = leagueData?.getLeague?.name || `League #${id_league}`;
+  const totalParticipants = leagueData?.getLeague?.members?.length ?? 0;
 
   return (
     <VotePageLayout voteModified={voteModified}>
-      <VotePageHeader />
+      <VotePageHeader leagueName={leagueName} />
 
       <VoteTimer
         timeLeft={timeLeft}
@@ -137,17 +196,16 @@ const VotePage = () => {
           {tab === "Info" ? (
             <InfoSection
               drivers={drivers}
-              raceInfo={{
-                grandPrix: raceInfo.grandPrix || "",
-                country: raceInfo.country,
-                circuit: raceInfo.circuit,
-                location: raceInfo.location,
-                date: raceInfo.date,
-                startTime: raceInfo.startTime || "",
-                weather: raceInfo.weather,
-                temperature: raceInfo.temperature,
-                humidity: raceInfo.humidity,
-              }}
+              raceInfo={
+                nextRaceInfo || {
+                  grandPrix: "",
+                  country: "",
+                  circuit: "",
+                  location: "",
+                  date: "",
+                  startTime: "",
+                }
+              }
               totalVotes={totalVotes}
               totalParticipants={totalParticipants}
               topVotedDrivers={topVotedDrivers}
@@ -156,7 +214,7 @@ const VotePage = () => {
             <VotingSection
               userVote={userVote}
               confirmedVote={confirmedVote}
-              handleConfirmVote={handleConfirmVote}
+              handleConfirmVote={onConfirmVote}
               handleCancelVote={handleCancelVote}
               handleVote={handleVote}
               selectedDriver={selectedDriver}

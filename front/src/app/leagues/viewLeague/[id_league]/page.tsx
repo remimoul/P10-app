@@ -4,11 +4,10 @@ import Link from "next/link";
 import toast from "react-hot-toast";
 import { Participant } from "@/lib/types/leagues";
 import { GiRaceCar } from "react-icons/gi";
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { RiLoader2Fill } from "react-icons/ri";
-import { useUser, useOrganization } from "@clerk/nextjs";
-
+import { useState, useEffect, useCallback } from "react";
+import { useRouter, useParams } from "next/navigation";
+import { useUser } from "@clerk/nextjs";
+import { useQuery, gql } from "@apollo/client";
 import { Button } from "@/components/ui/button";
 import Header from "@/components/Leagues/ViewLeagues/Header";
 import Ranking from "@/components/Leagues/ViewLeagues/Ranking";
@@ -17,12 +16,41 @@ import AddMember from "@/components/Leagues/ViewLeagues/pop-up/AddMember";
 import ExitLeague from "@/components/Leagues/ViewLeagues/pop-up/ExitLeague";
 import EditLeagueName from "@/components/Leagues/ViewLeagues/pop-up/EditLeagueName";
 import ParticipantsList from "@/components/Leagues/ViewLeagues/ParticipantsList";
+import { useNextRace } from "@/lib/hooks/useNextRace";
+import LoadingScreen from "@/components/common/LoadingScreen";
+
+const GET_LEAGUE = gql`
+  query ExampleQuery($input: GetLeagueInput!) {
+    getLeague(input: $input) {
+      name
+      members {
+        username
+      }
+    }
+  }
+`;
 
 const ViewLeague = () => {
   const { user, isLoaded: userLoaded } = useUser();
-  const { organization } = useOrganization();
   const router = useRouter();
-  // Simulation timeout : const [timeLeft, setTimeLeft] = useState(O);
+  const params = useParams();
+  const leagueId = params.id_league as string;
+  const { nextRace, loading: nextRaceLoading, error: nextRaceError } = useNextRace();
+
+  // GraphQL query
+  const {
+    data: leagueData,
+    loading: leagueLoading,
+    error: leagueError,
+  } = useQuery(GET_LEAGUE, {
+    variables: {
+      input: {
+        id: leagueId,
+      },
+    },
+    skip: !leagueId,
+  });
+
   const [timeLeft, setTimeLeft] = useState(3600);
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [isAddMemberModalOpen, setIsAddMemberModalOpen] = useState(false);
@@ -30,43 +58,110 @@ const ViewLeague = () => {
   const [isEditLeagueNameModalOpen, setIsEditLeagueNameModalOpen] =
     useState(false);
 
+  const calculateTimeLeft = useCallback(() => {
+    if (!nextRace?.date) {
+      console.error("No nextRace.date provided");
+      return 0;
+    }
+
+    try {
+      console.log('DEBUG nextRace.date:', nextRace.date, 'nextRace.time:', nextRace.time);
+
+      // Vérification du format de la date
+      if (!/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(nextRace.date)) {
+        console.error("nextRace.date is not in YYYY-MM-DD format:", nextRace.date);
+        return 0;
+      }
+
+      let timeStr = nextRace.time;
+
+      if (!timeStr || !/^[0-9]{2}:[0-9]{2}(:[0-9]{2})?$/.test(timeStr)) {
+        timeStr = "00:00:00";
+      } else if (timeStr.length === 5) {
+        timeStr = timeStr + ":00";
+      }
+
+      const raceDateTime = new Date(`${nextRace.date}T${timeStr}Z`);
+      const now = new Date();
+
+      console.log('raceDateTime:', raceDateTime, 'now:', now);
+
+      if (isNaN(raceDateTime.getTime())) {
+        console.error("Invalid race date/time:", { date: nextRace.date, time: timeStr });
+        return 0;
+      }
+
+      const diff = Math.max(0, Math.floor((raceDateTime.getTime() - now.getTime()) / 1000));
+      return diff;
+    } catch (error) {
+      console.error("Error calculating time left:", error);
+      return 0;
+    }
+  }, [nextRace?.date, nextRace?.time]);
+
+  // Update timer every second
   useEffect(() => {
-    if (userLoaded && user) {
-      const displayName = user.username || "Racer";
-      setParticipants([
-        {
+    const initialTimeLeft = calculateTimeLeft();
+    setTimeLeft(initialTimeLeft);
+    
+    const interval = setInterval(() => {
+      setTimeLeft(() => {
+        const newTimeLeft = calculateTimeLeft();
+        return newTimeLeft > 0 ? newTimeLeft : 0;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [calculateTimeLeft]);
+
+  const formatTime = (seconds: number) => {
+    if (seconds <= 0) return "0d 0h 0m 0s";
+    
+    const days = Math.floor(seconds / 86400);
+    const hours = Math.floor((seconds % 86400) / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = Math.floor(seconds % 60);
+
+    return `${days}d ${hours}h ${minutes}m ${secs}s`;
+  };
+
+  useEffect(() => {
+    if (leagueData && userLoaded && user) {
+      // Transformer les membres de la league en participants
+      const leagueParticipants: Participant[] =
+        leagueData.getLeague.members.map(
+          (member: { username: string }, index: number) => ({
+            id: `${index + 1}`,
+            name: member.username,
+            score: Math.floor(Math.random() * 300), // Score temporaire
+            hasVoted: false,
+            avatar: "", // Avatar par défaut
+          })
+        );
+
+      // Ajouter l'utilisateur actuel s'il n'est pas déjà dans la liste
+      const currentUserExists = leagueParticipants.some(
+        (p) => p.name === (user.username || "Racer")
+      );
+      if (!currentUserExists) {
+        leagueParticipants.unshift({
           id: user.id,
-          name: displayName,
+          name: user.username || "Racer",
           score: 0,
           hasVoted: false,
           avatar: user.imageUrl,
-        },
-        { id: "2", name: "Max Verstappen", score: 245, hasVoted: false },
-        { id: "4", name: "Charles Leclerc", score: 150, hasVoted: false },
-        { id: "5", name: "Carlos Sainz", score: 120, hasVoted: false },
-        { id: "3", name: "Lewis Hamilton", score: 198, hasVoted: false },
-      ]);
-    }
-  }, [userLoaded, user]);
+        });
+      }
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
+      setParticipants(leagueParticipants);
+    }
+  }, [leagueData, userLoaded, user]);
 
   const handleVote = () => {
-    const leagueId = organization?.id;
-    // const voteId = "1"; // ID temporaire pour le vote
     if (leagueId) {
-      router.push(
-        // `/leagues/viewLeague/${encodeURIComponent(leagueId)}/vote/${voteId}`
-        `/leagues/viewLeague/${encodeURIComponent(leagueId)}/vote/1`
-      );
+      router.push(`/leagues/viewLeague/${leagueId}/1`);
     } else {
-      toast.error("Aucune league sélectionnée !");
-      router.push("/leagues/viewLeague/1");
+      toast.error("Unable to access vote page");
     }
   };
 
@@ -83,33 +178,42 @@ const ViewLeague = () => {
   };
 
   const handleSaveLeagueName = (newName: string) => {
-    // API call to update the league name
-    toast.success(`League name updated to ${newName}`);
+    toast.success(`League name updated to: ${newName}`);
     setIsEditLeagueNameModalOpen(false);
   };
 
-  const formatTime = (seconds: number) => {
-    const days = Math.floor(seconds / 86400);
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const secs = seconds % 60;
-    return `${days}d ${hours}h ${minutes}m ${secs}s`;
-  };
+  // Loading and error states
+  if (!userLoaded || leagueLoading || nextRaceLoading) {
+    return <LoadingScreen message="Loading league..." />;
+  }
 
-  if (!userLoaded) {
+  if (leagueError || nextRaceError) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-white to-red-50 flex flex-col items-center justify-center">
-        <RiLoader2Fill className="text-6xl text-red-500 animate-spin" />
-        <p className="mt-4 text-xl font-medium text-black">Loading ...</p>
+        <p className="text-xl font-medium text-red-500">
+          Error loading league: {leagueError?.message || nextRaceError}
+        </p>
+        <p className="mt-2 text-gray-600">Please try again later or contact support if the issue persists.</p>
+      </div>
+    );
+  }
+
+  if (!leagueId) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-white to-red-50 flex flex-col items-center justify-center">
+        <p className="text-xl font-medium text-red-500">
+          Error: No league ID provided
+        </p>
+        <p className="mt-2 text-gray-600">Please return to the leagues list and try again.</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-red-50 py-24 px-8">
+    <div className="min-h-screen bg-gradient-to-b from-white to-red-50 py-28 px-8">
       <Header
         league={{
-          name: organization?.name || "Racing League",
+          name: leagueData?.getLeague?.name || "Racing League",
           type: "public",
         }}
         timeLeft={timeLeft}
@@ -118,6 +222,29 @@ const ViewLeague = () => {
         handleLeaveLeague={handleLeaveLeague}
         handleEditLeagueName={handleEditLeagueName}
       />
+
+      {nextRace?.name && (
+        <div className="flex justify-center items-center mb-6">
+          <div className="bg-white/90 border border-red-200 rounded-2xl px-6 py-3 shadow text-center">
+            <span className="text-lg font-semibold text-red-700">
+              Next race :{" "}
+            </span>
+            <span className="text-lg font-semibold text-gray-900">
+              {nextRace.name}
+            </span>
+            {nextRace.date && (
+              <span className="ml-4 text-gray-600 text-sm">
+                ({nextRace.date})
+              </span>
+            )}
+            {timeLeft > 0 && (
+              <div className="mt-2 text-sm text-gray-600">
+                Time until race: {formatTime(timeLeft)}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {participants.length === 1 && (
         <div className="bg-red-100 border border-red-300 text-red-700 p-4 rounded-xl text-center text-lg mb-6">
@@ -166,7 +293,7 @@ const ViewLeague = () => {
           onClose={() => setIsExitLeagueModalOpen(false)}
           onConfirmExit={() => {
             toast.success(
-              `Left ${organization?.name || "league"} successfully`
+              `Left ${leagueData?.getLeague?.name || "league"} successfully`
             );
             setIsExitLeagueModalOpen(false);
           }}

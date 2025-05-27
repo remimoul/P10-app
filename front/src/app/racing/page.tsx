@@ -6,10 +6,9 @@ import { RacingList } from "@/components/Racings/RacingList";
 import { Pagination } from "@/components/Racings/Pagination";
 import { SearchInput } from "@/components/Racings/SearchInput";
 import { SeasonFilter } from "@/components/Racings/SeasonFilter";
-import { f1Service } from "@/lib/services/f1Service";
 import { ergastService } from "@/lib/services/ergastService";
 import { GrandPrix } from "@/lib/types/racing";
-import { formatDate } from "@/lib/utils/dateAndTime";
+import LoadingScreen from "@/components/common/LoadingScreen";
 
 const ITEMS_PER_PAGE = 12;
 
@@ -41,9 +40,18 @@ export default function Racing() {
               season: race.season,
               track: {
                 id: race.Circuit.circuitId,
-                trackName: race.Circuit.circuitName,
-                countryName: race.Circuit.Location.country,
-                location: `${race.Circuit.Location.locality}, ${race.Circuit.Location.country}`,
+                name: race.Circuit.circuitName,
+                country: race.Circuit.Location.country,
+                city: race.Circuit.Location.locality,
+                length: Number(race.circuitInfo?.length) || 0,
+                numberOfLaps: Number(race.circuitInfo?.numberOfLaps) || 0,
+                recordLap: race.circuitInfo?.lapRecord?.time || "",
+                recordHolder: race.circuitInfo?.lapRecord?.driver || "",
+                firstGrandPrix: 0,
+                lapRecord: race.circuitInfo?.lapRecord?.time || "",
+                circuitLength: race.circuitInfo?.length || "",
+                raceDistance: "",
+                imageUrl: "",
               },
               status: "Scheduled",
               type: "Race",
@@ -51,87 +59,7 @@ export default function Racing() {
 
           setGrandPrixList(upcomingRaces);
         } else {
-          const [sessions, meetings, ergastRaces] = await Promise.all([
-            f1Service.getSessions(season || undefined),
-            f1Service.getMeetings(season || undefined),
-            ergastService.getRaces(season || undefined),
-          ]);
-
-          const meetingsMap = new Map(meetings.map((m) => [m.meeting_key, m]));
-
-          const grandPrixData = sessions
-            .filter((session) => {
-              const sessionDate = new Date(session.date_start);
-              return sessionDate < new Date();
-            })
-            .map((session) =>
-              f1Service.transformToGrandPrix(
-                session,
-                meetingsMap.get(session.meeting_key)!
-              )
-            )
-            .filter((gp) => gp !== null);
-
-          const enrichedGrandPrixData = await Promise.all(
-            grandPrixData.map(async (gp) => {
-              const ergastRace = ergastRaces.find(
-                (race) =>
-                  race.raceName.toLowerCase() ===
-                  gp.track.trackName.toLowerCase()
-              );
-
-              if (ergastRace) {
-                const results = await ergastService.getRaceResults(
-                  ergastRace.season,
-                  ergastRace.round
-                );
-
-                return {
-                  ...gp,
-                  ergastData: {
-                    round: ergastRace.round,
-                    raceName: ergastRace.raceName,
-                    date: formatDate(ergastRace.date),
-                    circuit: {
-                      name: ergastRace.Circuit.circuitName,
-                      location: ergastRace.Circuit.Location,
-                      length: ergastRace.circuitInfo?.length || "N/A",
-                      numberOfLaps:
-                        ergastRace.circuitInfo?.numberOfLaps || "N/A",
-                      lapRecord: ergastRace.circuitInfo?.lapRecord || {
-                        time: "N/A",
-                        driver: "N/A",
-                        year: "N/A",
-                      },
-                    },
-                    results: results?.results?.map((result) => ({
-                      position: result.position,
-                      driver: {
-                        name: `${result.Driver.givenName} ${result.Driver.familyName}`,
-                        number: result.Driver.permanentNumber,
-                        nationality: result.Driver.nationality,
-                      },
-                      constructor: result.Constructor.name,
-                      grid: result.grid,
-                      status: result.status,
-                      points: result.points,
-                      time: result.Time?.time,
-                      fastestLap: result.FastestLap
-                        ? {
-                            time: result.FastestLap.Time.time,
-                            rank: result.FastestLap.rank,
-                          }
-                        : undefined,
-                    })),
-                  },
-                };
-              }
-
-              return gp;
-            })
-          );
-
-          setGrandPrixList(enrichedGrandPrixData);
+          setGrandPrixList([]);
         }
       } catch (err) {
         setError("Failed to fetch racing data");
@@ -156,7 +84,7 @@ export default function Racing() {
 
   const searchFiltered = grandPrixList.filter((gp) => {
     const target =
-      `${gp.track.countryName} ${gp.track.trackName}`.toLowerCase();
+      `${gp.track.country} ${gp.track.name}`.toLowerCase();
     return target.includes(search.toLowerCase());
   });
 
@@ -178,11 +106,7 @@ export default function Racing() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-xl">Loading...</div>
-      </div>
-    );
+    return <LoadingScreen message="Loading races..." />;
   }
 
   if (error) {
