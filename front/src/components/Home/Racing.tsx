@@ -140,7 +140,8 @@ const Racing = () => {
               onHoverEnd={() => setIsHovered(false)}
             >
               <Image
-                src="/racing/2025-F1-Schedule.jpg"
+                src="/racing/2025-F1.png"
+
                 alt="F1 schedule"
                 width={800}
                 height={600}

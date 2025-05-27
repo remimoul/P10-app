@@ -141,10 +141,19 @@ export interface Grid {
   position: number;
 }
 
-export interface LapTime {
-  driverId: string;
-  time: string;
-  lap: number;
+export interface Race {
+  id: number;
+  name: string;
+  country: string;
+  date: string;
+  circuit: string;
+  laps?: number;
+  length?: string;
+  lapRecord?: string;
+  recordHolder?: string;
+  recordYear?: string;
+  season: string;
+  ergastData?: ErgastRaceData;
 }
 
 export interface Stint {
@@ -190,6 +199,19 @@ export interface ResultsTableProps {
   drivers: { [key: string]: Driver };
   viewMode: 'race' | 'championship';
 }
+
+// page results
+export interface Race {
+  id: number;
+  name: string;
+  country: string;
+  date: string;
+  circuit: string;
+  laps?: number;
+  length?: string;
+  lapRecord?: string;
+  recordHolder?: string;
+  recordYear?: string;
 
 export interface NoRacesMessageProps {
   message: string;

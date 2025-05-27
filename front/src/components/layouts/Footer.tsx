@@ -41,7 +41,7 @@ const ambianceClass =
 const NextRaceCard = memo(function NextRaceCard({
   name,
   date,
-}: Omit<NextRace, 'time'>) {
+}: Omit<NextRace, "time">) {
   return (
     <div className="max-w-xs max-h-xs mx-auto bg-white/10 backdrop-blur rounded-2xl border border-white/10 shadow p-1 flex flex-col items-center gap-2 lg:max-w-xs">
       <div className="flex items-center gap-2 text-lg text-[var(--primary-white)] uppercase font-semibold tracking-wider">
@@ -53,7 +53,10 @@ const NextRaceCard = memo(function NextRaceCard({
       <div className="text-sm font-semibold text-[var(--primary-white)] tracking-widest text-center">
         {date || "--/--"}
       </div>
-      <nav aria-label="Social networking" className="flex items-center gap-3 mt-1">
+      <nav
+        aria-label="Social networking"
+        className="flex items-center gap-3 mt-1"
+      >
         {socialLinks.map(({ name, href, icon: Icon }) => (
           <a
             key={name}
@@ -114,10 +117,7 @@ const Footer = () => {
                   </Link>
                 ))}
               </nav>
-              <NextRaceCard
-                name={nextRace.nextRace?.name}
-                date={nextRace.nextRace?.date}
-              />
+              <NextRaceCard name={nextRace.name} date={nextRace.date} />
             </div>
 
             <div className="hidden lg:flex flex-col items-center justify-center">
@@ -138,10 +138,8 @@ const Footer = () => {
             </div>
 
             <div className="hidden lg:flex flex-col items-end gap-2 text-right">
-              <NextRaceCard
-                name={nextRace.nextRace?.name}
-                date={nextRace.nextRace?.date}
-              />
+              <NextRaceCard name={nextRace.name} date={nextRace.date} />
+
             </div>
           </div>
         </div>

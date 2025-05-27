@@ -7,7 +7,6 @@ import { motion } from "framer-motion";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-
 const Header = () => {
   const settings = {
     dots: true,

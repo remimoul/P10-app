@@ -61,17 +61,17 @@ const Ranking = () => {
 
   const selectedRaceInfo = selectedRaceData
     ? {
-        id: Number(selectedRaceData.id),
-        name: selectedRaceData.name,
-        country: '',
-        date: formatDate(selectedRaceData.startTime),
-        season: '',
-        circuit: '',
-        laps: 0,
-        length: '0',
-        lapRecord: '',
-        recordHolder: '',
-        recordYear: '',
+        id: selectedRaceData.session_key,
+        name:
+          meetingsMap.get(selectedRaceData.meeting_key)?.circuit_short_name ||
+          `Session ${selectedRaceData.session_key}`,
+        country:
+          meetingsMap.get(selectedRaceData.meeting_key)?.country_code || "",
+        date: formatDate(selectedRaceData.date_start),
+        season: selectedRaceData.year.toString(),
+        circuit:
+          meetingsMap.get(selectedRaceData.meeting_key)?.circuit_short_name ||
+          "",
       }
     : null;
 
