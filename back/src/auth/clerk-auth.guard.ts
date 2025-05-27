@@ -25,7 +25,6 @@ export class ClerkAuthGuard implements CanActivate {
 
     // Si c'est une route publique, permettre l'accès sans token
     if (isPublic) {
-
       console.log('Processing public route - access granted');
       return true;
     }
@@ -49,13 +48,11 @@ export class ClerkAuthGuard implements CanActivate {
     try {
       // Valider le token Clerk
       const decodedToken = await this.validateClerkToken(token);
-
-      // Attacher les informations utilisateur au contexte
       req.user = {
         id: decodedToken.sub,
         clerkId: decodedToken.sub,
         email: decodedToken.email,
-        userId: decodedToken.sub, // Ajouter userId aussi
+        userId: decodedToken.sub,
       };
 
       req.auth = {
@@ -91,19 +88,7 @@ export class ClerkAuthGuard implements CanActivate {
       if (!payload.sub) {
         throw new Error('Invalid token - no subject');
       }
-           
 
-      // Configuration des options de vérification avec les parties autorisées
-      const verifyOptions = {
-        authorizedParties: [
-          'http://localhost:3000',
-          'http://localhost:4500',
-          'https://www.grineasy.com',
-          'https://grineasy.online',
-        ],
-      };
-
-      const payload = await client.verifyToken(token, verifyOptions);
       return payload;
     } catch (error) {
       throw new Error(`Token validation failed: ${error.message}`);
