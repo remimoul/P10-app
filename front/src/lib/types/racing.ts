@@ -136,6 +136,13 @@ export interface Lap {
   position: number;
 }
 
+export interface LapTime {
+  driverId: string;
+  lapNumber: number;
+  time: string;
+  position: number;
+}
+
 export interface Grid {
   driverId: string;
   position: number;
@@ -201,18 +208,6 @@ export interface ResultsTableProps {
 }
 
 // page results
-export interface Race {
-  id: number;
-  name: string;
-  country: string;
-  date: string;
-  circuit: string;
-  laps?: number;
-  length?: string;
-  lapRecord?: string;
-  recordHolder?: string;
-  recordYear?: string;
-
 export interface NoRacesMessageProps {
   message: string;
   season: string;
@@ -271,21 +266,6 @@ export interface ErgastLocation {
   long: string;
   locality: string;
   country: string;
-}
-
-export interface Race {
-  id: number;
-  name: string;
-  country: string;
-  date: string;
-  season: string;
-  circuit: string;
-  laps: number;
-  length: string;
-  lapRecord: string;
-  recordHolder: string;
-  recordYear: string;
-  ergastData?: ErgastRaceData;
 }
 
 export interface FiltersProps {

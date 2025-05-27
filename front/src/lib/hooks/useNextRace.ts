@@ -24,6 +24,7 @@ export function useNextRace() {
       try {
         setLoading(true);
         const race = await ergastService.getNextRace();
+        console.log('API next race:', race);
         if (race) {
           setNextRace({
             name: race.raceName,
