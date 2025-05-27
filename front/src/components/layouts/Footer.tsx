@@ -139,6 +139,7 @@ const Footer = () => {
 
             <div className="hidden lg:flex flex-col items-end gap-2 text-right">
               <NextRaceCard name={nextRace.name} date={nextRace.date} />
+
             </div>
           </div>
         </div>

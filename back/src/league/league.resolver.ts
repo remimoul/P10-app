@@ -1,4 +1,7 @@
+import { UseGuards } from '@nestjs/common';
 import { Resolver, Query, Mutation, Args, Context } from '@nestjs/graphql';
+import { ClerkAuthGuard } from '../auth/clerk-auth.guard'; // Ajustez le chemin
+import { LeagueService } from './league.service';
 import {
   League,
   CreateLeagueInput,
@@ -8,11 +11,9 @@ import {
   DeleteLeagueResponse,
   JoinLeagueInput,
 } from './league.graphmodel';
-import { LeagueService } from './league.service';
+
 import { Public } from 'src/decorators/public.decorator';
 import { PrismaService } from 'src/prisma.service';
-import { UseGuards } from '@nestjs/common';
-import { ClerkAuthGuard } from '../auth/clerk-auth.guard';
 
 @Resolver(() => League)
 export class LeagueResolver {
@@ -21,7 +22,6 @@ export class LeagueResolver {
     private prisma: PrismaService,
   ) {}
 
-  @Public()
   @UseGuards(ClerkAuthGuard)
   @Mutation(() => League)
   async createLeague(

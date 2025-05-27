@@ -11,7 +11,7 @@ import { VotingSection } from "@/components/vote/VotingSection";
 import { InfoSection } from "@/components/vote/InfoSection";
 import { useVote } from "@/lib/hooks/useVote";
 import { useDriverData } from "@/lib/hooks/useDriverData";
-import { useRaceInfo } from "@/lib/hooks/useRaceInfo";
+import { useNextRace } from "@/lib/hooks/useNextRace";
 import VotePageHeader from "@/components/vote/VotePageHeader";
 import VoteTimer from "@/components/vote/VoteTimer";
 import VotePageLayout from "@/components/vote/VotePageLayout";
@@ -20,6 +20,15 @@ import {
   Error,
   NotAuthenticated,
 } from "@/components/vote/LoadingStates";
+
+interface RaceInfo {
+  grandPrix: string;
+  country: string;
+  circuit: string;
+  location: string;
+  date: string;
+  startTime: string;
+}
 
 const VotePage = () => {
   const { user, isLoaded: userLoaded } = useUser();
@@ -30,6 +39,9 @@ const VotePage = () => {
   const [topVotedDrivers, setTopVotedDrivers] = useState<
     { driverId: string; votes: number }[]
   >([]);
+  const [nextRaceInfo, setNextRaceInfo] = useState<RaceInfo | null>(null);
+
+  const { nextRace, loading: nextRaceLoading, error: nextRaceError } = useNextRace();
 
   const {
     selectedDriver,
@@ -61,11 +73,23 @@ const VotePage = () => {
     uniqueTeams,
   } = useDriverData();
 
-  const {
-    raceInfo,
-    loading: raceInfoLoading,
-    error: raceInfoError,
-  } = useRaceInfo();
+  useEffect(() => {
+    if (nextRace.date && nextRace.time) {
+      const raceDateTime = new Date(`${nextRace.date}T${nextRace.time}`);
+      const deadline = new Date(raceDateTime);
+      deadline.setHours(deadline.getHours() - 2);
+      setVoteDeadline(deadline);
+
+      setNextRaceInfo({
+        grandPrix: nextRace.name || "",
+        country: nextRace.circuit?.location.country || "",
+        circuit: nextRace.circuit?.name || "",
+        location: `${nextRace.circuit?.location.locality || ""}, ${nextRace.circuit?.location.country || ""}`,
+        date: nextRace.date,
+        startTime: nextRace.time,
+      });
+    }
+  }, [nextRace, setVoteDeadline]);
 
   useEffect(() => {
     if (userLoaded) {
@@ -77,18 +101,11 @@ const VotePage = () => {
           { driverId: "alonso", votes: 30 },
           { driverId: "norris", votes: 25 },
         ]);
-
-        // Set initial vote deadline
-        if (!voteDeadline) {
-          const deadline = new Date();
-          deadline.setHours(deadline.getHours() + 24);
-          setVoteDeadline(deadline);
-        }
       } catch (err) {
         console.error("Error loading additional data:", err);
       }
     }
-  }, [userLoaded, voteDeadline, setVoteDeadline]);
+  }, [userLoaded]);
 
   const handleComparisonSelect = (driverId: string) => {
     setComparisonDrivers((prev) => {
@@ -100,14 +117,14 @@ const VotePage = () => {
 
   const handleOpenComparison = () => {
     if (comparisonDrivers.length < 2) {
-      toast.error("Veuillez sélectionner au moins 2 pilotes à comparer");
+      toast.error("Please select at least 2 drivers to compare");
       return;
     }
     setIsComparisonOpen(true);
   };
 
-  const loading = driversLoading || raceInfoLoading || !userLoaded;
-  const error = driversError || raceInfoError;
+  const loading = driversLoading || !userLoaded || nextRaceLoading;
+  const error = driversError || nextRaceError;
 
   if (loading) return <Loading />;
   if (error) return <Error message={error} />;
@@ -137,16 +154,16 @@ const VotePage = () => {
           {tab === "Info" ? (
             <InfoSection
               drivers={drivers}
-              raceInfo={{
-                grandPrix: raceInfo.grandPrix || "",
-                country: raceInfo.country,
-                circuit: raceInfo.circuit,
-                location: raceInfo.location,
-                date: raceInfo.date,
-                startTime: raceInfo.startTime || "",
-                weather: raceInfo.weather,
-                temperature: raceInfo.temperature,
-                humidity: raceInfo.humidity,
+              raceInfo={nextRaceInfo || {
+                grandPrix: "",
+                country: "",
+                circuit: "",
+                location: "",
+                date: "",
+                startTime: "",
+                weather: "",
+                temperature: "",
+                humidity: ""
               }}
               totalVotes={totalVotes}
               totalParticipants={totalParticipants}

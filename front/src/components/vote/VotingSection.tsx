@@ -1,31 +1,10 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { RiUserAddLine, RiCheckLine, RiCloseLine } from "react-icons/ri";
-import { DriverStats } from "@/lib/types/drivers";
-import { Vote, FilterOptions } from "@/lib/types/vote";
+import { VotingSectionProps } from "@/lib/types/vote";
 import { DriverVoteCard } from "./DriverVoteCard";
 import { Pagination } from "@/components/Racings/Pagination";
 import { FilterSort } from "./FilterSort";
-
-interface VotingSectionProps {
-  userVote: Vote | null;
-  confirmedVote: string | null;
-  handleConfirmVote: () => void;
-  handleCancelVote: () => void;
-  handleVote: (driverId: string) => void;
-  selectedDriver: string | null;
-  paginatedDrivers: DriverStats[];
-  comparisonDrivers: string[];
-  handleComparisonSelect: (driverId: string) => void;
-  handleOpenComparison: () => void;
-  timeLeft: number;
-  currentPage: number;
-  totalPages: number;
-  onPageChange: (page: number) => void;
-  onFilterChange: (filters: FilterOptions) => void;
-  resetFilters: () => void;
-  teams: string[];
-}
 
 export const VotingSection = ({
   userVote,
@@ -60,7 +39,9 @@ export const VotingSection = ({
                 <RiUserAddLine className="text-2xl text-green-600" />
               </div>
               <div className="text-center sm:text-left">
-                <p className="text-base sm:text-lg font-semibold">Votre vote actuel</p>
+                <p className="text-base sm:text-lg font-semibold">
+                  Your current vote
+                </p>
                 <p className="text-lg sm:text-xl font-bold break-words max-w-[120px] sm:max-w-none mx-auto sm:mx-0">
                   {
                     paginatedDrivers.find(
@@ -72,7 +53,7 @@ export const VotingSection = ({
             </div>
             {confirmedVote === userVote.driverId && (
               <span className="px-3 py-1 bg-green-200 rounded-full text-xs sm:text-sm font-medium mt-2 sm:mt-0">
-                Vote confirmé
+                Vote confirmed
               </span>
             )}
           </div>
@@ -80,19 +61,19 @@ export const VotingSection = ({
             {!confirmedVote && (
               <Button
                 onClick={handleConfirmVote}
-                className="w-full sm:w-auto flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 sm:px-6 py-2 text-sm sm:text-base rounded-xl shadow-md hover:scale-[1.03] transition-all duration-200 focus:ring-2 focus:ring-green-400"
+                className="w-full sm:w-auto flex items-center justify-center gap-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-5 sm:px-7 py-2.5 text-base sm:text-lg rounded-full shadow-lg hover:shadow-xl transition-all duration-200 focus:ring-2 focus:ring-green-400 font-semibold border-none"
               >
                 <RiCheckLine className="text-lg sm:text-xl" />
-                <span>Confirmer le vote</span>
+                <span>Confirm vote</span>
               </Button>
             )}
             <Button
               variant="outline"
               onClick={handleCancelVote}
-              className="w-full sm:w-auto flex items-center justify-center gap-2 text-red-500 border-red-300 hover:text-white hover:bg-red-500 px-4 sm:px-6 py-2 text-sm sm:text-base rounded-xl shadow-md hover:scale-[1.03] transition-all duration-200 focus:ring-2 focus:ring-red-300"
+              className="w-full sm:w-auto flex items-center justify-center gap-2 text-red-600 border-2 border-red-300 hover:text-white hover:bg-gradient-to-r hover:from-red-500 hover:to-red-700 hover:border-red-500 px-5 sm:px-7 py-2.5 text-base sm:text-lg rounded-full shadow-lg hover:shadow-xl transition-all duration-200 focus:ring-2 focus:ring-red-300 font-semibold"
             >
               <RiCloseLine className="text-lg sm:text-xl" />
-              <span>Annuler le vote</span>
+              <span>Cancel vote</span>
             </Button>
           </div>
         </motion.div>
@@ -103,22 +84,20 @@ export const VotingSection = ({
           <Button
             variant="outline"
             onClick={handleOpenComparison}
-            className="w-full sm:w-auto flex items-center gap-2 bg-white hover:bg-gray-50"
+            className="w-full sm:w-auto flex items-center gap-2 bg-gradient-to-r from-white via-red-50 to-white border-2 border-[var(--primary-red)]/60 hover:border-[var(--primary-red)] text-[var(--primary-red)] font-semibold rounded-full px-5 py-2.5 text-base shadow-md hover:shadow-lg transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
             disabled={comparisonDrivers.length < 2}
           >
-            <span className="text-[var(--primary-red)]">
-              Comparer les pilotes
-            </span>
-            <span className="bg-[var(--primary-red)] text-white px-2 py-0.5 rounded-full text-sm">
+            <span className="font-medium">Compare drivers</span>
+            <span className="bg-[var(--primary-red)] text-white px-2.5 py-0.5 rounded-full text-sm font-semibold shadow-md">
               {comparisonDrivers.length}/3
             </span>
           </Button>
           <Button
             variant="ghost"
             onClick={resetFilters}
-            className="w-full sm:w-auto text-sm text-[var(--primary-red)] hover:text-[var(--primary-red)]/80"
+            className="w-full sm:w-auto text-base text-gray-700 hover:text-white hover:bg-gradient-to-r hover:from-[var(--primary-red)] hover:to-red-400 rounded-full px-5 py-2.5 transition-all duration-200 font-semibold shadow-sm hover:shadow-md"
           >
-            Réinitialiser les filtres
+            Reset filters
           </Button>
         </div>
         <div className="w-full sm:w-auto min-w-0">

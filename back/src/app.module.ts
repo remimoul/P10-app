@@ -58,4 +58,4 @@ import { LeagueController } from './league/league.controller';
     { provide: APP_GUARD, useClass: ClerkAuthGuard },
   ],
 })
-export class AppModule {}
+export class AppModule { }
