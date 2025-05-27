@@ -8,6 +8,7 @@ import { SearchInput } from "@/components/Racings/SearchInput";
 import { SeasonFilter } from "@/components/Racings/SeasonFilter";
 import { ergastService } from "@/lib/services/ergastService";
 import { GrandPrix } from "@/lib/types/racing";
+import LoadingScreen from "@/components/common/LoadingScreen";
 
 const ITEMS_PER_PAGE = 12;
 
@@ -105,11 +106,7 @@ export default function Racing() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-xl">Loading...</div>
-      </div>
-    );
+    return <LoadingScreen message="Loading races..." />;
   }
 
   if (error) {

@@ -76,7 +76,7 @@ const NextRaceCard = memo(function NextRaceCard({
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
-  const nextRace = useNextRace();
+  const { nextRace } = useNextRace();
 
   return (
     <footer className="relative bg-neutral-900 backdrop-blur-md border-t border-[var(--primary-red)] text-[var(--primary-white)] text-[15px] shadow-lg">
@@ -117,7 +117,7 @@ const Footer = () => {
                   </Link>
                 ))}
               </nav>
-              <NextRaceCard name={nextRace.name} date={nextRace.date} />
+              <NextRaceCard name={nextRace?.name} date={nextRace?.date} />
             </div>
 
             <div className="hidden lg:flex flex-col items-center justify-center">
@@ -138,7 +138,7 @@ const Footer = () => {
             </div>
 
             <div className="hidden lg:flex flex-col items-end gap-2 text-right">
-              <NextRaceCard name={nextRace.name} date={nextRace.date} />
+              <NextRaceCard name={nextRace?.name} date={nextRace?.date} />
 
             </div>
           </div>

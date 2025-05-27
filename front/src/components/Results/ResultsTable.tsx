@@ -7,14 +7,14 @@ import { ErgastResult } from "@/lib/types/ergast";
 
 interface ResultsTableProps {
   drivers: DriverTableData[];
-  viewMode: ViewMode;
+  // viewMode: ViewMode;
   season?: string;
   round?: string;
 }
 
 const ResultsTable = ({
   drivers,
-  viewMode,
+  // viewMode,
   season,
   round,
 }: ResultsTableProps) => {
@@ -146,11 +146,11 @@ const ResultsTable = ({
                   <th className="px-4 sm:px-6 py-4 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
                     Team
                   </th>
-                  {viewMode === "race" && (
+                  {/* {viewMode === "race" && (
                     <th className="px-4 sm:px-6 py-4 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
                       Laps
                     </th>
-                  )}
+                  )} */}
                   <th className="px-4 sm:px-6 py-4 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap">
                     Points
                   </th>
@@ -257,11 +257,11 @@ const ResultsTable = ({
                             "-"}
                         </span>
                       </td>
-                      {viewMode === "race" && (
+                      {/* {viewMode === "race" && (
                         <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-gray-500 group-hover:text-gray-900 transition-colors duration-300">
                           {combinedData.laps}
                         </td>
-                      )}
+                      )} */}
                       <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
                         <span className="font-bold text-gray-900 group-hover:text-red-600 transition-colors duration-300">
                           {combinedData.points}

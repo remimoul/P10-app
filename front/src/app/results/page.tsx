@@ -3,19 +3,20 @@
 import { useState } from "react";
 import { FaArrowRight } from "react-icons/fa";
 import Filters from "@/components/Results/Filters";
-import RaceInfo from "@/components/Results/RaceInfo";
+// import RaceInfo from "@/components/Results/RaceInfo";
 import ResultsTable from "@/components/Results/ResultsTable";
 import NoRacesMessage from "@/components/Results/NoRacesMessage";
 import { useRaces } from "@/lib/hooks/useRaces";
 import { useDrivers } from "@/lib/hooks/useDrivers";
 import { formatDate } from "@/lib/utils/dateAndTime";
+import LoadingScreen from "@/components/common/LoadingScreen";
 
 const Ranking = () => {
   const [selectedCountry, setSelectedCountry] = useState("");
   const [viewMode, setViewMode] = useState<'race' | 'championship'>('race');
 
   const {
-    races,
+    // races,
     selectedSeason,
     selectedRace,
     selectedDate,
@@ -27,9 +28,9 @@ const Ranking = () => {
     uniqueDates,
   } = useRaces();
 
-  const selectedRaceData = races.find(
-    (race) => Number(race.id) === selectedRace
-  );
+  // const selectedRaceData = races.find(
+  //   (race) => Number(race.id) === selectedRace
+  // );
 
   const { loading: driversLoading, filteredDrivers } = useDrivers(
     selectedRace,
@@ -59,21 +60,21 @@ const Ranking = () => {
       };
     });
 
-  const selectedRaceInfo = selectedRaceData
-    ? {
-        id: selectedRaceData.session_key,
-        name:
-          meetingsMap.get(selectedRaceData.meeting_key)?.circuit_short_name ||
-          `Session ${selectedRaceData.session_key}`,
-        country:
-          meetingsMap.get(selectedRaceData.meeting_key)?.country_code || "",
-        date: formatDate(selectedRaceData.date_start),
-        season: selectedRaceData.year.toString(),
-        circuit:
-          meetingsMap.get(selectedRaceData.meeting_key)?.circuit_short_name ||
-          "",
-      }
-    : null;
+  // const selectedRaceInfo = selectedRaceData
+  //   ? {
+  //       id: selectedRaceData.session_key,
+  //       name:
+  //         meetingsMap.get(selectedRaceData.meeting_key)?.circuit_short_name ||
+  //         `Session ${selectedRaceData.session_key}`,
+  //       country:
+  //         meetingsMap.get(selectedRaceData.meeting_key)?.country_code || "",
+  //       date: formatDate(selectedRaceData.date_start),
+  //       season: selectedRaceData.year.toString(),
+  //       circuit:
+  //         meetingsMap.get(selectedRaceData.meeting_key)?.circuit_short_name ||
+  //         "",
+  //     }
+  //   : null;
 
   const handleDateChange = (date: string) => {
     setSelectedDate(date);
@@ -86,11 +87,7 @@ const Ranking = () => {
   };
 
   if (racesLoading || driversLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center text-xl">
-        Chargement...
-      </div>
-    );
+    return <LoadingScreen message="Loading results..." />;
   }
 
   return (
@@ -169,14 +166,15 @@ const Ranking = () => {
             onDateChange={handleDateChange}
           />
 
-          {viewMode === 'race' && selectedRaceInfo && (
+          {/* {viewMode === 'race' && selectedRaceInfo && (
             <RaceInfo race={{
               ...selectedRaceInfo
             }} />
-          )}
+          )} */}
 
           {filteredRaces.length > 0 ? (
-            <ResultsTable drivers={filteredDrivers} viewMode={viewMode} />
+            <ResultsTable drivers={filteredDrivers} />
+            // <ResultsTable drivers={filteredDrivers} viewMode={viewMode} />
           ) : (
             <NoRacesMessage message="No races found" season={selectedSeason?.toString() ?? ''} />
           )}

@@ -7,6 +7,7 @@ import Header from "@/components/Leagues/Header";
 import ReadyToRace from "@/components/Leagues/ReadyToRace";
 import LeagueSection from "@/components/Leagues/LeagueSection";
 import { useRouter } from "next/navigation";
+import LoadingScreen from "@/components/common/LoadingScreen";
 
 // Requête GraphQL
 const GET_ALL_LEAGUES = gql`
@@ -69,16 +70,7 @@ export default function Leagues() {
   }));
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 relative overflow-hidden py-14 lg:py-16 sm:py-18">
-        <main className="relative z-10 max-w-7xl mx-auto px-4 py-12">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-500 mx-auto mb-4"></div>
-            <p className="text-lg text-gray-600">Chargement des leagues...</p>
-          </div>
-        </main>
-      </div>
-    );
+    return <LoadingScreen message="Loading leagues..." />;
   }
 
   if (error) {

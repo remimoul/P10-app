@@ -6,7 +6,6 @@ import { Participant } from "@/lib/types/leagues";
 import { GiRaceCar } from "react-icons/gi";
 import { useState, useEffect, useCallback } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { RiLoader2Fill } from "react-icons/ri";
 import { useUser } from "@clerk/nextjs";
 import { useQuery, gql } from "@apollo/client";
 import { Button } from "@/components/ui/button";
@@ -18,6 +17,7 @@ import ExitLeague from "@/components/Leagues/ViewLeagues/pop-up/ExitLeague";
 import EditLeagueName from "@/components/Leagues/ViewLeagues/pop-up/EditLeagueName";
 import ParticipantsList from "@/components/Leagues/ViewLeagues/ParticipantsList";
 import { useNextRace } from "@/lib/hooks/useNextRace";
+import LoadingScreen from "@/components/common/LoadingScreen";
 
 const GET_LEAGUE = gql`
   query ExampleQuery($input: GetLeagueInput!) {
@@ -184,12 +184,7 @@ const ViewLeague = () => {
 
   // Loading and error states
   if (!userLoaded || leagueLoading || nextRaceLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-white to-red-50 flex flex-col items-center justify-center">
-        <RiLoader2Fill className="text-6xl text-red-500 animate-spin" />
-        <p className="mt-4 text-xl font-medium text-black">Loading league...</p>
-      </div>
-    );
+    return <LoadingScreen message="Loading league..." />;
   }
 
   if (leagueError || nextRaceError) {

@@ -16,8 +16,8 @@ import VotePageHeader from "@/components/vote/VotePageHeader";
 import VoteTimer from "@/components/vote/VoteTimer";
 import VotePageLayout from "@/components/vote/VotePageLayout";
 import { useParams, useRouter } from "next/navigation";
-import { RiLoader2Fill } from "react-icons/ri";
 import { useQuery, gql } from "@apollo/client";
+import LoadingScreen from "@/components/common/LoadingScreen";
 
 interface RaceInfo {
   grandPrix: string;
@@ -152,12 +152,7 @@ const VotePage = () => {
   };
 
   if (!userLoaded || driversLoading || nextRaceLoading || leagueLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-white to-red-50 flex flex-col items-center justify-center">
-        <RiLoader2Fill className="text-6xl text-red-500 animate-spin" />
-        <p className="mt-4 text-xl font-medium text-black">Loading...</p>
-      </div>
-    );
+    return <LoadingScreen message="Loading vote page..." />;
   }
 
   if (driversError || nextRaceError || leagueError) {
