@@ -5,6 +5,6 @@ import { PrismaService } from 'src/prisma.service';
 import { UserService } from 'src/user/user.service';
 
 @Module({
-    providers: [BetService, BetResolver, PrismaService, UserService],
+    providers: [BetService, BetResolver, UserService, PrismaService],
 })
 export class BetModule { }

@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
 import { Vote } from "@/lib/types/vote";
 import toast from "react-hot-toast";
+import { gql, useQuery } from "@apollo/client";
 
 export function useVote() {
   const { user } = useUser();
@@ -60,9 +61,36 @@ export function useVote() {
       toast.error("Please select a driver first");
       return;
     }
+
+    const QUERY = gql`
+      query AddNewBet($input: CreateBetInput!) {
+        createBet(input: $input) {
+          id
+        }
+      }
+    `;
+
+    const {
+      data: betData,
+      loading: betLoading,
+      error: betError,
+    } = useQuery(QUERY, {
+      variables: {
+        input: {
+          grandPrixId: "some-grand-prix-id", // Replace with actual grand prix ID
+          pilotId: selectedDriver,
+        },
+      },
+    });
+
+    if (betError) {
+      toast.error("Error while confirming the vote");
+      console.error("Error confirming vote:", betError);
+      return;
+    }
     setConfirmedVote(selectedDriver);
     toast.success(
-      "Vote confirmed! You can still modify it until the end of the allotted time."
+      `Vote confirmed! You can still modify it until the end of the allotted time. (Vote id: ${betData?.createBet.id})`
     );
   };
 

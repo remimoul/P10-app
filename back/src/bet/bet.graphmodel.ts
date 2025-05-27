@@ -30,8 +30,8 @@ export class CreateBetInput {
     @Field(type => String)
     pilotId: UUID;
 
-    @Field((type) => String)
-    userId: UUID;
+    @Field((type) => String, { nullable: true })
+    userId?: UUID;
 };
 
 @InputType()
