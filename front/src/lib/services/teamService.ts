@@ -1,7 +1,7 @@
 import { Constructor, TeamStats } from "../types/drivers";
 import { ErgastResponse, ConstructorStanding, Race } from "../types/ergast";
 
-const ERGAST_API_BASE = "http://ergast.com/api/f1";
+const ERGAST_API_BASE = "https://ergast.com/api/f1";
 
 export const teamService = {
   async _getCurrentConstructors(): Promise<Constructor[]> {
@@ -18,7 +18,8 @@ export const teamService = {
   async _getConstructorStandings(): Promise<ConstructorStanding[]> {
     try {
       const response = await fetch(`${ERGAST_API_BASE}/current/constructorStandings.json`);
-      const data: ErgastResponse<{ StandingsLists: { ConstructorStandings: ConstructorStanding[] }[] }> = await response.json();
+      const data: ErgastResponse<{ StandingsLists: { ConstructorStandings: ConstructorStanding[] }[] }> =
+        await response.json();
       return data.MRData.StandingsTable?.StandingsLists[0].ConstructorStandings ?? [];
     } catch (error) {
       console.error("Error fetching constructor standings:", error);
@@ -32,10 +33,12 @@ export const teamService = {
         `${ERGAST_API_BASE}/current/constructors/${constructorId}/results.json?limit=${limit}`
       );
       const data: ErgastResponse<Race> = await response.json();
-      return data.MRData.RaceTable?.Races.map((race) => {
-        const positions = race.Results.map((result) => parseInt(result.position));
-        return Math.min(...positions);
-      }) ?? [];
+      return (
+        data.MRData.RaceTable?.Races.map((race) => {
+          const positions = race.Results.map((result) => parseInt(result.position));
+          return Math.min(...positions);
+        }) ?? []
+      );
     } catch (error) {
       console.error(`Error fetching results for constructor ${constructorId}:`, error);
       throw error;
@@ -49,16 +52,13 @@ export const teamService = {
         this._getConstructorResults(constructorId),
       ]);
 
-      const constructorStanding = standings.find(
-        (standing) => standing.Constructor.constructorId === constructorId
-      );
+      const constructorStanding = standings.find((standing) => standing.Constructor.constructorId === constructorId);
 
       if (!constructorStanding) {
         throw new Error(`Constructor ${constructorId} not found in standings`);
       }
 
-      const averagePosition =
-        results.reduce((sum, position) => sum + position, 0) / results.length;
+      const averagePosition = results.reduce((sum, position) => sum + position, 0) / results.length;
 
       return {
         constructorId,
@@ -81,13 +81,11 @@ export const teamService = {
   async getAllTeamsStats(): Promise<TeamStats[]> {
     try {
       const constructors = await this._getCurrentConstructors();
-      const statsPromises = constructors.map((constructor) =>
-        this.getTeamStats(constructor.constructorId)
-      );
+      const statsPromises = constructors.map((constructor) => this.getTeamStats(constructor.constructorId));
       return Promise.all(statsPromises);
     } catch (error) {
       console.error("Error fetching all teams stats:", error);
       throw error;
     }
   },
-}; 
+};
