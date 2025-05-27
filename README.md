@@ -1,4 +1,4 @@
-# P10-app ��️
+# P10-app 🏁
 
 <p align="center"><b>In each race, only one number counts... the 10ᵉ.</b></p>
 
@@ -25,7 +25,7 @@ Most F1 betting apps focus on the podium. P10-app is unique: here, the real chal
 This twist makes every race unpredictable, fun, and gives everyone a chance to win—right until the last lap.
 
 ## 📑 Table of Contents
-- [P10-app ��️](#p10-app-️)
+- [P10-app 🏁](#p10-app-️)
   - [💡 Why this project?](#-why-this-project)
   - [📑 Table of Contents](#-table-of-contents)
   - [📸 Screenshots](#-screenshots)
@@ -68,6 +68,18 @@ This twist makes every race unpredictable, fun, and gives everyone a chance to w
 - **Testing:** JEST
 - **Code Quality:** SonarQube
 
+#### Variables environment à configurer
+
+| key                   | value (exemple)                                     |
+|-----------------------|-----------------------------------------------------|
+| DATABASE_URL          | postgresql://${user}:${password}@${host}/${db_name} |
+| CLERK_PUBLISHABLE_KEY | https://clerk.com/                                  |
+| CLERK_SECRET_KEY      | https://clerk.com/                                  |
+| CLERK_SIGNING_KEY     | https://clerk.com/                                  |
+| CORS_FRONTEND_URL     | http://localhost:3000                               |
+| PORT                  | 4500                                                |
+
+
 ### Frontend
 - **Framework:** Next.js
 - **Styling:** Tailwind CSS
@@ -75,6 +87,20 @@ This twist makes every race unpredictable, fun, and gives everyone a chance to w
 - **Animations:** Framer Motion
 - **State Management:** React Context
 - **Icons:** Lucide React, React Icons
+
+#### Variables environment à configurer `.env.local` => ./front
+
+| key                                 | value                         |
+|-------------------------------------|-------------------------------|
+| NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY   | https://clerk.com/            |
+| CLERK_SECRET_KEY                    | https://clerk.com/            |
+| NEXT_PUBLIC_CLERK_SIGN_IN_URL       | /sign-in                      |
+| NEXT_PUBLIC_CLERK_SIGN_UP_URL       | /sign-up                      |
+| NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL | /leagues                      |
+| NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL | /leagues                      |
+| NEXT_PUBLIC_BACKEND_URL             | http://localhost:4500         |
+| NEXT_PUBLIC_GRAPHQL_URL             | http://localhost:4500/graphql |
+
 
 ### DevOps
 - **Versioning:** GitHub Flow
@@ -105,7 +131,7 @@ git clone https://github.com/remimoul/P10-app.git
 cd P10-app/front
 ```
 
-2. Set up environment
+2. Set up the environment
 ```bash
 cp .env.template .env
 # Edit .env with your preferences
