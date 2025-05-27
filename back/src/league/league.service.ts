@@ -231,6 +231,8 @@ export class LeagueService {
           ? {
               id: updatedLeague.UserLeague.find((ul) => ul.isAdmin).user
                 .id as UUID,
+              username: updatedLeague.UserLeague.find((ul) => ul.isAdmin).user
+                .username,
               clerkId: updatedLeague.UserLeague.find((ul) => ul.isAdmin).user
                 .clerkId,
               email: updatedLeague.UserLeague.find((ul) => ul.isAdmin).user
@@ -298,6 +300,7 @@ export class LeagueService {
       admin: adminUserLeague?.user
         ? {
             id: adminUserLeague.user.id as UUID,
+            username: adminUserLeague.user.username,
             clerkId: adminUserLeague.user.clerkId,
             email: adminUserLeague.user.email,
             password: '',
