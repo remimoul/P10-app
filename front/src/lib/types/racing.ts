@@ -216,13 +216,13 @@ export interface Race {
   name: string;
   country: string;
   date: string;
-  season: string;
   circuit: string;
-  laps: number;
-  length: string;
-  lapRecord: string;
-  recordHolder: string;
-  recordYear: string;
+  laps?: number;
+  length?: string;
+  lapRecord?: string;
+  recordHolder?: string;
+  recordYear?: string;
+  season: string;
   ergastData?: ErgastRaceData;
 }
 
@@ -293,11 +293,11 @@ export interface Race {
   country: string;
   date: string;
   circuit: string;
-  laps: number;
-  length: string;
-  lapRecord: string;
-  recordHolder: string;
-  recordYear: string;
+  laps?: number;
+  length?: string;
+  lapRecord?: string;
+  recordHolder?: string;
+  recordYear?: string;
   season: string;
   ergastData?: ErgastRaceData;
 }

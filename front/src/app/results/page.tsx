@@ -91,27 +91,6 @@ const Ranking = () => {
         circuit:
           meetingsMap.get(selectedRaceData.meeting_key)?.circuit_short_name ||
           "",
-        laps: 0,
-        length:
-          ergastRaces.find(
-            (race) =>
-              formatDate(race.date) === formatDate(selectedRaceData.date_start)
-          )?.circuitInfo?.length || "N/A",
-        lapRecord:
-          ergastRaces.find(
-            (race) =>
-              formatDate(race.date) === formatDate(selectedRaceData.date_start)
-          )?.circuitInfo?.lapRecord.time || "N/A",
-        recordHolder:
-          ergastRaces.find(
-            (race) =>
-              formatDate(race.date) === formatDate(selectedRaceData.date_start)
-          )?.circuitInfo?.lapRecord.driver || "N/A",
-        recordYear:
-          ergastRaces.find(
-            (race) =>
-              formatDate(race.date) === formatDate(selectedRaceData.date_start)
-          )?.circuitInfo?.lapRecord.year || "N/A",
       }
     : null;
 
