@@ -26,8 +26,8 @@ export class UserService implements OnModuleInit {
     const count = await this.prisma.user.count();
     console.log(`📊 Found ${count} users in database`);
 
-    // ✅ Utilise PrometheusService pour mettre à jour la métrique
-    this.prometheusService.resetAndSetUserCount(count);
+    // ✅ Utilise la nouvelle méthode
+    this.prometheusService.setUserCount(count);
 
     return count;
   }
