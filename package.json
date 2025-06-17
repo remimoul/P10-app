@@ -1,0 +1,6 @@
+{
+	"dependencies": {
+		"@willsoto/nestjs-prometheus": "^6.0.2",
+		"prom-client": "^15.1.3"
+	}
+}
