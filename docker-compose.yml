@@ -13,7 +13,7 @@ services:
       NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL: ${NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL}
       NEXT_PUBLIC_BACKEND_URL: https://grineasy.online
     ports:
-      - "3000:3000"
+      - "3005:3005"
     restart: always
     labels:
       - "traefik.enable=true"
