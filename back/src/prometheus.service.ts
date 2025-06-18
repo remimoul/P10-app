@@ -22,7 +22,7 @@ export class PrometheusService {
   // ✅ Méthode simplifiée pour définir la valeur exacte
   setUserCount(count: number): void {
     this.usersGauge.set(count);
-    console.log(`🔢 Métrique users_total définie à: ${count}`);
+    // console.log(`🔢 Métrique users_total définie à: ${count}`);
   }
 
   getMetrics(): Promise<string> {

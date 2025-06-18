@@ -16,7 +16,7 @@ export class PrometheusController {
   async getMetrics(@Res() res: Response) {
     // ✅ Compte directement les utilisateurs
     const userCount = await this.prisma.user.count();
-    console.log(`📊 Updating metrics: ${userCount} users`);
+    // console.log(`📊 Updating metrics: ${userCount} users`);
 
     // ✅ Met à jour la métrique
     this.prometheusService.setUserCount(userCount);
