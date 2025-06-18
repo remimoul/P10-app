@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { metrics } from '@/lib/prometheus';
+import { metrics } from '@/lib/prometheus-node';
 
 export const runtime = 'nodejs';
 

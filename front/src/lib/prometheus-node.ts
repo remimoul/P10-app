@@ -2,6 +2,7 @@ import client from 'prom-client';
 
 const register = new client.Registry();
 
+
 client.collectDefaultMetrics({ register });
 
 const httpRequestDurationMicroseconds = new client.Histogram({
