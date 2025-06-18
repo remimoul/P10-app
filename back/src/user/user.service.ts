@@ -1,35 +1,16 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { createClerkClient, ClerkClient } from '@clerk/backend';
 import { User, CreateUserInput, GetUserInput } from './user.graphmodel';
 import { PrismaService } from '../prisma.service';
-import { PrometheusService } from '../prometheus.service'; // ✅ Importe PrometheusService
 
 @Injectable()
-export class UserService implements OnModuleInit {
+export class UserService {
   private clerkClient: ClerkClient;
 
-  constructor(
-    private prisma: PrismaService,
-    private prometheusService: PrometheusService, // ✅ Injecte PrometheusService
-  ) {
+  constructor(private prisma: PrismaService) {
     this.clerkClient = createClerkClient({
       secretKey: process.env.CLERK_SECRET_KEY,
     });
-  }
-
-  async onModuleInit() {
-    console.log('🚀 UserService initialized');
-    await this.updateUserCount();
-  }
-
-  async updateUserCount(): Promise<number> {
-    const count = await this.prisma.user.count();
-    console.log(`📊 Found ${count} users in database`);
-
-    // ✅ Utilise la nouvelle méthode
-    this.prometheusService.setUserCount(count);
-
-    return count;
   }
 
   async createUser(createUserInput: CreateUserInput): Promise<User> {
@@ -52,9 +33,6 @@ export class UserService implements OnModuleInit {
         username: createUserInput.username,
       },
     });
-
-    // ✅ Met à jour la métrique après création
-    await this.updateUserCount();
 
     return {
       id: dbUser.id as any,

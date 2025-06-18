@@ -12,7 +12,7 @@ import { PrometheusService } from 'src/prometheus.service'; // ✅ Ajoute l'impo
     UserResolver,
     PrismaService,
     ClerkClientProvider,
-    PrometheusService, // ✅ Ajoute PrometheusService dans les providers
+    PrometheusService,
   ],
   exports: [UserService],
 })

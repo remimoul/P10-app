@@ -25,10 +25,4 @@ export class UserController {
     const getUserInput: GetUserInput = { clerkId };
     return this.userService.getUser(getUserInput);
   }
-
-  @Get('count')
-  async getUserCount() {
-    const count = await this.userService.updateUserCount();
-    return { count };
-  }
 }
