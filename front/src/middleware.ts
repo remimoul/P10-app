@@ -1,5 +1,6 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
 const isPublicRoute = createRouteMatcher([
   "/",
@@ -9,22 +10,19 @@ const isPublicRoute = createRouteMatcher([
   "/faq(.*)",
 ]);
 
-export default clerkMiddleware((auth, req) => {
+export default clerkMiddleware((auth, req: NextRequest) => {
   if (!isPublicRoute(req)) {
-    return auth.protect();
+    const authResult = auth.protect();
+    if (authResult instanceof Promise) {
+      return authResult.then(() => NextResponse.next());
+    }
+    return NextResponse.next();
   }
   return NextResponse.next();
 });
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api/metrics (metrics endpoint)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
     '/((?!api/metrics|_next/static|_next/image|favicon.ico).*)',
   ],
 };
