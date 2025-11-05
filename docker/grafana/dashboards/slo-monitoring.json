@@ -1,0 +1,231 @@
+{
+  "dashboard": {
+    "title": "P10 Backend - SLO Monitoring",
+    "tags": ["P10", "SLO", "Backend"],
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Latence p95 - Endpoints HTTP",
+        "type": "timeseries",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{route=\"/user\"}[5m])) * 1000",
+            "legendFormat": "/user (ms)",
+            "refId": "A"
+          },
+          {
+            "expr": "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{route=\"/leagues\"}[5m])) * 1000",
+            "legendFormat": "/leagues (ms)",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "color": "green", "value": null },
+                { "color": "yellow", "value": 160 },
+                { "color": "red", "value": 200 }
+              ]
+            },
+            "unit": "ms"
+          }
+        }
+      },
+      {
+        "id": 2,
+        "title": "Taux d'erreurs (5xx) - Endpoints HTTP",
+        "type": "timeseries",
+        "targets": [
+          {
+            "expr": "(rate(http_requests_errors_total{route=\"/user\"}[5m]) / (rate(http_request_duration_seconds_count{route=\"/user\"}[5m]) + 0.001)) * 100",
+            "legendFormat": "/user",
+            "refId": "A"
+          },
+          {
+            "expr": "(rate(http_requests_errors_total{route=\"/leagues\"}[5m]) / (rate(http_request_duration_seconds_count{route=\"/leagues\"}[5m]) + 0.001)) * 100",
+            "legendFormat": "/leagues",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "color": "green", "value": null },
+                { "color": "yellow", "value": 0.5 },
+                { "color": "red", "value": 1 }
+              ]
+            },
+            "unit": "percent"
+          }
+        }
+      },
+      {
+        "id": 3,
+        "title": "Latence p95 - GraphQL Queries",
+        "type": "timeseries",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(graphql_request_duration_seconds_bucket{operation_name=\"user\"}[5m])) * 1000",
+            "legendFormat": "Query: user",
+            "refId": "A"
+          },
+          {
+            "expr": "histogram_quantile(0.95, rate(graphql_request_duration_seconds_bucket{operation_name=\"getAllLeagues\"}[5m])) * 1000",
+            "legendFormat": "Query: getAllLeagues",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "ms"
+          }
+        }
+      },
+      {
+        "id": 4,
+        "title": "Taux d'erreurs - GraphQL Queries",
+        "type": "timeseries",
+        "targets": [
+          {
+            "expr": "(rate(graphql_requests_errors_total{operation_name=\"user\"}[5m]) / (rate(graphql_request_duration_seconds_count{operation_name=\"user\"}[5m]) + 0.001)) * 100",
+            "legendFormat": "Query: user",
+            "refId": "A"
+          },
+          {
+            "expr": "(rate(graphql_requests_errors_total{operation_name=\"getAllLeagues\"}[5m]) / (rate(graphql_request_duration_seconds_count{operation_name=\"getAllLeagues\"}[5m]) + 0.001)) * 100",
+            "legendFormat": "Query: getAllLeagues",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent"
+          }
+        }
+      },
+      {
+        "id": 5,
+        "title": "SLO Status - /user (Latence)",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{route=\"/user\"}[5m])) * 1000",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "color": "green", "value": null },
+                { "color": "yellow", "value": 160 },
+                { "color": "red", "value": 200 }
+              ]
+            },
+            "unit": "ms",
+            "mappings": [
+              {
+                "type": "value",
+                "options": {
+                  "null": { "text": "N/A", "color": "gray" }
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": 6,
+        "title": "SLO Status - /user (Erreurs)",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "(rate(http_requests_errors_total{route=\"/user\"}[5m]) / (rate(http_request_duration_seconds_count{route=\"/user\"}[5m]) + 0.001)) * 100",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "color": "green", "value": null },
+                { "color": "yellow", "value": 0.5 },
+                { "color": "red", "value": 1 }
+              ]
+            },
+            "unit": "percent"
+          }
+        }
+      },
+      {
+        "id": 7,
+        "title": "SLO Status - /leagues (Latence)",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{route=\"/leagues\"}[5m])) * 1000",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "color": "green", "value": null },
+                { "color": "yellow", "value": 200 },
+                { "color": "red", "value": 250 }
+              ]
+            },
+            "unit": "ms"
+          }
+        }
+      },
+      {
+        "id": 8,
+        "title": "SLO Status - /leagues (Erreurs)",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "(rate(http_requests_errors_total{route=\"/leagues\"}[5m]) / (rate(http_request_duration_seconds_count{route=\"/leagues\"}[5m]) + 0.001)) * 100",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "color": "green", "value": null },
+                { "color": "yellow", "value": 0.5 },
+                { "color": "red", "value": 1 }
+              ]
+            },
+            "unit": "percent"
+          }
+        }
+      }
+    ],
+    "refresh": "30s",
+    "schemaVersion": 38,
+    "style": "dark",
+    "templating": {
+      "list": []
+    },
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "timepicker": {},
+    "uid": "p10-slo-monitoring",
+    "version": 1
+  },
+  "overwrite": true
+}

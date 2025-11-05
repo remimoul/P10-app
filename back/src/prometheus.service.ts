@@ -10,6 +10,13 @@ export class PrometheusService {
   private readonly betsGauge: client.Gauge; // ✅ Gauge simple pour le total des bets
   private readonly pilotsGauge: client.Gauge; // ✅ Gauge simple pour le total des pilots
 
+  // 🎯 SLO Metrics
+  private readonly httpRequestDuration: client.Histogram;
+  private readonly httpRequestErrorRate: client.Counter;
+  private readonly graphqlRequestDuration: client.Histogram;
+  private readonly graphqlErrorRate: client.Counter;
+  private readonly frontendPageLoadDuration: client.Histogram;
+
   constructor() {
     this.register = new client.Registry();
     this.register.setDefaultLabels({ app: 'nestjs-prometheus' });
@@ -49,6 +56,47 @@ export class PrometheusService {
       help: 'Total number of pilots',
       registers: [this.register],
     });
+
+    // 🎯 SLO Metrics - HTTP Requests
+    this.httpRequestDuration = new client.Histogram({
+      name: 'http_request_duration_seconds',
+      help: 'Duration of HTTP requests in seconds',
+      labelNames: ['method', 'route', 'status_code'],
+      buckets: [0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 1, 2, 5],
+      registers: [this.register],
+    });
+
+    this.httpRequestErrorRate = new client.Counter({
+      name: 'http_requests_errors_total',
+      help: 'Total HTTP requests errors (5xx)',
+      labelNames: ['method', 'route', 'status_code'],
+      registers: [this.register],
+    });
+
+    // 🎯 SLO Metrics - GraphQL Requests
+    this.graphqlRequestDuration = new client.Histogram({
+      name: 'graphql_request_duration_seconds',
+      help: 'Duration of GraphQL requests in seconds',
+      labelNames: ['operation_name', 'operation_type'],
+      buckets: [0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 1, 2, 5],
+      registers: [this.register],
+    });
+
+    this.graphqlErrorRate = new client.Counter({
+      name: 'graphql_requests_errors_total',
+      help: 'Total GraphQL requests errors',
+      labelNames: ['operation_name', 'operation_type'],
+      registers: [this.register],
+    });
+
+    // 🎯 Frontend Page Load Metrics
+    this.frontendPageLoadDuration = new client.Histogram({
+      name: 'frontend_page_load_duration_seconds',
+      help: 'Duration of frontend page loads in seconds',
+      labelNames: ['page_url'],
+      buckets: [0.1, 0.5, 1, 2, 3, 5, 10],
+      registers: [this.register],
+    });
   }
 
   // ✅ Méthode simplifiée pour définir la valeur exacte
@@ -79,6 +127,45 @@ export class PrometheusService {
   setPilotCount(count: number): void {
     this.pilotsGauge.set(count);
     // console.log(`🔢 Métrique pilots_total définie à: ${count}`);
+  }
+
+  // 🎯 SLO Metrics Methods
+  recordHttpRequestDuration(
+    method: string,
+    route: string,
+    status_code: number,
+    durationMs: number,
+  ): void {
+    this.httpRequestDuration
+      .labels(method, route, status_code.toString())
+      .observe(durationMs / 1000); // Convertir en secondes
+  }
+
+  recordHttpError(method: string, route: string, status_code: number): void {
+    if (status_code >= 500) {
+      this.httpRequestErrorRate
+        .labels(method, route, status_code.toString())
+        .inc();
+    }
+  }
+
+  recordGraphqlRequestDuration(
+    operation_name: string,
+    operation_type: string,
+    durationMs: number,
+  ): void {
+    this.graphqlRequestDuration
+      .labels(operation_name, operation_type)
+      .observe(durationMs / 1000);
+  }
+
+  recordGraphqlError(operation_name: string, operation_type: string): void {
+    this.graphqlErrorRate.labels(operation_name, operation_type).inc();
+  }
+
+  // 🎯 Frontend Metrics Methods
+  recordFrontendPageLoad(pageUrl: string, durationMs: number): void {
+    this.frontendPageLoadDuration.labels(pageUrl).observe(durationMs / 1000); // Convertir en secondes
   }
 
   getMetrics(): Promise<string> {

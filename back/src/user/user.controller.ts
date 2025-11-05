@@ -2,6 +2,7 @@ import { Body, Controller, Post, Get, Query } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags, ApiBody } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { CreateUserInput, GetUserInput } from './user.graphmodel';
+import { Public } from '../decorators/public.decorator';
 
 @ApiTags('Users')
 @Controller('users')
@@ -24,5 +25,13 @@ export class UserController {
   async getUser(@Query('clerkId') clerkId?: string) {
     const getUserInput: GetUserInput = { clerkId };
     return this.userService.getUser(getUserInput);
+  }
+
+  @Public()
+  @Get('all')
+  @ApiOperation({ summary: 'Get all users' })
+  @ApiResponse({ status: 200, description: 'List of all users' })
+  async getAllUsers() {
+    return this.userService.getAllUsers();
   }
 }

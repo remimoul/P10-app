@@ -120,4 +120,27 @@ export class UserService {
         : [],
     };
   }
+
+  async getAllUsers(): Promise<any[]> {
+    const dbUsers = await this.prisma.user.findMany({
+      include: {
+        UserLeague: {
+          include: {
+            league: true,
+          },
+        },
+      },
+    });
+
+    return dbUsers.map((dbUser) => ({
+      id: dbUser.id,
+      clerkId: dbUser.clerkId,
+      username: dbUser.username,
+      email: dbUser.email,
+      password: '',
+      leagues: dbUser.UserLeague
+        ? dbUser.UserLeague.map((ul) => ul.league)
+        : [],
+    }));
+  }
 }

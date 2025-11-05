@@ -1,4 +1,4 @@
-import { Controller, Get, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { PrometheusService } from './prometheus.service';
 import { PrismaService } from './prisma.service'; // ✅ Injecte PrismaService directement
@@ -39,5 +39,18 @@ export class PrometheusController {
     const metrics = await this.prometheusService.getMetrics();
     res.setHeader('Content-Type', 'text/plain');
     res.send(metrics);
+  }
+
+  @Post('/frontend')
+  async recordFrontendMetric(
+    @Body() data: { pageUrl: string; loadTime: number; timestamp: number },
+  ) {
+    const { pageUrl, loadTime } = data;
+    // Record frontend page load time as a histogram observation
+    this.prometheusService.recordFrontendPageLoad(pageUrl, loadTime);
+    return {
+      success: true,
+      message: `Frontend metric recorded for ${pageUrl}`,
+    };
   }
 }
