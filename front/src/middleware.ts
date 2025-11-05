@@ -14,6 +14,8 @@ export default clerkMiddleware(
       "http://localhost:4500", // Backend local
       "https://www.grineasy.com",
       "https://grineasy.online",
+      "http://p10appf",
+      "http://p10appb",
     ],
   }
 );
