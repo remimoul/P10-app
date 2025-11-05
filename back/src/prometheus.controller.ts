@@ -20,9 +20,17 @@ export class PrometheusController {
     // ✅ Compte le nombre total de leagues
     const leagueCount = await this.prisma.league.count();
 
+    // ✅ Compte le nombre total de pilotteams
+    const pilotteamCount = await this.prisma.pilotTeam.count();
+
+    // ✅ Compte le nombre total de bets
+    const betCount = await this.prisma.bet.count();
+
     // ✅ Met à jour les métriques
     this.prometheusService.setUserCount(userCount);
     this.prometheusService.setLeagueCount(leagueCount);
+    this.prometheusService.setPilotteamCount(pilotteamCount);
+    this.prometheusService.setBetCount(betCount);
 
     const metrics = await this.prometheusService.getMetrics();
     res.setHeader('Content-Type', 'text/plain');
