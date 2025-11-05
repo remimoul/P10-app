@@ -5,6 +5,7 @@ import * as client from 'prom-client';
 export class PrometheusService {
   private readonly register: client.Registry;
   private readonly usersGauge: client.Gauge<string>; // ✅ Changé en Gauge
+  private readonly leaguesGauge: client.Gauge; // ✅ Gauge simple pour le total des leagues
 
   constructor() {
     this.register = new client.Registry();
@@ -17,12 +18,25 @@ export class PrometheusService {
       help: 'Total number of users in database',
       registers: [this.register],
     });
+
+    // ✅ Gauge simple pour le nombre total de leagues
+    this.leaguesGauge = new client.Gauge({
+      name: 'leagues_total',
+      help: 'Total number of leagues',
+      registers: [this.register],
+    });
   }
 
   // ✅ Méthode simplifiée pour définir la valeur exacte
   setUserCount(count: number): void {
     this.usersGauge.set(count);
     // console.log(`🔢 Métrique users_total définie à: ${count}`);
+  }
+
+  // ✅ Nouvelle méthode pour mettre à jour le nombre total de leagues
+  setLeagueCount(count: number): void {
+    this.leaguesGauge.set(count);
+    // console.log(`🔢 Métrique leagues_total définie à: ${count}`);
   }
 
   getMetrics(): Promise<string> {

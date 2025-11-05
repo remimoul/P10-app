@@ -16,10 +16,13 @@ export class PrometheusController {
   async getMetrics(@Res() res: Response) {
     // ✅ Compte directement les utilisateurs
     const userCount = await this.prisma.user.count();
-    // console.log(`📊 Updating metrics: ${userCount} users`);
 
-    // ✅ Met à jour la métrique
+    // ✅ Compte le nombre total de leagues
+    const leagueCount = await this.prisma.league.count();
+
+    // ✅ Met à jour les métriques
     this.prometheusService.setUserCount(userCount);
+    this.prometheusService.setLeagueCount(leagueCount);
 
     const metrics = await this.prometheusService.getMetrics();
     res.setHeader('Content-Type', 'text/plain');
