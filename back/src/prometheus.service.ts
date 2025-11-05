@@ -8,6 +8,7 @@ export class PrometheusService {
   private readonly leaguesGauge: client.Gauge; // ✅ Gauge simple pour le total des leagues
   private readonly pilotteamsGauge: client.Gauge; // ✅ Gauge simple pour le total des pilotteams
   private readonly betsGauge: client.Gauge; // ✅ Gauge simple pour le total des bets
+  private readonly pilotsGauge: client.Gauge; // ✅ Gauge simple pour le total des pilots
 
   constructor() {
     this.register = new client.Registry();
@@ -41,6 +42,13 @@ export class PrometheusService {
       help: 'Total number of bets',
       registers: [this.register],
     });
+
+    // ✅ Gauge simple pour le nombre total de pilots
+    this.pilotsGauge = new client.Gauge({
+      name: 'pilots_total',
+      help: 'Total number of pilots',
+      registers: [this.register],
+    });
   }
 
   // ✅ Méthode simplifiée pour définir la valeur exacte
@@ -65,6 +73,12 @@ export class PrometheusService {
   setBetCount(count: number): void {
     this.betsGauge.set(count);
     // console.log(`🔢 Métrique bets_total définie à: ${count}`);
+  }
+
+  // ✅ Nouvelle méthode pour mettre à jour le nombre total de pilots
+  setPilotCount(count: number): void {
+    this.pilotsGauge.set(count);
+    // console.log(`🔢 Métrique pilots_total définie à: ${count}`);
   }
 
   getMetrics(): Promise<string> {
