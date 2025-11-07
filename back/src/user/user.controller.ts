@@ -29,9 +29,13 @@ export class UserController {
 
   @Public()
   @Get('all')
-  @ApiOperation({ summary: 'Get all users' })
-  @ApiResponse({ status: 200, description: 'List of all users' })
-  async getAllUsers() {
-    return this.userService.getAllUsers();
+  @ApiOperation({ summary: 'Get all users with keyset pagination' })
+  @ApiResponse({ status: 200, description: 'Paginated list of users' })
+  async getAllUsers(
+    @Query('limit') limit?: string,
+    @Query('cursor') cursor?: string,
+  ) {
+    const limitNum = limit ? parseInt(limit, 10) : 20;
+    return this.userService.getAllUsers(limitNum, cursor);
   }
 }

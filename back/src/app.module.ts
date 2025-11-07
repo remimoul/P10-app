@@ -27,6 +27,7 @@ import { PrometheusController } from 'src/prometheus.controller';
 import { PrometheusService } from 'src/prometheus.service';
 import { PrometheusMiddleware } from './middleware/prometheus.middleware';
 import { PrometheusGraphqlInterceptor } from './interceptors/prometheus.graphql.interceptor';
+import { RedisModule } from './redis/redis.module';
 
 @Module({
   imports: [
@@ -50,6 +51,7 @@ import { PrometheusGraphqlInterceptor } from './interceptors/prometheus.graphql.
     TrackModule,
     UserModule,
     AuthModule,
+    RedisModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),

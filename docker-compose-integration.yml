@@ -46,8 +46,11 @@ services:
       CLERK_PUBLISHABLE_KEY: ${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
       CLERK_SECRET_KEY: ${CLERK_SECRET_KEY}
       CLERK_SIGNING_KEY: ${CLERK_SIGNING_KEY}
+      REDIS_URL: redis://redis:6379
     expose:
       - "4500"
+    depends_on:
+      - redis
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.backend.rule=Host(`p10appb`) || HostRegexp(`p10appb:{port:[0-9]+}`)"
@@ -57,6 +60,20 @@ services:
     #   - postgresql
     networks:
       - integration
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis_p10_int
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+    networks:
+      - integration
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
 
   prometheus:
     image: prom/prometheus:latest
