@@ -21,7 +21,6 @@ COPY --from=builder /build/package.json .
 COPY --from=builder /build/pnpm-lock.yaml .
 COPY --from=builder /build/prisma ./prisma
 COPY --from=builder /build/prod.sh .
-# Add this line to copy generated directory
 COPY --from=builder /build/generated ./generated
 RUN chmod +x prod.sh
 

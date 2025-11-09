@@ -1,0 +1,21 @@
+# Docker Compose pour exécuter k6 avec Prometheus
+# Usage: docker-compose -f k6/docker-compose.yml up
+
+services:
+  k6:
+    image: grafana/k6:latest
+    container_name: k6_tests
+    volumes:
+      - ./:/scripts
+    environment:
+      BASE_URL: http://backend:4500
+    command: run /scripts/main-slo-test.js
+    networks:
+      - integration
+    depends_on:
+      - backend
+
+networks:
+  integration:
+    driver: bridge
+    external: true

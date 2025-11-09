@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { GraphQLModule } from '@nestjs/graphql';
@@ -20,9 +20,14 @@ import { ConfigModule } from '@nestjs/config';
 import { ClerkClientProvider } from './providers/clerk-client.provider';
 import { ClerkAuthGuard } from './auth/clerk-auth.guard';
 import { AuthModule } from './auth/auth.module';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { UserController } from './user/user.controller';
 import { LeagueController } from './league/league.controller';
+import { PrometheusController } from 'src/prometheus.controller';
+import { PrometheusService } from 'src/prometheus.service';
+import { PrometheusMiddleware } from './middleware/prometheus.middleware';
+import { PrometheusGraphqlInterceptor } from './interceptors/prometheus.graphql.interceptor';
+import { RedisModule } from './redis/redis.module';
 
 @Module({
   imports: [
@@ -46,16 +51,28 @@ import { LeagueController } from './league/league.controller';
     TrackModule,
     UserModule,
     AuthModule,
+    RedisModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
   ],
-  controllers: [AppController, UserController, LeagueController],
+  controllers: [
+    AppController,
+    UserController,
+    LeagueController,
+    PrometheusController,
+  ],
   providers: [
     AppService,
     PrismaService,
     ClerkClientProvider,
+    PrometheusService,
     { provide: APP_GUARD, useClass: ClerkAuthGuard },
+    { provide: APP_INTERCEPTOR, useClass: PrometheusGraphqlInterceptor },
   ],
 })
-export class AppModule { }
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(PrometheusMiddleware).forRoutes('*');
+  }
+}

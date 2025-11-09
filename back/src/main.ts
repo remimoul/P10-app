@@ -7,8 +7,23 @@ async function bootstrap() {
 
   // Configuration CORS
   app.enableCors({
-    origin: [process.env.CORS_FRONTEND_URL],
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    origin: (origin, callback) => {
+      // Accepter les requêtes du frontend et les requêtes sans origine (Postman, etc.)
+      const allowedOrigins = [
+        process.env.CORS_FRONTEND_URL,
+        'http://localhost:3000',
+        'http://localhost:3001',
+        'http://p10appf',
+        'http://p10appb',
+      ];
+
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
   });

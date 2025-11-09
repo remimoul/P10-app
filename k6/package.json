@@ -1,0 +1,26 @@
+{
+  "name": "k6-tests",
+  "version": "1.0.0",
+  "description": "K6 Performance tests for P10 Backend",
+  "scripts": {
+    "test:slo": "k6 run k6/main-slo-test.js",
+    "test:slo:local": "BASE_URL=http://localhost:4500 k6 run k6/main-slo-test.js",
+    "test:stress": "k6 run k6/stress-test.js",
+    "test:stress:local": "BASE_URL=http://localhost:4500 k6 run k6/stress-test.js",
+    "test:graphql": "k6 run k6/graphql-test.js",
+    "test:graphql:local": "BASE_URL=http://localhost:4500 k6 run k6/graphql-test.js",
+    "test:quick": "k6 run k6/quick-test.js",
+    "test:quick:local": "BASE_URL=http://localhost:4500 k6 run k6/quick-test.js",
+    "test:all": "npm run test:slo && npm run test:stress && npm run test:graphql",
+    "test:all:local": "npm run test:slo:local && npm run test:stress:local && npm run test:graphql:local",
+    "test:report": "k6 run --out html=k6-report.html k6/main-slo-test.js",
+    "test:report:local": "BASE_URL=http://localhost:4500 k6 run --out html=k6-report.html k6/main-slo-test.js"
+  },
+  "keywords": [
+    "k6",
+    "performance",
+    "testing",
+    "slo"
+  ],
+  "author": "P10 Team"
+}

@@ -2,6 +2,7 @@ import { Body, Controller, Post, Get, Query } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags, ApiBody } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { CreateUserInput, GetUserInput } from './user.graphmodel';
+import { Public } from '../decorators/public.decorator';
 
 @ApiTags('Users')
 @Controller('users')
@@ -24,5 +25,17 @@ export class UserController {
   async getUser(@Query('clerkId') clerkId?: string) {
     const getUserInput: GetUserInput = { clerkId };
     return this.userService.getUser(getUserInput);
+  }
+
+  @Public()
+  @Get('all')
+  @ApiOperation({ summary: 'Get all users with keyset pagination' })
+  @ApiResponse({ status: 200, description: 'Paginated list of users' })
+  async getAllUsers(
+    @Query('limit') limit?: string,
+    @Query('cursor') cursor?: string,
+  ) {
+    const limitNum = limit ? parseInt(limit, 10) : 20;
+    return this.userService.getAllUsers(limitNum, cursor);
   }
 }
