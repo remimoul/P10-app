@@ -23,6 +23,8 @@ import { AuthModule } from './auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { UserController } from './user/user.controller';
 import { LeagueController } from './league/league.controller';
+import { PrometheusController } from 'src/prometheus.controller';
+import { PrometheusService } from 'src/prometheus.service';
 
 @Module({
   imports: [
@@ -50,12 +52,18 @@ import { LeagueController } from './league/league.controller';
       isGlobal: true,
     }),
   ],
-  controllers: [AppController, UserController, LeagueController],
+  controllers: [
+    AppController,
+    UserController,
+    LeagueController,
+    PrometheusController,
+  ],
   providers: [
     AppService,
     PrismaService,
     ClerkClientProvider,
+    PrometheusService,
     { provide: APP_GUARD, useClass: ClerkAuthGuard },
   ],
 })
-export class AppModule { }
+export class AppModule {}
