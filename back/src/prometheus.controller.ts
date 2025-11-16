@@ -1,7 +1,7 @@
 import { Controller, Get, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { PrometheusService } from './prometheus.service';
-import { PrismaService } from './prisma.service'; // ✅ Injecte PrismaService directement
+import { PrismaService } from './prisma.service';
 import { Public } from './decorators/public.decorator';
 
 @Public()
@@ -9,20 +9,18 @@ import { Public } from './decorators/public.decorator';
 export class PrometheusController {
   constructor(
     private readonly prometheusService: PrometheusService,
-    private readonly prisma: PrismaService, // ✅ Plus simple
+    private readonly prisma: PrismaService,
   ) {}
 
   @Get()
   async getMetrics(@Res() res: Response) {
-    // ✅ Compte directement les utilisateurs
     const userCount = await this.prisma.user.count();
-    // console.log(`📊 Updating metrics: ${userCount} users`);
+    // console.log(`updating metrics: ${userCount} users`);
 
-    // ✅ Met à jour la métrique
     this.prometheusService.setUserCount(userCount);
 
     const metrics = await this.prometheusService.getMetrics();
-    res.setHeader('Content-Type', 'text/plain');
+    res.setHeader('Content-Type', this.prometheusService.contentType);
     res.send(metrics);
   }
 }

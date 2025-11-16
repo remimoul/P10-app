@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { GraphQLModule } from '@nestjs/graphql';
@@ -25,6 +25,7 @@ import { UserController } from './user/user.controller';
 import { LeagueController } from './league/league.controller';
 import { PrometheusController } from 'src/prometheus.controller';
 import { PrometheusService } from 'src/prometheus.service';
+import { PrometheusMiddleware } from './prometheus.middleware';
 
 @Module({
   imports: [
@@ -63,7 +64,12 @@ import { PrometheusService } from 'src/prometheus.service';
     PrismaService,
     ClerkClientProvider,
     PrometheusService,
+    PrometheusMiddleware,
     { provide: APP_GUARD, useClass: ClerkAuthGuard },
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(PrometheusMiddleware).forRoutes('*');
+  }
+}
