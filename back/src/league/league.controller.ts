@@ -104,6 +104,11 @@ export class LeagueController {
     summary: 'Get all leagues',
     description: 'Retrieves a list of all available leagues',
   })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    description: 'Max number of leagues to return (default 20, max 100)',
+  })
   @ApiResponse({
     status: 200,
     description: 'List of all leagues',

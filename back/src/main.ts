@@ -1,9 +1,23 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { Logger } from 'nestjs-pino';
+import { randomUUID } from 'crypto';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  // 👉 on active bufferLogs pour que Pino prenne le relais proprement
+  const app = await NestFactory.create(AppModule, {
+    bufferLogs: true,
+  });
+
+  app.useLogger(app.get(Logger));
+
+  app.use((req: any, res, next) => {
+    if (!req.id) {
+      req.id = randomUUID();
+    }
+    next();
+  });
 
   // Configuration CORS
   app.enableCors({
@@ -24,7 +38,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  await app.listen(process.env.PORT ?? 4500); // Changement du port par défaut à 4500
+  await app.listen(process.env.PORT ?? 4500);
   console.log(`API P10🏁 is running on 🚀: ${await app.getUrl()}/api`);
 }
 bootstrap();

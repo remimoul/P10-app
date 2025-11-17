@@ -26,9 +26,35 @@ import { LeagueController } from './league/league.controller';
 import { PrometheusController } from 'src/prometheus.controller';
 import { PrometheusService } from 'src/prometheus.service';
 import { PrometheusMiddleware } from './prometheus.middleware';
+import { LoggerModule } from 'nestjs-pino';
+import { randomUUID } from 'node:crypto';
 
 @Module({
   imports: [
+    LoggerModule.forRoot({
+      pinoHttp: {
+        level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
+
+        genReqId(req) {
+          return (
+            (req.headers['x-request-id'] as string) ||
+            (req.id as string) ||
+            randomUUID()
+          );
+        },
+
+        serializers: {
+          req(req) {
+            return {
+              id: req.id,
+              method: req.method,
+              url: req.url,
+            };
+          },
+        },
+      },
+    }),
+
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       plugins: [ApolloServerPluginLandingPageLocalDefault()],

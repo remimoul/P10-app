@@ -92,18 +92,35 @@ export class LeagueService {
 
   async getAllLeagues(): Promise<League[]> {
     const leagues = await this.prisma.league.findMany({
+      take: 20,
+      orderBy: {
+        updatedAt: 'desc',
+      },
       include: {
-        avatar: true,
+        avatar: {
+          select: {
+            id: true,
+            picture: true,
+          },
+        },
         UserLeague: {
           include: {
-            user: true,
+            user: {
+              select: {
+                id: true,
+                clerkId: true,
+                username: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+              },
+            },
           },
         },
       },
     });
 
     return leagues.map((league) => {
-      // Trouver l'utilisateur admin parmi les UserLeague
       const adminUserLeague = league.UserLeague.find((ul) => ul.isAdmin);
 
       return {
@@ -117,7 +134,6 @@ export class LeagueService {
               url: league.avatar.picture,
             }
           : null,
-        // Définir l'administrateur si trouvé
         admin: adminUserLeague?.user
           ? {
               id: adminUserLeague.user.id as UUID,
