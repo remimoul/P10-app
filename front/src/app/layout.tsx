@@ -1,10 +1,12 @@
 import "@/app/globals.css";
+import "@/lib/polyfills";
 import type { Metadata } from "next";
 import { Toaster } from "react-hot-toast";
-import { ClerkProvider } from "@clerk/nextjs";
+import { ClerkProviderWrapper } from "@/components/providers/ClerkProviderWrapper";
 import Navbar from "@/components/layouts/Navbar";
 import Footer from "@/components/layouts/Footer";
 import { ApolloProviderWrapper } from "@/components/providers/ApolloProvider";
+import ScrollToTop from "@/components/common/ScrollToTop";
 
 export const metadata: Metadata = {
   title: "P10 App",
@@ -20,7 +22,7 @@ const RootLayout = ({
   children: React.ReactNode;
 }>) => {
   return (
-    <ClerkProvider>
+    <ClerkProviderWrapper>
       <html lang="en" className="font-formula1 h-full">
         <body className="flex flex-col min-h-screen">
           <ApolloProviderWrapper>
@@ -36,10 +38,11 @@ const RootLayout = ({
               />
             </main>
             <Footer />
+            <ScrollToTop />
           </ApolloProviderWrapper>
         </body>
       </html>
-    </ClerkProvider>
+    </ClerkProviderWrapper>
   );
 };
 

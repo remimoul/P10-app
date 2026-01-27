@@ -122,8 +122,8 @@ const ViewLeague = () => {
             rank={
               user
                 ? [...participants]
-                    .sort((a, b) => b.score - a.score)
-                    .findIndex((p) => p.id === user.id) + 1
+                  .sort((a, b) => b.score - a.score)
+                  .findIndex((p) => p.id === user.id) + 1
                 : null
             }
             handleVote={handleVote}

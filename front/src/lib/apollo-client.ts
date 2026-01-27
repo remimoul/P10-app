@@ -1,14 +1,13 @@
+"use client";
+
 import { ApolloClient, InMemoryCache, createHttpLink } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 
 const httpLink = createHttpLink({
-  uri: process.env.NEXT_PUBLIC_GRAPHQL_URL || "http://localhost:4500/graphql", // Remplacez par l'URL de votre API GraphQL
+  uri: process.env.NEXT_PUBLIC_GRAPHQL_URL || "http://localhost:4500/graphql",
 });
 
 const authLink = setContext((_, { headers }) => {
-  // Récupérer le token d'authentification si nécessaire
-  // const token = localStorage.getItem('token');
-
   return {
     headers: {
       ...headers,
@@ -17,15 +16,34 @@ const authLink = setContext((_, { headers }) => {
   };
 });
 
-export const apolloClient = new ApolloClient({
-  link: authLink.concat(httpLink),
-  cache: new InMemoryCache(),
-  defaultOptions: {
-    watchQuery: {
-      errorPolicy: "all",
+let clientInstance: ApolloClient<unknown> | null = null;
+
+function createApolloClient() {
+  return new ApolloClient({
+    link: authLink.concat(httpLink),
+    cache: new InMemoryCache({
+      typePolicies: {},
+    }),
+    defaultOptions: {
+      watchQuery: {
+        errorPolicy: "all",
+      },
+      query: {
+        errorPolicy: "all",
+      },
     },
-    query: {
-      errorPolicy: "all",
-    },
-  },
-});
+    ssrMode: false,
+  });
+}
+
+export function getApolloClient() {
+  if (typeof window === "undefined") {
+    throw new Error("Apollo Client should only be created on the client side");
+  }
+
+  if (!clientInstance) {
+    clientInstance = createApolloClient();
+  }
+
+  return clientInstance;
+}

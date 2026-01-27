@@ -11,7 +11,7 @@ const HowToPlay = () => {
     {
       title: "Challenge your friends",
       description:
-        "Create or join leagues (public or private) and compete against other fans",
+        "Create or join leagues and compete against other fans",
       icon: <Swords className="w-14 h-14 text-[var(--secondary-red)]" />,
     },
     {
@@ -22,7 +22,7 @@ const HowToPlay = () => {
     {
       title: "Conquer the podium",
       description:
-        "Every winning bet brings you closer to the ultimate trophy!",
+        "Every winning bet takes you one step closer to the ultimate trophy !",
       icon: <GiTrophyCup className="w-14 h-14 text-[var(--secondary-red)]" />,
     },
   ];
@@ -40,7 +40,29 @@ const HowToPlay = () => {
         }}
       />
 
-      <div className="max-w-7xl mx-auto px-10 sm:px-12 lg:px-16">
+      {/* Courbes subtiles en arrière-plan */}
+      <svg
+        className="absolute inset-0 w-full h-full pointer-events-none opacity-20"
+        viewBox="0 0 1920 1080"
+        preserveAspectRatio="xMidYMid slice"
+      >
+        <path
+          d="M 0,540 Q 480,300 960,540 T 1920,540"
+          stroke="#EF233C"
+          strokeWidth="2"
+          fill="none"
+          strokeDasharray="8,6"
+        />
+        <path
+          d="M 0,600 Q 480,800 960,600 T 1920,600"
+          stroke="#EF233C"
+          strokeWidth="2"
+          fill="none"
+          strokeDasharray="8,6"
+        />
+      </svg>
+
+      <div className="max-w-7xl mx-auto px-10 sm:px-12 lg:px-16 relative z-10">
         <motion.h2
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
