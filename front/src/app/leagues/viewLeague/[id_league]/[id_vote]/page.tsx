@@ -1,12 +1,23 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
+import dynamic from "next/dynamic";
 import { useUser } from "@clerk/nextjs";
 import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { VoteTabs } from "@/components/vote/VoteTabs";
-import { DriverComparison } from "@/components/vote/DriverComparison";
 import { CancelVoteDialog } from "@/components/vote/pop-up/CancelVoteDialog";
+
+const DriverComparison = dynamic(
+  () => import("@/components/vote/DriverComparison").then((m) => m.DriverComparison),
+  {
+    loading: () => (
+      <div className="h-80 animate-pulse rounded-2xl bg-gray-100 flex items-center justify-center">
+        <span className="text-gray-400">Loading comparison...</span>
+      </div>
+    ),
+  }
+);
 import { VotingSection } from "@/components/vote/VotingSection";
 import { InfoSection } from "@/components/vote/InfoSection";
 import { useVote } from "@/lib/hooks/useVote";
@@ -235,12 +246,20 @@ const VotePage = () => {
       </AnimatePresence>
 
       {isComparisonOpen && (
-        <DriverComparison
-          drivers={drivers.filter((d) =>
-            comparisonDrivers.includes(d.driverId)
-          )}
-          onClose={() => setIsComparisonOpen(false)}
-        />
+        <Suspense
+          fallback={
+            <div className="h-80 animate-pulse rounded-2xl bg-gray-100 flex items-center justify-center">
+              <span className="text-gray-400">Loading comparison...</span>
+            </div>
+          }
+        >
+          <DriverComparison
+            drivers={drivers.filter((d) =>
+              comparisonDrivers.includes(d.driverId)
+            )}
+            onClose={() => setIsComparisonOpen(false)}
+          />
+        </Suspense>
       )}
 
       <CancelVoteDialog

@@ -1,16 +1,26 @@
 "use client";
 
-import React, { useMemo, useEffect } from "react";
+import React, { useMemo, useEffect, useCallback, Suspense } from "react";
+import dynamic from "next/dynamic";
 import Filters from "@/components/Results/Filters";
 import RaceInfo from "@/components/Results/RaceInfo";
-import ResultsTable from "@/components/Results/ResultsTable";
 import NoRacesMessage from "@/components/Results/NoRacesMessage";
 import { useRaces } from "@/lib/hooks/useRaces";
 import { useDrivers } from "@/lib/hooks/useDrivers";
 import { formatDate } from "@/lib/utils/dateAndTime";
 import LoadingScreen from "@/components/common/LoadingScreen";
 import ErrorBoundary from "@/components/common/ErrorBoundary";
-// import { FaArrowRight } from "react-icons/fa";
+
+const ResultsTable = dynamic(
+  () => import("@/components/Results/ResultsTable"),
+  {
+    loading: () => (
+      <div className="flex items-center justify-center p-8">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600" />
+      </div>
+    ),
+  }
+);
 
 const Ranking = () => {
   const {
@@ -30,6 +40,8 @@ const Ranking = () => {
 
   const selectedCountry = "";
   const isSprint = false; // You can add logic to determine if it's a sprint
+
+  const noopCountryChange = useCallback(() => {}, []);
 
   const { filteredDrivers, loading: driversLoading } = useDrivers(
     selectedRace,
@@ -173,7 +185,7 @@ const Ranking = () => {
             selectedDate={selectedDate}
             onSeasonChange={setSelectedSeason}
             onRaceChange={setSelectedRace}
-            onCountryChange={() => {}}
+            onCountryChange={noopCountryChange}
             onDateChange={setSelectedDate}
             availableSeasons={availableSeasons}
           />
@@ -186,17 +198,33 @@ const Ranking = () => {
               message="No races available for this season"
             />
           ) : selectedSeason && selectedRound ? (
-            <ResultsTable
-              drivers={filteredDrivers}
-              season={selectedSeason}
-              round={selectedRound}
-            />
+            <Suspense
+              fallback={
+                <div className="flex items-center justify-center p-8">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600" />
+                </div>
+              }
+            >
+              <ResultsTable
+                drivers={filteredDrivers}
+                season={selectedSeason}
+                round={selectedRound}
+              />
+            </Suspense>
           ) : (
-            <ResultsTable
-              drivers={filteredDrivers}
-              season={undefined}
-              round={undefined}
-            />
+            <Suspense
+              fallback={
+                <div className="flex items-center justify-center p-8">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600" />
+                </div>
+              }
+            >
+              <ResultsTable
+                drivers={filteredDrivers}
+                season={undefined}
+                round={undefined}
+              />
+            </Suspense>
           )}
         </main>
       </div>

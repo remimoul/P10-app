@@ -1,12 +1,26 @@
 import "@/app/globals.css";
 import "@/lib/polyfills";
 import type { Metadata } from "next";
+import { Suspense } from "react";
+import dynamic from "next/dynamic";
 import { Toaster } from "react-hot-toast";
 import { ClerkProviderWrapper } from "@/components/providers/ClerkProviderWrapper";
 import Navbar from "@/components/layouts/Navbar";
-import Footer from "@/components/layouts/Footer";
 import { ApolloProviderWrapper } from "@/components/providers/ApolloProvider";
-import ScrollToTop from "@/components/common/ScrollToTop";
+
+const Footer = dynamic(
+  () => import("@/components/layouts/Footer").then((m) => m.default),
+  {
+    loading: () => (
+      <footer className="h-32 bg-gray-900 animate-pulse" aria-hidden="true" />
+    ),
+  }
+);
+
+const ScrollToTop = dynamic(
+  () => import("@/components/common/ScrollToTop").then((m) => m.default),
+  { loading: () => null }
+);
 
 export const metadata: Metadata = {
   title: "P10 App",
@@ -37,7 +51,9 @@ const RootLayout = ({
                 }}
               />
             </main>
-            <Footer />
+            <Suspense fallback={<footer className="h-32 bg-gray-900" aria-hidden="true" />}>
+              <Footer />
+            </Suspense>
             <ScrollToTop />
           </ApolloProviderWrapper>
         </body>

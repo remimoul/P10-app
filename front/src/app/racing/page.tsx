@@ -1,14 +1,27 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
+import dynamic from "next/dynamic";
 import { RacingTabs } from "@/components/Racings/RacingTabs";
-import { RacingList } from "@/components/Racings/RacingList";
 import { Pagination } from "@/components/Racings/Pagination";
 import { SearchInput } from "@/components/Racings/SearchInput";
 import { SeasonFilter } from "@/components/Racings/SeasonFilter";
 import { ergastService } from "@/lib/services/ergastService";
 import { GrandPrix } from "@/lib/types/racing";
 import LoadingScreen from "@/components/common/LoadingScreen";
+
+const RacingList = dynamic(
+  () => import("@/components/Racings/RacingList").then((m) => m.RacingList),
+  {
+    loading: () => (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 min-h-[200px] place-items-center">
+        <div className="animate-pulse rounded-xl bg-gray-200 w-full h-48" />
+        <div className="animate-pulse rounded-xl bg-gray-200 w-full h-48" />
+        <div className="animate-pulse rounded-xl bg-gray-200 w-full h-48" />
+      </div>
+    ),
+  }
+);
 
 const ITEMS_PER_PAGE = 12;
 
@@ -147,7 +160,17 @@ export default function Racing() {
           )}
         </div>
 
-        <RacingList grandPrixList={paginatedRaces} isPast={tab === "past"} />
+        <Suspense
+          fallback={
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 min-h-[200px] place-items-center">
+              <div className="animate-pulse rounded-xl bg-gray-200 w-full h-48" />
+              <div className="animate-pulse rounded-xl bg-gray-200 w-full h-48" />
+              <div className="animate-pulse rounded-xl bg-gray-200 w-full h-48" />
+            </div>
+          }
+        >
+          <RacingList grandPrixList={paginatedRaces} isPast={tab === "past"} />
+        </Suspense>
 
         <Pagination
           currentPage={currentPage}

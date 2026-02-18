@@ -1,9 +1,12 @@
 import { DriverTableData } from "@/lib/types/racing";
 import { motion } from "framer-motion";
 import { FaTrophy, FaMedal } from "react-icons/fa";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { ergastService } from "@/lib/services/ergastService";
 import { ErgastResult } from "@/lib/types/ergast";
+
+/** Only animate the first N rows to reduce cost on long lists */
+const ANIMATE_ROW_LIMIT = 10;
 
 interface ResultsTableProps {
   drivers: DriverTableData[];
@@ -12,12 +15,11 @@ interface ResultsTableProps {
   round?: string;
 }
 
-const ResultsTable = ({
+const ResultsTable = React.memo(function ResultsTable({
   drivers,
-  // viewMode,
   season,
   round,
-}: ResultsTableProps) => {
+}: ResultsTableProps) {
   const [ergastResults, setErgastResults] = useState<ErgastResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -52,64 +54,51 @@ const ResultsTable = ({
     });
   };
 
-  const combineDriverData = (driver: DriverTableData) => {
-    const ergastResult = getErgastResult(driver.number, driver.name);
-    
-    const position = ergastResult?.position ? parseInt(ergastResult.position) : driver.position;
-    const points = ergastResult?.points ? parseFloat(ergastResult.points) : driver.points || 0;
-    const laps = ergastResult?.laps || driver.laps || "-";
-    
-    const driverName = ergastResult?.Driver 
-      ? `${ergastResult.Driver.givenName} ${ergastResult.Driver.familyName}`
-      : driver.name;
-    
-    const teamName = ergastResult?.Constructor?.name || driver.team || "-";
-    const carName = ergastResult?.Constructor?.name || driver.car || "-";
-
-    return {
-      ...driver,
-      position,
-      points,
-      laps,
-      name: driverName,
-      team: teamName,
-      car: carName,
-      driverDetails: ergastResult?.Driver,
-      constructorDetails: ergastResult?.Constructor,
+  const sortedCombinedDrivers = useMemo(() => {
+    const combine = (driver: DriverTableData) => {
+      const ergastResult = getErgastResult(driver.number, driver.name);
+      const position = ergastResult?.position ? parseInt(ergastResult.position) : driver.position;
+      const points = ergastResult?.points ? parseFloat(ergastResult.points) : driver.points || 0;
+      const laps = ergastResult?.laps || driver.laps || "-";
+      const driverName = ergastResult?.Driver
+        ? `${ergastResult.Driver.givenName} ${ergastResult.Driver.familyName}`
+        : driver.name;
+      const teamName = ergastResult?.Constructor?.name || driver.team || "-";
+      const carName = ergastResult?.Constructor?.name || driver.car || "-";
+      return {
+        ...driver,
+        position,
+        points,
+        laps,
+        name: driverName,
+        team: teamName,
+        car: carName,
+        driverDetails: ergastResult?.Driver,
+        constructorDetails: ergastResult?.Constructor,
+      };
     };
-  };
 
-  const sortedDrivers = [...drivers].sort((a, b) => {
-    const aErgast = getErgastResult(a.number, a.name);
-    const bErgast = getErgastResult(b.number, b.name);
-    
-    if (aErgast && bErgast) {
-      const aPoints = parseFloat(aErgast.points);
-      const bPoints = parseFloat(bErgast.points);
-      if (aPoints !== bPoints) {
-        return bPoints - aPoints;
+    const sorted = [...drivers].sort((a, b) => {
+      const aErgast = getErgastResult(a.number, a.name);
+      const bErgast = getErgastResult(b.number, b.name);
+      if (aErgast && bErgast) {
+        const aPoints = parseFloat(aErgast.points);
+        const bPoints = parseFloat(bErgast.points);
+        if (aPoints !== bPoints) return bPoints - aPoints;
+        const aPosition = parseInt(aErgast.position);
+        const bPosition = parseInt(bErgast.position);
+        if (aPosition !== bPosition) return aPosition - bPosition;
+        return a.number - b.number;
       }
-      
-      const aPosition = parseInt(aErgast.position);
-      const bPosition = parseInt(bErgast.position);
-      if (aPosition !== bPosition) {
-        return aPosition - bPosition;
-      }
-      
+      if (aErgast) return -1;
+      if (bErgast) return 1;
+      if (a.points !== b.points) return b.points - a.points;
+      if (a.position !== b.position) return a.position - b.position;
       return a.number - b.number;
-    }
-    
-    if (aErgast) return -1;
-    if (bErgast) return 1;
-    
-    if (a.points !== b.points) {
-      return b.points - a.points;
-    }
-    if (a.position !== b.position) {
-      return a.position - b.position;
-    }
-    return a.number - b.number;
-  });
+    });
+
+    return sorted.map(combine);
+  }, [drivers, ergastResults]);
 
   if (isLoading) {
     return (
@@ -157,16 +146,11 @@ const ResultsTable = ({
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-100">
-                {sortedDrivers.map((driver) => {
-                  const combinedData = combineDriverData(driver);
-                  return (
-                    <motion.tr
-                      key={driver.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="group hover:bg-gradient-to-r hover:from-red-50 hover:to-transparent transition-all duration-300"
-                    >
+                {sortedCombinedDrivers.map((combinedData, index) => {
+                  const rowClassName =
+                    "group hover:bg-gradient-to-r hover:from-red-50 hover:to-transparent transition-colors duration-200";
+                  const rowContent = (
+                    <>
                       <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           {combinedData.position === 1 && (
@@ -267,7 +251,22 @@ const ResultsTable = ({
                           {combinedData.points}
                         </span>
                       </td>
+                    </>
+                  );
+                  return index < ANIMATE_ROW_LIMIT ? (
+                    <motion.tr
+                      key={combinedData.id}
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.2, delay: index * 0.02 }}
+                      className={rowClassName}
+                    >
+                      {rowContent}
                     </motion.tr>
+                  ) : (
+                    <tr key={combinedData.id} className={rowClassName}>
+                      {rowContent}
+                    </tr>
                   );
                 })}
               </tbody>
@@ -277,6 +276,6 @@ const ResultsTable = ({
       </div>
     </div>
   );
-};
+});
 
 export default ResultsTable;

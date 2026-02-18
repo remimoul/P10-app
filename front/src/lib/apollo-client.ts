@@ -22,7 +22,24 @@ function createApolloClient() {
   return new ApolloClient({
     link: authLink.concat(httpLink),
     cache: new InMemoryCache({
-      typePolicies: {},
+      typePolicies: {
+        Query: {
+          fields: {
+            getAllLeagues: {
+              keyArgs: false,
+              merge(existing = [], incoming) {
+                return incoming ?? existing;
+              },
+            },
+            getLeague: {
+              keyArgs: ["input"],
+            },
+          },
+        },
+        League: {
+          keyFields: ["id"],
+        },
+      },
     }),
     defaultOptions: {
       watchQuery: {

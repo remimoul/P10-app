@@ -1,13 +1,22 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, Suspense } from "react";
+import dynamic from "next/dynamic";
 import { useQuery, gql } from "@apollo/client";
 import type { League } from "@/lib/types/leagues";
 import Header from "@/components/Leagues/Header";
-import ReadyToRace from "@/components/Leagues/ReadyToRace";
-import LeagueSection from "@/components/Leagues/LeagueSection";
 import { useRouter } from "next/navigation";
 import LoadingScreen from "@/components/common/LoadingScreen";
+
+const ReadyToRace = dynamic(
+  () => import("@/components/Leagues/ReadyToRace").then((m) => m.default),
+  { loading: () => <div className="h-48 animate-pulse rounded-2xl bg-gray-100" /> }
+);
+
+const LeagueSection = dynamic(
+  () => import("@/components/Leagues/LeagueSection").then((m) => m.default),
+  { loading: () => <div className="h-64 animate-pulse rounded-2xl bg-gray-100" /> }
+);
 
 // Requête GraphQL
 const GET_ALL_LEAGUES = gql`
@@ -99,12 +108,14 @@ export default function Leagues() {
       <main className="relative z-10 max-w-7xl mx-auto px-4 py-12">
         <Header />
 
-        <div className="space-y-20 pb-12">
-          <LeagueSection title="Public Leagues" leagues={publicLeaguesWithClick} isPublic={true} />
-          <LeagueSection title="Private Leagues" leagues={privateLeaguesWithClick} isPublic={false} />
-        </div>
+        <Suspense fallback={<div className="h-64 animate-pulse rounded-2xl bg-gray-100" />}>
+          <div className="space-y-20 pb-12">
+            <LeagueSection title="Public Leagues" leagues={publicLeaguesWithClick} isPublic={true} />
+            <LeagueSection title="Private Leagues" leagues={privateLeaguesWithClick} isPublic={false} />
+          </div>
 
-        <ReadyToRace />
+          <ReadyToRace />
+        </Suspense>
       </main>
     </div>
   );

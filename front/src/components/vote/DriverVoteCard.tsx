@@ -1,11 +1,16 @@
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DriverVoteCardProps } from "@/lib/types/drivers";
 import { RiArrowDownSLine, RiArrowUpSLine } from "react-icons/ri";
 import { MdHowToVote } from "react-icons/md";
-import { DriverStatsChart } from "./DriverStatsChart";
+
+const DriverStatsChart = dynamic(
+  () => import("./DriverStatsChart").then((m) => m.DriverStatsChart),
+  { ssr: false }
+);
 
 export const DriverVoteCard = ({
   driver,

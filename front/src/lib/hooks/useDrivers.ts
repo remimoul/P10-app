@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   Driver,
   Position,
@@ -98,78 +98,101 @@ export const useDrivers = (
     return points + (hasFastestLap ? FASTEST_LAP_POINTS : 0);
   };
 
-  const filteredDrivers: DriverTableData[] = drivers
-    .filter(
-      (driver: Driver) =>
-        !selectedCountry || driver.country === selectedCountry
-    )
-    .map((driver: Driver) => {
-      const result = positions.find(
-        (pos: Position) => pos.driverId === driver.id
-      );
-      const driverGrid = grid.find(
-        (g: Grid) => g.driverId === driver.id
-      );
-      const driverLaps = laps.filter(
-        (l: Lap) => l.driverId === driver.id
-      );
-      const driverLapTimes = lapTimes.filter(
-        (lt: LapTime) => lt.driverId === driver.id
-      );
-      const driverStints = stints.filter(
-        (s: Stint) => s.driverId === driver.id
-      );
+  const raceFastestLap = useMemo(
+    () => findFastestLap(lapTimes),
+    [lapTimes]
+  );
 
-      const fastestLap = driverLapTimes.reduce((fastest, current) => {
-        if (!fastest || current.time < fastest.time) {
-          return current;
-        }
-        return fastest;
-      }, undefined as LapTime | undefined);
+  const filteredDrivers = useMemo(
+    (): DriverTableData[] =>
+      drivers
+        .filter(
+          (driver: Driver) =>
+            !selectedCountry || driver.country === selectedCountry
+        )
+        .map((driver: Driver) => {
+          const result = positions.find(
+            (pos: Position) => pos.driverId === driver.id
+          );
+          const driverGrid = grid.find(
+            (g: Grid) => g.driverId === driver.id
+          );
+          const driverLaps = laps.filter(
+            (l: Lap) => l.driverId === driver.id
+          );
+          const driverLapTimes = lapTimes.filter(
+            (lt: LapTime) => lt.driverId === driver.id
+          );
+          const driverStints = stints.filter(
+            (s: Stint) => s.driverId === driver.id
+          );
 
-      const totalLaps = driverLaps.length;
-      const lastStint = driverStints[driverStints.length - 1];
-      const raceFastestLap = findFastestLap(lapTimes);
-      const hasFastestLap = fastestLap?.time === raceFastestLap?.time;
-      const points = calculatePoints(
-        result?.position || 0,
-        isSprint,
-        hasFastestLap
-      );
+          const fastestLap = driverLapTimes.reduce((fastest, current) => {
+            if (!fastest || current.time < fastest.time) {
+              return current;
+            }
+            return fastest;
+          }, undefined as LapTime | undefined);
 
-      const positionChange =
-        driverGrid && result?.position
-          ? driverGrid.position - result.position
-          : 0;
+          const totalLaps = driverLaps.length;
+          const lastStint = driverStints[driverStints.length - 1];
+          const hasFastestLap = fastestLap?.time === raceFastestLap?.time;
+          const points = calculatePoints(
+            result?.position || 0,
+            isSprint,
+            hasFastestLap
+          );
 
-      return {
-        id: Number(driver.id),
-        name: driver.name,
-        team: driver.team,
-        points,
-        position: result?.position ?? 0,
-        country: driver.country,
-        number: driver.number,
-        fastestLap: fastestLap?.time
-          ? formatLapTime(Number(fastestLap.time))
-          : "",
-        grid: driverGrid?.position ?? 0,
-        status: ((): "DNF" => "DNF")(),
-        laps: totalLaps || 0,
-        time: "",
-        gap: "",
-        bestLap: 0,
-        teamColor: "",
-        previousPosition: driverGrid?.position ?? 0,
-        positionChange,
-        car: driver.team,
-        compound: lastStint?.compound || "",
-      };
-    })
-    .sort((a, b) => (a.position ?? 99) - (b.position ?? 99));
+          const positionChange =
+            driverGrid && result?.position
+              ? driverGrid.position - result.position
+              : 0;
+
+          return {
+            id: Number(driver.id),
+            name: driver.name,
+            team: driver.team,
+            points,
+            position: result?.position ?? 0,
+            country: driver.country,
+            number: driver.number,
+            fastestLap: fastestLap?.time
+              ? formatLapTime(Number(fastestLap.time))
+              : "",
+            grid: driverGrid?.position ?? 0,
+            status: ((): "DNF" => "DNF")(),
+            laps: totalLaps || 0,
+            time: "",
+            gap: "",
+            bestLap: 0,
+            teamColor: "",
+            previousPosition: driverGrid?.position ?? 0,
+            positionChange,
+            car: driver.team,
+            compound: lastStint?.compound || "",
+          };
+        })
+        .sort((a, b) => (a.position ?? 99) - (b.position ?? 99)),
+    [
+      drivers,
+      positions,
+      laps,
+      grid,
+      lapTimes,
+      stints,
+      selectedCountry,
+      isSprint,
+      raceFastestLap,
+    ]
+  );
+
+  const driversMap = useMemo(
+    () => Object.fromEntries(drivers.map((d) => [d.id, d])),
+    [drivers]
+  );
 
   return {
-    drivers: Object.fromEntries(drivers.map(d => [d.id, d])),
+    drivers: driversMap,
     positions,
     laps,
     grid,
