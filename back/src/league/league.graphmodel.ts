@@ -98,3 +98,21 @@ export class JoinLeagueInput {
   @Field(() => String, { nullable: true })
   userId?: string; // Optional user ID for joining the league
 }
+
+@InputType()
+export class GetLeaguesPaginatedInput {
+  @Field(() => Number, { nullable: true, defaultValue: 20 })
+  limit?: number;
+
+  @Field(() => Number, { nullable: true, defaultValue: 0 })
+  offset?: number;
+}
+
+@ObjectType()
+export class LeaguesResult {
+  @Field(() => [League])
+  leagues: League[];
+
+  @Field(() => Number)
+  total: number;
+}

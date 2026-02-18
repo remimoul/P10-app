@@ -11,6 +11,7 @@ import {
   DeleteLeagueInput,
   UpdateLeagueInput,
   JoinLeagueInput,
+  LeaguesResult,
 } from './league.graphmodel';
 import { UUID } from 'crypto';
 
@@ -90,58 +91,91 @@ export class LeagueService {
     }
   }
 
+  private mapLeagueToResult(league: {
+    id: string;
+    name: string;
+    private: boolean;
+    joinCode: string | null;
+    avatar: { id: string; picture: string } | null;
+    UserLeague: Array<{
+      isAdmin: boolean;
+      user: {
+        id: string;
+        clerkId: string;
+        username: string;
+        firstName: string | null;
+        lastName: string | null;
+        email: string;
+      };
+    }>;
+  }): League {
+    const adminUserLeague = league.UserLeague.find((ul) => ul.isAdmin);
+    return {
+      id: league.id as any,
+      name: league.name,
+      private: league.private,
+      joinCode: league.joinCode ?? undefined,
+      avatar: league.avatar
+        ? { id: league.avatar.id as UUID, url: league.avatar.picture }
+        : null,
+      admin: adminUserLeague?.user
+        ? {
+            id: adminUserLeague.user.id as UUID,
+            clerkId: adminUserLeague.user.clerkId,
+            username: adminUserLeague.user.username,
+            firstName: adminUserLeague.user.firstName ?? undefined,
+            lastName: adminUserLeague.user.lastName ?? undefined,
+            email: adminUserLeague.user.email,
+            password: '',
+            leagues: [],
+          }
+        : null,
+      members: league.UserLeague.map((userLeague) => ({
+        id: userLeague.user.id as UUID,
+        clerkId: userLeague.user.clerkId,
+        username: userLeague.user.username,
+        firstName: userLeague.user.firstName ?? undefined,
+        lastName: userLeague.user.lastName ?? undefined,
+        email: userLeague.user.email,
+        password: '',
+        leagues: [],
+      })),
+    };
+  }
+
   async getAllLeagues(): Promise<League[]> {
     const leagues = await this.prisma.league.findMany({
       include: {
         avatar: true,
         UserLeague: {
-          include: {
-            user: true,
-          },
+          include: { user: true },
         },
       },
     });
+    return leagues.map((league) => this.mapLeagueToResult(league));
+  }
 
-    return leagues.map((league) => {
-      // Trouver l'utilisateur admin parmi les UserLeague
-      const adminUserLeague = league.UserLeague.find((ul) => ul.isAdmin);
-
-      return {
-        id: league.id as any,
-        name: league.name,
-        private: league.private,
-        joinCode: league.joinCode,
-        avatar: league.avatar
-          ? {
-              id: league.avatar.id as UUID,
-              url: league.avatar.picture,
-            }
-          : null,
-        // Définir l'administrateur si trouvé
-        admin: adminUserLeague?.user
-          ? {
-              id: adminUserLeague.user.id as UUID,
-              clerkId: adminUserLeague.user.clerkId,
-              username: adminUserLeague.user.username,
-              firstName: adminUserLeague.user.firstName,
-              lastName: adminUserLeague.user.lastName,
-              email: adminUserLeague.user.email,
-              password: '',
-              leagues: [],
-            }
-          : null,
-        members: league.UserLeague.map((userLeague) => ({
-          id: userLeague.user.id as UUID,
-          clerkId: userLeague.user.clerkId,
-          username: userLeague.user.username,
-          firstName: userLeague.user.firstName,
-          lastName: userLeague.user.lastName,
-          email: userLeague.user.email,
-          password: '',
-          leagues: [],
-        })),
-      };
-    });
+  async getLeaguesPaginated(
+    limit = 20,
+    offset = 0,
+  ): Promise<LeaguesResult> {
+    const [leagues, total] = await Promise.all([
+      this.prisma.league.findMany({
+        skip: offset,
+        take: Math.min(limit, 100),
+        include: {
+          avatar: true,
+          UserLeague: {
+            include: { user: true },
+          },
+        },
+      }),
+      this.prisma.league.count(),
+    ]);
+    return {
+      leagues: leagues.map((league) => this.mapLeagueToResult(league)),
+      total,
+    };
   }
 
   async joinLeague(

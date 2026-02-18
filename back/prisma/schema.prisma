@@ -49,6 +49,10 @@ model UserLeague {
   league   League  @relation(fields: [leagueId], references: [id])
   isAdmin  Boolean @default(false)
   joinedAt DateTime @default(now())
+
+  @@index([leagueId])
+  @@index([userId])
+  @@index([leagueId, userId])
 }
 
 model Avatar {
@@ -85,6 +89,9 @@ model PilotTeam {
   teamId  String
   team    Team   @relation(fields: [teamId], references: [id])
   year    String
+
+  @@index([pilotId])
+  @@index([teamId])
 }
 
 model GrandPrix {
@@ -116,6 +123,9 @@ model GrandPrixRanking {
   pilot       Pilot     @relation(fields: [pilotId], references: [id])
   isDNF       Boolean
   position    Int
+
+  @@index([grandPrixId])
+  @@index([pilotId])
 }
 
 model Bet {
@@ -127,4 +137,8 @@ model Bet {
   pilotP10Id  String
   pilotP10    Pilot     @relation(fields: [pilotP10Id], references: [id])
   pointsP10   Int?
+
+  @@index([userId])
+  @@index([grandPrixId])
+  @@index([userId, grandPrixId])
 }

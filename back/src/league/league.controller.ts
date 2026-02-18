@@ -5,10 +5,10 @@ import {
   Body,
   Param,
   Query,
-  Request,
   UnauthorizedException,
   NotFoundException,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { LeagueService } from './league.service';
 import {
@@ -17,6 +17,9 @@ import {
   GetLeagueInput,
   JoinLeagueInput,
 } from './league.graphmodel';
+import { CreateLeagueDto } from './dto/create-league.dto';
+import { JoinLeagueDto } from './dto/join-league.dto';
+import { LeaguesQueryDto } from './dto/leagues-query.dto';
 import {
   ApiTags,
   ApiOperation,
@@ -27,6 +30,9 @@ import {
   ApiQuery,
 } from '@nestjs/swagger';
 import { Public } from 'src/decorators/public.decorator';
+import { CurrentUser } from 'src/decorators/current-user.decorator';
+import type { DbUser } from 'src/auth/load-db-user.guard';
+import { ClerkAuthGuard } from 'src/auth/clerk-auth.guard';
 import { PrismaService } from 'src/prisma.service';
 
 @ApiTags('Leagues')
@@ -38,33 +44,13 @@ export class LeagueController {
   ) {}
 
   @Post()
-  @Public()
+  @UseGuards(ClerkAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'Create a new league only for authenticated users with Clerk',
     description: 'Creates a new league with the authenticated user as admin',
   })
-  @ApiBody({
-    type: CreateLeagueInput,
-    examples: {
-      publicLeague: {
-        summary: 'Public League',
-        description: 'Example for creating a public league',
-        value: {
-          name: 'My Public League',
-          private: false,
-        },
-      },
-      privateLeague: {
-        summary: 'Private League',
-        description: 'Example for creating a private league',
-        value: {
-          name: 'My Private League',
-          private: true,
-        },
-      },
-    },
-  })
+  @ApiBody({ type: CreateLeagueDto })
   @ApiResponse({
     status: 201,
     description: 'League successfully created',
@@ -73,65 +59,50 @@ export class LeagueController {
   @ApiResponse({ status: 401, description: 'User authentication required' })
   @ApiResponse({ status: 404, description: 'User not found in database' })
   async createLeague(
-    @Body() createLeagueInput: CreateLeagueInput,
-    @Request() req,
+    @Body() dto: CreateLeagueDto,
+    @CurrentUser() user: DbUser | undefined,
   ) {
-    // Extract user ID from request
-    const clerkId = req.user?.clerkId || req.auth?.userId;
-
-    if (!clerkId) {
-      throw new UnauthorizedException(
-        'User authentication required to create a league',
-      );
-    }
-
-    // Find user in database
-    const user = await this.prisma.user.findUnique({
-      where: { clerkId },
-    });
-
     if (!user) {
-      throw new NotFoundException('User not found in the database');
+      throw new UnauthorizedException('User authentication required to create a league');
     }
-
-    // Create league using service
-    return this.leagueService.createLeague(createLeagueInput, user.id);
+    return this.leagueService.createLeague(
+      { name: dto.name, private: dto.private },
+      user.id,
+    );
   }
 
   @Get()
   @Public()
   @ApiOperation({
-    summary: 'Get all leagues',
-    description: 'Retrieves a list of all available leagues',
+    summary: 'Get leagues (paginated)',
+    description: 'Returns leagues and total count. Same shape with or without query params.',
   })
   @ApiResponse({
     status: 200,
-    description: 'List of all leagues',
-    type: [League],
+    description: 'Leagues and total count',
+    schema: {
+      type: 'object',
+      properties: {
+        leagues: { type: 'array', items: { $ref: '#/components/schemas/League' } },
+        total: { type: 'number' },
+      },
+    },
   })
-  async getAllLeagues() {
-    return this.leagueService.getAllLeagues();
+  async getAllLeagues(@Query() query: LeaguesQueryDto) {
+    const limit = query.limit ?? 20;
+    const offset = query.offset ?? 0;
+    return this.leagueService.getLeaguesPaginated(limit, offset);
   }
 
   @Post('join')
-  @Public()
+  @UseGuards(ClerkAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'Join a league using its ID',
     description:
       'Allows an authenticated user to join a league by its ID. A join code is required only if the league is private.',
   })
-  @ApiBody({
-    type: JoinLeagueInput,
-    examples: {
-      example: {
-        value: {
-          leagueId: '123e4567-e89b-12d3-a456-426614174000',
-          joinCode: 'Non obligatoire pour les leagues publiques', // Optionnel pour les leagues publiques
-        },
-      },
-    },
-  })
+  @ApiBody({ type: JoinLeagueDto })
   @ApiResponse({
     status: 201,
     description: 'Successfully joined the league',
@@ -143,29 +114,19 @@ export class LeagueController {
   })
   @ApiResponse({ status: 401, description: 'User authentication required' })
   @ApiResponse({ status: 404, description: 'League not found' })
-  async joinLeague(@Body() joinLeagueInput: JoinLeagueInput, @Request() req) {
-    // Extract user ID from request
-    const clerkId = req.user?.clerkId || req.auth?.userId;
-
-    if (!clerkId) {
+  async joinLeague(
+    @Body() dto: JoinLeagueDto,
+    @CurrentUser() user: DbUser | undefined,
+  ) {
+    if (!user) {
       throw new UnauthorizedException(
         'User authentication required to join a league',
       );
     }
-
-    // Find user in database
-    const user = await this.prisma.user.findUnique({
-      where: { clerkId },
-    });
-
-    if (!user) {
-      throw new NotFoundException(
-        'User not found in database. Please complete your profile first.',
-      );
-    }
-
-    // Join league using service
-    return this.leagueService.joinLeague(joinLeagueInput, user.id);
+    return this.leagueService.joinLeague(
+      { leagueId: dto.leagueId, joinCode: dto.joinCode },
+      user.id,
+    );
   }
 
   @Post('join-with-user-db/:userId')
@@ -291,7 +252,7 @@ export class LeagueController {
   }
 
   @Delete(':id')
-  @Public()
+  @UseGuards(ClerkAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({
     summary: 'Delete a league',
@@ -319,26 +280,15 @@ export class LeagueController {
   })
   @ApiResponse({ status: 401, description: 'User authentication required' })
   @ApiResponse({ status: 404, description: 'League not found' })
-  async deleteLeague(@Param('id') leagueId: string, @Request() req) {
-    // Extract user ID from request
-    const clerkId = req.user?.clerkId || req.auth?.userId;
-
-    if (!clerkId) {
+  async deleteLeague(
+    @Param('id') leagueId: string,
+    @CurrentUser() user: DbUser | undefined,
+  ) {
+    if (!user) {
       throw new UnauthorizedException(
         'User authentication required to delete a league',
       );
     }
-
-    // Find user in database
-    const user = await this.prisma.user.findUnique({
-      where: { clerkId },
-    });
-
-    if (!user) {
-      throw new NotFoundException('User not found in database');
-    }
-
-    // Delete the league
     return this.leagueService.deleteLeague(leagueId, user.id);
   }
 

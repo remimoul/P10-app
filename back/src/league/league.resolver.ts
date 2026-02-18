@@ -1,6 +1,6 @@
-import { UseGuards } from '@nestjs/common';
-import { Resolver, Query, Mutation, Args, Context } from '@nestjs/graphql';
-import { ClerkAuthGuard } from '../auth/clerk-auth.guard'; // Ajustez le chemin
+import { UseGuards, UnauthorizedException } from '@nestjs/common';
+import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
+import { ClerkAuthGuard } from '../auth/clerk-auth.guard';
 import { LeagueService } from './league.service';
 import {
   League,
@@ -10,9 +10,13 @@ import {
   UpdateLeagueInput,
   DeleteLeagueResponse,
   JoinLeagueInput,
+  GetLeaguesPaginatedInput,
+  LeaguesResult,
 } from './league.graphmodel';
 
 import { Public } from 'src/decorators/public.decorator';
+import { CurrentUser } from 'src/decorators/current-user.decorator';
+import type { DbUser } from 'src/auth/load-db-user.guard';
 import { PrismaService } from 'src/prisma.service';
 
 @Resolver(() => League)
@@ -26,30 +30,11 @@ export class LeagueResolver {
   @Mutation(() => League)
   async createLeague(
     @Args('createLeagueInput') createLeagueInput: CreateLeagueInput,
-    @Context() context: any,
+    @CurrentUser() user: DbUser | undefined,
   ): Promise<League> {
-    console.log('=== DEBUG CONTEXT ===');
-    console.log('context.req.user:', context.req?.user);
-    console.log('context.req.auth:', context.req?.auth);
-    console.log('=== END DEBUG ===');
-
-    // Get the authenticated user from context
-    const clerkId = context.req?.user?.clerkId || context.req?.auth?.userId;
-
-    if (!clerkId) {
-      throw new Error('User authentication required to create a league');
-    }
-
-    // Find the user's database ID using the clerkId
-    const user = await this.prisma.user.findUnique({
-      where: { clerkId },
-    });
-
     if (!user) {
-      throw new Error('User not found in the database');
+      throw new UnauthorizedException('User authentication required to create a league');
     }
-
-    // Use the database user ID for league creation
     return this.leagueService.createLeague(createLeagueInput, user.id);
   }
 
@@ -80,6 +65,16 @@ export class LeagueResolver {
   }
 
   @Public()
+  @Query(() => LeaguesResult)
+  async getLeaguesPaginated(
+    @Args('input', { nullable: true }) input?: GetLeaguesPaginatedInput,
+  ): Promise<LeaguesResult> {
+    const limit = input?.limit ?? 20;
+    const offset = input?.offset ?? 0;
+    return this.leagueService.getLeaguesPaginated(limit, offset);
+  }
+
+  @Public()
   @Query(() => League)
   async getLeague(
     @Args('input') getLeagueInput: GetLeagueInput,
@@ -87,29 +82,15 @@ export class LeagueResolver {
     return this.leagueService.getLeague(getLeagueInput);
   }
 
-  @Public()
+  @UseGuards(ClerkAuthGuard)
   @Mutation(() => League)
   async joinLeague(
     @Args('joinLeague') joinLeagueInput: JoinLeagueInput,
-    @Context() context: any,
+    @CurrentUser() user: DbUser | undefined,
   ): Promise<League> {
-    // Get the authenticated user from context
-    const clerkId = context.req.user?.clerkId || context.req.auth?.userId;
-
-    if (!clerkId) {
-      throw new Error('User authentication required to join a league');
-    }
-
-    // Find the user's database ID using the clerkId
-    const user = await this.prisma.user.findUnique({
-      where: { clerkId },
-    });
-
     if (!user) {
-      throw new Error('User not found in the database');
+      throw new UnauthorizedException('User authentication required to join a league');
     }
-
-    // Join the league with conditional code requirement
     return this.leagueService.joinLeague(joinLeagueInput, user.id);
   }
 
@@ -132,29 +113,15 @@ export class LeagueResolver {
     return this.leagueService.joinLeague(joinLeagueInput, userId);
   }
 
-  @Public()
+  @UseGuards(ClerkAuthGuard)
   @Mutation(() => DeleteLeagueResponse)
   async deleteLeague(
     @Args('leagueId', { type: () => String }) leagueId: string,
-    @Context() context: any,
+    @CurrentUser() user: DbUser | undefined,
   ): Promise<{ success: boolean; message: string }> {
-    // Get the authenticated user from context
-    const clerkId = context.req.user?.clerkId || context.req.auth?.userId;
-
-    if (!clerkId) {
-      throw new Error('User authentication required to delete a league');
-    }
-
-    // Find the user's database ID using the clerkId
-    const user = await this.prisma.user.findUnique({
-      where: { clerkId },
-    });
-
     if (!user) {
-      throw new Error('User not found in the database');
+      throw new UnauthorizedException('User authentication required to delete a league');
     }
-
-    // Delete the league
     return this.leagueService.deleteLeague(leagueId, user.id);
   }
 

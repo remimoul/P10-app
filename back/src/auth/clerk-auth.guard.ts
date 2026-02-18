@@ -3,6 +3,7 @@ import {
   CanActivate,
   ExecutionContext,
   UnauthorizedException,
+  Logger,
 } from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { Reflector } from '@nestjs/core';
@@ -10,43 +11,38 @@ import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
 
 @Injectable()
 export class ClerkAuthGuard implements CanActivate {
+  private readonly logger = new Logger(ClerkAuthGuard.name);
+
   constructor(private reflector: Reflector) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    // Vérifier si la route est marquée comme publique
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
       context.getHandler(),
       context.getClass(),
     ]);
 
-    console.log('🔒 ClerkAuthGuard.canActivate() called');
-    console.log('=== CLERK AUTH GUARD DEBUG ===');
-    console.log('Is public route:', isPublic);
+    this.logger.debug(`canActivate: isPublic=${isPublic}`);
 
-    // Si c'est une route publique, permettre l'accès sans token
     if (isPublic) {
-      console.log('Processing public route - access granted');
       return true;
     }
 
-    // Obtenir le contexte GraphQL
-    const gqlContext = GqlExecutionContext.create(context);
-    const { req } = gqlContext.getContext();
+    const req =
+      context.getType<'http'>() === 'http'
+        ? context.switchToHttp().getRequest()
+        : GqlExecutionContext.create(context).getContext().req;
 
-    // Extraire le token Authorization
-    const authHeader = req.headers.authorization;
+    const authHeader = req?.headers?.authorization;
     const token = authHeader?.replace('Bearer ', '');
 
-    console.log('Token found:', !!token);
-    console.log('Auth header:', authHeader ? 'Present' : 'Missing');
+    this.logger.debug(`Token present: ${!!token}`);
 
     if (!token) {
-      console.log('No token provided for protected route');
+      this.logger.warn('No token provided for protected route');
       throw new UnauthorizedException('No authentication token provided');
     }
 
     try {
-      // Valider le token Clerk
       const decodedToken = await this.validateClerkToken(token);
       req.user = {
         id: decodedToken.sub,
@@ -60,14 +56,9 @@ export class ClerkAuthGuard implements CanActivate {
         ...decodedToken,
       };
 
-      console.log('=== DEBUG CONTEXT ===');
-      console.log('context.req.user:', req.user);
-      console.log('context.req.auth:', req.auth);
-      console.log('=== END DEBUG ===');
-
       return true;
-    } catch (error) {
-      console.log('Token validation failed:', error.message);
+    } catch (error: any) {
+      this.logger.warn(`Token validation failed: ${error?.message}`);
       throw new UnauthorizedException('Invalid authentication token');
     }
   }

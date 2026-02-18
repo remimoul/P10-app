@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { createClerkClient, ClerkClient } from '@clerk/backend';
 import { User, CreateUserInput, GetUserInput } from './user.graphmodel';
+import type { League } from '../league/league.graphmodel';
 import { PrismaService } from '../prisma.service';
 
 @Injectable()
@@ -41,6 +42,27 @@ export class UserService {
       email: createUserInput.email,
       password: '',
       leagues: [],
+    };
+  }
+
+  /** Get user by database id (no Clerk fallback). Use for internal lookups e.g. Bet.userId. */
+  async getUserById(id: string): Promise<User | null> {
+    const dbUser = await this.prisma.user.findUnique({
+      where: { id },
+      include: {
+        UserLeague: {
+          include: { league: true },
+        },
+      },
+    });
+    if (!dbUser) return null;
+    return {
+      id: dbUser.id as User['id'],
+      clerkId: dbUser.clerkId,
+      username: dbUser.username,
+      email: dbUser.email,
+      password: '',
+      leagues: (dbUser.UserLeague ? dbUser.UserLeague.map((ul) => ul.league) : []) as unknown as League[],
     };
   }
 
