@@ -10,7 +10,13 @@ const Filters = ({
   onSeasonChange,
   onRaceChange,
   onDateChange,
+  availableSeasons = [],
 }: FiltersProps) => {
+  // Use provided availableSeasons or fallback to common F1 seasons
+  const seasonsToShow = availableSeasons.length > 0 
+    ? availableSeasons 
+    : ["2026", "2025", "2024", "2023"];
+
   return (
     <div className="flex flex-col sm:flex-row flex-wrap gap-4 sm:gap-6 mb-8">
       <div className="relative w-full sm:w-auto flex-1 sm:flex-none">
@@ -19,7 +25,7 @@ const Filters = ({
           onChange={(e) => onSeasonChange(e.target.value)}
           className="w-full px-4 py-3 rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-red-500 bg-white shadow-sm hover:shadow-lg hover:shadow-red-100 transition-all duration-300 appearance-none cursor-pointer pr-10 text-lg"
         >
-          {["2025", "2024", "2023"].map((season) => (
+          {seasonsToShow.map((season) => (
             <option key={season} value={season} className="py-2">
               {season} Season
             </option>

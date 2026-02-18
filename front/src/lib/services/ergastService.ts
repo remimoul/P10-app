@@ -1,4 +1,3 @@
-import axios from "axios";
 import { ErgastRace, ErgastResponse, CircuitInfo } from "@/lib/types/ergast";
 
 const BASE_URL = "https://api.jolpi.ca/ergast/f1";
@@ -68,8 +67,14 @@ export interface ErgastResult {
 export class ErgastService {
   private async fetchData<T>(endpoint: string): Promise<T> {
     try {
-      const response = await axios.get<T>(`${BASE_URL}/${endpoint}`);
-      return response.data;
+      const url = `${BASE_URL}/${endpoint}`;
+      const response = await fetch(url);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      return response.json();
     } catch (error) {
       console.error(`Error fetching data from ${endpoint}:`, error);
       throw error;

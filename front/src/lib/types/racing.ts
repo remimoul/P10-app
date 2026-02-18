@@ -226,6 +226,7 @@ export interface UseRacesReturn {
   filteredRaces: Session[];
   uniqueDates: string[];
   meetingsMap: Map<number, Meeting>;
+  availableSeasons: string[];
 }
 
 export interface UseDriversReturn {
@@ -279,6 +280,7 @@ export interface FiltersProps {
   uniqueDates: string[];
   selectedDate: string;
   onDateChange: (date: string) => void;
+  availableSeasons?: string[];
 }
 
 export interface SearchInputProps {

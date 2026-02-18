@@ -32,9 +32,17 @@ export const useDrivers = (
 
   useEffect(() => {
     const fetchRaceData = async () => {
-      if (!selectedRace) return;
+      if (selectedRace === null || selectedRace === undefined) {
+        setLoading(false);
+        return;
+      }
       setLoading(true);
       try {
+        const sessionKey = selectedRace.toString();
+        if (!sessionKey || sessionKey === "0") {
+          setLoading(false);
+          return;
+        }
         const [
           driversData,
           positionsData,
@@ -43,12 +51,12 @@ export const useDrivers = (
           lapTimesData,
           stintsData,
         ] = await Promise.all([
-          f1Service.getDrivers(selectedRace.toString()),
-          f1Service.getPositions(selectedRace.toString()),
-          f1Service.getLaps(selectedRace.toString()),
-          f1Service.getGrid(selectedRace.toString()),
-          f1Service.getLapTimes(selectedRace.toString()),
-          f1Service.getStints(selectedRace.toString()),
+          f1Service.getDrivers(sessionKey),
+          f1Service.getPositions(sessionKey),
+          f1Service.getLaps(sessionKey),
+          f1Service.getGrid(sessionKey),
+          f1Service.getLapTimes(sessionKey),
+          f1Service.getStints(sessionKey),
         ]);
         setDrivers(driversData);
         setPositions(positionsData);
